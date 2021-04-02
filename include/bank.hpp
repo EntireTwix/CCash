@@ -51,10 +51,11 @@ public:
                     b.balance += amount;
                 }))
             {
-                //attempt to refund if destination doesnt exist
+                //attempt to refund if A exist
                 users.modify_if(a_name, [amount](User &a) {
                     a.balance += amount;
                 });
+                state = false; //because had to refund trasnaction
             }
         }
 
