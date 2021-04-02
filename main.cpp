@@ -1,14 +1,15 @@
 #include <iostream>
-#include "user.hpp"
+#include "bank.hpp"
 
 int main()
 {
-    User a(1000, "pass123");
-    User b(0, "pass123");
-    a.ChangePassword("pass123", "newpass123");
-    User::SendFunds(a, b, 250, "newpass123");
-    a.GetBal();
-    a.VerifyPassword("newpass124");
+    Bank.admin_pass = "root";
+    std::cout << Bank.AddUser("Twix", "pass123") << '\n';
+    std::cout << Bank.GetBal("Twixy") << '\n';
+    std::cout << Bank.AdminAddUser("root", "Jollymonsam", 2500, "pass123") << '\n';
+    std::cout << Bank.GetBal("Jollymonsam") << '\n';
+    std::cout << Bank.SendFunds("Jollymonsam", "Twix", 333, "pass123") << '\n';
+    std::cout << Bank.GetBal("Twix") << " | " << Bank.GetBal("Jollymonsam") << '\n';
 
     return 0;
 }

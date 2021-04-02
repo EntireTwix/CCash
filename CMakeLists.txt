@@ -14,5 +14,5 @@ add_executable(${PROJECT_NAME} main.cpp)
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party)
 
-add_subdirectory(third_party/drogon)
-target_link_libraries(${PROJECT_NAME} PRIVATE drogon)   
+# add_subdirectory(third_party/drogon)
+# target_link_libraries(${PROJECT_NAME} PRIVATE drogon)   
