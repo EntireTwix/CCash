@@ -1,4 +1,5 @@
 #pragma once
+#include <fstream>
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
@@ -79,5 +80,44 @@ public:
         }
 
         return state;
+    }
+
+    //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
+    void Save() const
+    {
+        Json::StreamWriterBuilder builder;
+        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+
+        std::ofstream user_save("users.json");
+        Json::Value temp;
+        for (const auto &u : users)
+        {
+            std::cout << u.first << '\n';
+            temp[u.first] = u.second.Serialize();
+        }
+        writer->write(temp, &user_save);
+        user_save.close();
+    }
+    //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
+    void Load()
+    {
+        Json::CharReaderBuilder builder;
+
+        Json::Value temp;
+        std::ifstream user_save("users.json");
+        builder["collectComments"] = true;
+        JSONCPP_STRING errs;
+        if (!parseFromStream(builder, user_save, &temp, &errs))
+        {
+            user_save.close();
+        }
+        else
+        {
+            user_save.close();
+            for (const auto &u : temp.getMemberNames())
+            {
+                users.try_emplace(u, temp[u]["balance"].asUInt(), std::forward<std::string &&>(temp[u]["password"].asString()));
+            }
+        }
     }
 } Bank;

@@ -1,4 +1,5 @@
 #pragma once
+#include <json/json.h>
 #include <string>
 
 struct User
@@ -20,4 +21,12 @@ struct User
      * @param init_pass initial password 
      */
     User(uint_fast32_t init_bal, std::string &&init_pass) : balance(init_bal), password(init_pass) {}
+
+    Json::Value Serialize() const
+    {
+        Json::Value res;
+        res["balance"] = balance;
+        res["password"] = password;
+        return res;
+    }
 };
