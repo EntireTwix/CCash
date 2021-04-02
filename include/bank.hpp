@@ -24,10 +24,10 @@ public:
     }
     bool AdminAddUser(const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass)
     {
-        const bool state = (admin_pass == attempt);
+        bool state = (admin_pass == attempt);
         if (state)
         {
-            users.try_emplace_l(
+            state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::forward<std::string &&>(init_pass));
         }
         return state;
