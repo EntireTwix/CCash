@@ -35,31 +35,14 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        bool state = false;
-        //if password for user is correct, and user exists
-        users.if_contains(name, [&attempt, &state](const User &u) {
-            if (attempt == u.password)
-            {
-                state = true;
-            }
-        });
-        if (state) //correct password
-        {
-            state = users.erase_if(name, [](const User &) { return true; });
-        }
-        return state;
+        return users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        bool state = (attempt == admin_pass);
-        if (state)
-        {
-            state = users.erase_if(name, [&state](const User &) { state = true; return state; });
-        }
-        return state;
+        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
-    int_fast64_t GetBal(const std::string &name)
+    int_fast64_t GetBal(const std::string &name) const
     {
         int_fast64_t res = -1;
         users.if_contains(name, [&res](const User &u) {
