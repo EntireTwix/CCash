@@ -1,3 +1,6 @@
 [submodule "parallel-hashmap"]
 	path = third_party/parallel-hashmap
 	url = https://github.com/greg7mdp/parallel-hashmap
+[submodule "drogon"]
+	path = third_party/drogon
+	url = https://github.com/an-tao/drogon
