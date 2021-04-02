@@ -20,15 +20,21 @@ public:
         const bool state = (password == attempt);
         if (state)
         {
-            password = new_pass;
+            password == new_pass;
         }
         return state;
     }
 
     friend bool SendFunds(User &a, User &b, uint_fast64_t amount, const std::string &attempt)
     {
-        std::scoped_lock<std::mutex, std::mutex> lock{a.bal_lock, a.pass_lock};
-        const bool state = (a.password == attempt) && (a.balance >= amount);
+        bool state;
+        {
+            std::lock_guard<std::mutex> lock{a.pass_lock};
+            state = (a.password == attempt);
+        }
+
+        std::scoped_lock<std::mutex, std::mutex> lock{a.bal_lock, b.bal_lock};
+        state = state && (a.balance >= amount);
         if (state)
         {
             a.balance -= amount;
