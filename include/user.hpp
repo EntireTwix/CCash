@@ -37,7 +37,7 @@ public:
         return state;
     }
 
-    bool GetBal()
+    uint_fast64_t GetBal()
     {
         std::lock_guard<std::mutex> lock{bal_lock};
         return balance;
