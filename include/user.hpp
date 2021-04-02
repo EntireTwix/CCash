@@ -8,10 +8,6 @@ private:
     uint_fast64_t balance;
     std::string password;
 
-    //for read/write of object's state concurrently
-    std::mutex bal_lock;
-    std::mutex pass_lock;
-
 public:
     /**
      * @brief User constructor
@@ -30,7 +26,6 @@ public:
 
     bool ChangePassword(const std::string &attempt, std::string &&new_pass)
     {
-        std::lock_guard<std::mutex> lock{pass_lock};
         const bool state = (password == attempt);
         if (state)
         {
@@ -50,14 +45,7 @@ public:
      */
     static bool SendFunds(User &a, User &b, uint_fast64_t amount, const std::string &attempt)
     {
-        bool state;
-        {
-            std::lock_guard<std::mutex> lock{a.pass_lock};
-            state = (a.password == attempt);
-        }
-
-        std::scoped_lock<std::mutex, std::mutex> lock{a.bal_lock, b.bal_lock};
-        state = state && (a.balance >= amount);
+        const bool state = (a.password == attempt) && (a.balance >= amount);
         if (state)
         {
             a.balance -= amount;
