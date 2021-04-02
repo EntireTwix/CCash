@@ -8,6 +8,7 @@ private:
     uint_fast64_t balance;
     std::string password;
 
+    //for read/write of object's state concurrently
     std::mutex bal_lock;
     std::mutex pass_lock;
 
