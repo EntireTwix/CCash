@@ -15,11 +15,14 @@ private:
         std::mutex>
         users;
 
+    std::mutex size_users;
+
 public:
     std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
+        std::unique_lock<std::mutex> lock{size_users};
         return users.try_emplace_l(
             name, [](User &) {}, std::forward<std::string &&>(init_pass));
     }
@@ -28,6 +31,7 @@ public:
         bool state = (admin_pass == attempt);
         if (state)
         {
+            std::unique_lock<std::mutex> lock{size_users};
             state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::forward<std::string &&>(init_pass));
         }
@@ -36,10 +40,12 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
+        std::unique_lock<std::mutex> lock{size_users};
         return users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
+        std::unique_lock<std::mutex> lock{size_users};
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
@@ -82,18 +88,21 @@ public:
         return state;
     }
 
-    //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
-    void Save() const
+    void Save()
     {
         Json::StreamWriterBuilder builder;
         const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
 
         std::ofstream user_save("users.json");
         Json::Value temp;
+        //this gets access to the parallel map with the size being constant
+        std::unique_lock<std::mutex> lock{size_users};
         for (const auto &u : users)
         {
-            std::cout << u.first << '\n';
-            temp[u.first] = u.second.Serialize();
+            //this gets read access to prevent writes
+            users.if_contains(u.first, [&temp, &u](const User &u_val) {
+                temp[u.first] = u_val.Serialize();
+            })
         }
         writer->write(temp, &user_save);
         user_save.close();
