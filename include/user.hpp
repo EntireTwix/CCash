@@ -59,7 +59,7 @@ public:
      * 
      * @return the balance
      */
-    uint_fast64_t GetBal()
+    uint_fast64_t GetBal() const
     {
         return balance;
     }
@@ -70,7 +70,7 @@ public:
      * @param attempt the password
      * @return wether the passwords match
      */
-    bool VerifyPassword(const std::string &attempt) //for connected services
+    bool VerifyPassword(const std::string &attempt) const
     {
         return (password == attempt);
     }
