@@ -61,7 +61,6 @@ public:
      */
     uint_fast64_t GetBal()
     {
-        std::lock_guard<std::mutex> lock{bal_lock};
         return balance;
     }
 
@@ -73,7 +72,6 @@ public:
      */
     bool VerifyPassword(const std::string &attempt) //for connected services
     {
-        std::lock_guard<std::mutex> lock{pass_lock};
         return (password == attempt);
     }
 };
