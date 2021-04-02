@@ -20,7 +20,7 @@ public:
         const bool state = (password == attempt);
         if (state)
         {
-            password == new_pass;
+            password = new_pass;
         }
         return state;
     }
