@@ -7,14 +7,9 @@
 
 int main(int argc, char **argv)
 {
-    if (argc != 5)
+    if (argc != 4)
     {
-        std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes> <run in background (1 or 0)> <threads>\n";
-        return 0;
-    }
-    if ((argv[3][0] != '0' && argv[3][0] != '1'))
-    {
-        std::cerr << "run in background state must be 1 or 0\n";
+        std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes> <threads>\n";
         return 0;
     }
     if (geteuid() != 0)
@@ -27,7 +22,7 @@ int main(int argc, char **argv)
     Bank.Load();
 
     //Admin Password
-    Bank.admin_pass = argv[2];
+    Bank.admin_pass = argv[1];
 
     //Auto Saving
     volatile bool saving_flag = true;
