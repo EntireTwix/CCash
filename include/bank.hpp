@@ -1,5 +1,6 @@
 #pragma once
 #include <fstream>
+#include <shared_mutex>
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
