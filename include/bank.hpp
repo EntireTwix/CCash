@@ -16,14 +16,14 @@ private:
         std::mutex>
         users;
 
-    std::shared_mutex size_lock;
+    std::shared_mutex save_lock;
 
 public:
     std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
-        std::shared_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{save_lock};
         return users.try_emplace_l(
             name, [](User &) {}, std::forward<std::string &&>(init_pass));
     }
@@ -32,7 +32,7 @@ public:
         bool state = (admin_pass == attempt);
         if (state)
         {
-            std::shared_lock<std::shared_mutex> lock{size_lock};
+            std::shared_lock<std::shared_mutex> lock{save_lock};
             state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::forward<std::string &&>(init_pass));
         }
@@ -61,7 +61,7 @@ public:
     {
         //if A exists, A can afford it, and A's password matches
         bool state = false;
-
+        std::shared_lock<std::shared_mutex> lock{save_lock};
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
             if (state = (a.balance >= amount) && (a.password == attempt), state)
             {
@@ -96,7 +96,7 @@ public:
         Json::Value temp;
 
         {
-            std::unique_lock<std::shared_mutex> lock{size_lock}; //grabbing it from any busy add/del opperations
+            std::unique_lock<std::shared_mutex> lock{save_lock}; //grabbing it from any busy add/del opperations
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
