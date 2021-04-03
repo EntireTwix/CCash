@@ -36,4 +36,5 @@ sudo ./bank <admin password> <saving frequency in minutes> <run in background (1
 ### Accessibility
 
 - able to be used millions of blocks away, across dimensions, servers, vanilla or modded, or outside of the game entirely
-- Web front-end
+- **Web front-end**
+- **RESTful** API for connected services like a market, gambling, or anything else you can think of
