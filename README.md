@@ -22,19 +22,19 @@ sudo ./bank <admin password> <saving frequency in minutes> <run in background (1
 
 ### Performance
 
+- **NOT** written in Lua
+- written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
-- written in **C++**, arguably the fastest language
-- **NOT** written in Lua
 
 ### Safety
 
-- **OpenSSL** (HTTPS)
 - **Tamper Proof** relative to an in-game implementation
 - Auto-Saving and Save on close are in place
+- **OpenSSL** (HTTPS)
 
 ### Accessibility
 
-- able to be used millions of blocks away, across dimensions, servers, vanilla or modded, or outside of the game entirely
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
+- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**
