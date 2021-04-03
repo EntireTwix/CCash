@@ -30,11 +30,11 @@ sudo ./bank <admin password> <saving frequency in minutes> <run in background (1
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
-- Auto-Saving and Save on close are in place
+- **Auto-Saving**
 - **OpenSSL** (HTTPS)
 
 ### Accessibility
 
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
-- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**
+- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
