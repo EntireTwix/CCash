@@ -98,7 +98,10 @@ public:
             std::unique_lock<std::shared_mutex> lock{size_lock}; //grabbing it from any busy add/del opperations
             for (const auto &u : users)
             {
-                temp[u.first] = u.second.Serialize();
+                //we know it contains this key but we call this func to grab mutex
+                users.if_contains(u.first, [&temp, &u](const User &u_val) {
+                    temp[u.first] = u_val.Serialize();
+                });
             }
             std::cout << "dropped unique lock\n";
         }
@@ -106,6 +109,7 @@ public:
         writer->write(temp, &user_save);
         user_save.close();
     }
+
     //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
     void Load()
     {
