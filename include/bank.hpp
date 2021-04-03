@@ -41,10 +41,12 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
+        std::shared_lock<std::shared_mutex> lock{save_lock};
         return users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
+        std::shared_lock<std::shared_mutex> lock{save_lock};
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
