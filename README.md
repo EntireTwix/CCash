@@ -22,15 +22,15 @@ sudo ./bank <admin password> <saving frequency in minutes> <run in background (1
 
 ### Performance
 
-- multi-threaded
-- parallel hashmaps, a far superior HashMap implementation to the STD, that also benefit from multi-threaded
-- written in C++, **arguably** the fastest language
+- **multi-threaded**
+- **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
+- written in **C++**, arguably the fastest language
 - **NOT** written in Lua
 
 ### Safety
 
-- OpenSSL (HTTPS)
-- Very difficult to tamper with compared to an in-game implementation of a bank
+- **OpenSSL** (HTTPS)
+- **Tamper Proof** relative to an in-game implementation
 - Auto-Saving and Save on close are in place
 
 ### Accessibility
