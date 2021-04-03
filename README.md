@@ -30,7 +30,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
-- **Auto-Saving**
+- **Auto-Saving**, Saves on crash, Saves on close
 - **OpenSSL** (HTTPS)
 
 ### Accessibility
