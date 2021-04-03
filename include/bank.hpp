@@ -106,7 +106,6 @@ public:
                     temp[u.first] = u_val.Serialize();
                 });
             }
-            std::cout << "dropped unique lock\n";
         }
 
         writer->write(temp, &user_save);
