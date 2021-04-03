@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.10)
-project(main)
+project(bank)
 set (CMAKE_CXX_STANDARD 17)
 
 if(NOT CMAKE_BUILD_TYPE)
