@@ -1,6 +1,8 @@
 #include <iostream>
 #include <chrono>
 #include <thread>
+#include <sys/types.h>
+#include <unistd.h>
 #include "bank.hpp"
 
 int main(int argc, char **argv)
@@ -13,6 +15,11 @@ int main(int argc, char **argv)
     if ((argv[3][0] != '0' && argv[3][0] != '1'))
     {
         std::cerr << "run in background state must be 1 or 0\n";
+        return 0;
+    }
+    if (geteuid() != 0)
+    {
+        std::cerr << "ERROR: CCash MUST be ran as root\n";
         return 0;
     }
 

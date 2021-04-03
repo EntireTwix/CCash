@@ -31,17 +31,9 @@ sudo ./bank <admin password> <saving frequency in minutes> <run in background (1
 
 - OpenSSL (HTTPS)
 - Very difficult to tamper with compared to an in-game implementation of a bank
-- Auto-Saving, Save on close, are in place
+- Auto-Saving and Save on close are in place
 
 ### Accessibility
 
 - able to be used millions of blocks away, across dimensions, servers, vanilla or modded, or outside of the game entirely
-
-# Improvements from 1.0
-
-- frequency/on-close saving in contrast to every change resulting in a Save() call
-- multi-threaded
-- near infinite number of users rather then 2^16
-- no account vs user distinction, it was complicating usage without much gain
-- OpenSSL
-- a web based frontend
+- Web front-end
