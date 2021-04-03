@@ -10,7 +10,7 @@ mkdir build
 cd build
 cmake ..
 make -j<threads>
-sudo ./bank <admin password> <saving frequency in minutes> <run in background (1 or 0)> <threads>
+sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
 
 #### Dependencies
