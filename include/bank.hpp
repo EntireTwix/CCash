@@ -16,6 +16,12 @@ private:
         std::mutex>
         users;
 
+    /**
+     * @brief any function that WRITES to users in a way that CHANGES its SIZE OR takes MORE THEN ONE OPERATION must share lock this lock 
+     * as to be stopped when saving, as saving data must not be corrupted. one operation writes that done modify size aswell as reads are 
+     * permitted while saving so they do not have to share this lock
+     * 
+     */
     std::shared_mutex save_lock;
 
 public:
@@ -54,7 +60,7 @@ public:
     {
         //if A exists, A can afford it, and A's password matches
         bool state = false;
-        std::shared_lock<std::shared_mutex> lock{save_lock}; //because SendFunds is non-atomic, it requires 3 locking operations
+        std::shared_lock<std::shared_mutex> lock{save_lock}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
             if (state = (a.balance >= amount) && (a.password == attempt), state)
             {

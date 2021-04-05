@@ -3,7 +3,9 @@
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
-#include "bank.hpp"
+#include "bank_f.hpp"
+
+using namespace drogon;
 
 int main(int argc, char **argv)
 {
@@ -25,14 +27,20 @@ int main(int argc, char **argv)
     Bank.admin_pass = argv[1];
 
     //Auto Saving
-    volatile bool saving_flag = true;
-    std::thread([&argv, &saving_flag]() {
-        while (saving_flag)
-        {
-            std::this_thread::sleep_for(std::chrono::minutes(std::stoi(argv[2])));
-            Bank.Save();
-        }
-    }).detach();
+    const unsigned long saving_freq = std::stoul(argv[2]);
+    if (saving_freq) //if saving frequency is 0 then auto saving is turned off
+    {
+        std::thread([&argv, saving_freq]() {
+            while (1)
+            {
+                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                Bank.Save();
+            }
+        }).detach();
+    }
+
+    auto API = std::make_shared<BankFrontend>();
+    app().addListener("0.0.0.0", 80).registerController(API).run();
 
     return 0;
 }
