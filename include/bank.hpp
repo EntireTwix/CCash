@@ -98,17 +98,17 @@ public:
         });
         return res;
     }
-    int_fast16_t VerifyPassword(const std::string &name, const std::string &attempt) const
+    int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const
     {
-        int_fast16_t res = -1;
+        int_fast8_t res = -1;
         users.if_contains(name, [&res, &attempt](const User &u) {
             res = u.password == attempt;
         });
         return res;
     }
-    int_fast16_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
+    int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
     {
-        int_fast16_t res = -1;
+        int_fast8_t res = -1;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
             res = (u.password == attempt);
             if (res)
