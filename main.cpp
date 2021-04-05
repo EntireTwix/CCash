@@ -40,7 +40,7 @@ int main(int argc, char **argv)
     }
 
     auto API = std::make_shared<BankF>();
-    app().addListener("0.0.0.0", 80).registerController(API).run();
+    app().addListener("0.0.0.0", 80).registerController(API).setThreadNum(std::stoul(argv[3])).run();
 
     return 0;
 }
