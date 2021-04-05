@@ -25,7 +25,7 @@ public:
     {
         std::shared_lock<std::shared_mutex> lock{save_lock};
         return users.try_emplace_l(
-            name, [](User &) {}, std::forward<std::string>(init_pass));
+            name, [](User &) {}, std::move(init_pass));
     }
     bool AdminAddUser(const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass)
     {
@@ -34,7 +34,7 @@ public:
         {
             std::shared_lock<std::shared_mutex> lock{save_lock};
             state = users.try_emplace_l(
-                name, [](User &) {}, init_bal, std::forward<std::string>(init_pass));
+                name, [](User &) {}, init_bal, std::move(init_pass));
         }
         return state;
     }
