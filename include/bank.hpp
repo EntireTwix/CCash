@@ -89,6 +89,15 @@ public:
         return state;
     }
 
+    int_fast32_t VerifyPassword(const std::string &name, const std::string &attempt) const
+    {
+        int_fast32_t res = -1;
+        users.if_contains(name, [&res, &attempt](const User &u) {
+            res = u.password == attempt;
+        });
+        return res;
+    }
+
     void Save()
     {
         Json::StreamWriterBuilder builder;
