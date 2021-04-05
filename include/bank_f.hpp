@@ -40,18 +40,14 @@ public:
         auto resp = HttpResponse::newHttpResponse();
         if (attempt == bank.admin_pass)
         {
-            resp->setBody("<p><span style=" color
-                          : #339966;
-                          "><strong>[Webserver Closed]</strong></span></p>");
+            resp->setBody("<p><span style=\" color : #339966;\"><strong>[Webserver Closed]</strong></span></p>");
             bank.Save();
             callback(resp);
             app().quit();
         }
         else
         {
-            resp->setBody("<p><span style=" color
-                          : #ff0000;
-                          "><strong>[Invalid Password]</strong></span></p>");
+            resp->setBody("<p><span style=\" color: #ff0000;\"><strong>[Invalid Password]</strong></span></p>");
             callback(resp);
         }
     }
