@@ -79,6 +79,10 @@ public:
 
         return state;
     }
+    bool Contains(const std::string &name) const
+    {
+        return users.if_contains(name, [](const User &) {});
+    }
 
     int_fast64_t GetBal(const std::string &name) const
     {
@@ -88,17 +92,17 @@ public:
         });
         return res;
     }
-    int_fast32_t VerifyPassword(const std::string &name, const std::string &attempt) const
+    int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const
     {
-        int_fast32_t res = -1;
+        int_fast8_t res = -1;
         users.if_contains(name, [&res, &attempt](const User &u) {
             res = u.password == attempt;
         });
         return res;
     }
-    int_fast32_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
+    int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
     {
-        int_fast32_t res = -1;
+        int_fast8_t res = -1;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
             res = (u.password == attempt);
             if (res)
