@@ -7,12 +7,14 @@ using namespace drogon;
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 #define JSON(V) callback(HttpResponse::newHttpJsonResponse(JsonReturn(V)));
 #define INLINE __attribute__((always_inline)) inline
+#define GEN_BODY                                \
+    const auto temp_req = req->getJsonObject(); \
+    const auto body = temp_req ? *temp_req : Json::Value();
 
 template <typename T>
 INLINE Json::Value JsonReturn(T &&val)
 {
     Json::Value res;
-    std::string reason;
     if constexpr (std::is_same_v<T, bool>)
     {
         res["value"] = (int)val; //becuase of json lib interpreting 67 as 'A' for example
@@ -31,41 +33,111 @@ public:
     {
         auto resp = HttpResponse::newHttpResponse();
         auto handlerInfo = app().getHandlersInfo();
-        resp->setBody("");
+        std::string funcs;
+        for (auto &info : handlerInfo)
+        {
+            funcs += std::get<0>(info);
+            switch (std::get<1>(info))
+            {
+            case Get:
+                funcs += " (GET) ";
+                break;
+            case Post:
+                funcs += " (POST) ";
+                break;
+            case Delete:
+                funcs += " (DELETE) ";
+                break;
+            case Put:
+                funcs += " (PUT) ";
+                break;
+            case Options:
+                funcs += " (OPTIONS) ";
+                break;
+            case Head:
+                funcs += " (HEAD) ";
+                break;
+            case Patch:
+                funcs += " (PATCH) ";
+                break;
+            default:
+                break;
+            }
+            funcs += "<br>";
+        }
+        resp->setBody(funcs);
         resp->setExpiredTime(0);
         callback(resp);
     }
-    void Close(req_args, const std::string &attempt) const
+    void Close(req_args) const
     {
-        auto resp = HttpResponse::newHttpResponse();
-        if (attempt == bank.admin_pass)
+        GEN_BODY
+        if (body["attempt"].asString() == bank.admin_pass)
         {
-            resp->setBody("<p><span style=\" color : #339966;\"><strong>[Webserver Closed]</strong></span></p>");
             bank.Save();
-            callback(resp);
+            JSON(true);
             app().quit();
         }
         else
         {
-            resp->setBody("<p><span style=\" color: #ff0000;\"><strong>[Invalid Password]</strong></span></p>");
-            callback(resp);
+            JSON(false);
         }
     }
-    void AddUser(req_args, const std::string &name, std::string &&init_pass) const { JSON(bank.AddUser(name, std::move(init_pass))); }
-    void AdminAddUser(req_args, const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass) const { JSON(bank.AdminAddUser(attempt, std::move(name), init_bal, std::move(init_pass))); }
-
-    void DelUser(req_args, const std::string &name, const std::string &attempt) const { JSON(bank.DelUser(name, attempt)); }
-    void AdminDelUser(req_args, const std::string &name, const std::string &attempt) const { JSON(bank.AdminDelUser(name, attempt)); }
-
-    void SendFunds(req_args, const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt) const { JSON(bank.SendFunds(a_name, b_name, amount, attempt)); }
-    void ChangePassword(req_args, const std::string &name, const std::string &attempt, std::string &&new_pass) const { JSON(bank.ChangePassword(name, attempt, std::move(new_pass))); }
-
-    void Contains(req_args, const std::string &name) const { JSON(bank.Contains(name)); }
-    void GetBal(req_args, const std::string &name) const { JSON(bank.GetBal(name)); }
-    void VerifyPassword(req_args, const std::string &name, const std::string &attempt) const { JSON(bank.VerifyPassword(name, attempt)); }
+    void AddUser(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.AddUser(body["name"].asString(), body["init_pass"].asString()));
+    }
+    void AdminAddUser(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.AdminAddUser(body["attempt"].asString(), body["name"].asString(), body["init_bal"].asUInt(), body["init_pass"].asString()));
+    }
+    void DelUser(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.DelUser(body["name"].asString(), body["attempt"].asString()));
+    }
+    void AdminDelUser(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.AdminDelUser(body["name"].asString(), body["attempt"].asString()));
+    }
+    void SendFunds(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.SendFunds(body["a_name"].asString(), body["b_name"].asString(), body["amount"].asUInt(), body["attempt"].asString()));
+    }
+    void ChangePassword(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.ChangePassword(body["name"].asString(), body["attempt"].asString(), body["new_pass"].asString()));
+    }
+    void Contains(req_args, const std::string &name) const
+    {
+        JSON(bank.Contains(name));
+    }
+    void GetBal(req_args, const std::string &name) const
+    {
+        JSON(bank.GetBal(name));
+    }
+    void VerifyPassword(req_args) const
+    {
+        GEN_BODY
+        JSON(bank.VerifyPassword(body["name"].asString(), body["attempt"].asString()));
+    }
 
     METHOD_LIST_BEGIN
     METHOD_ADD(BankF::Help, "/help", Get);
-    //gotta add bindings here
+    METHOD_ADD(BankF::Close, "/close", Post);
+    METHOD_ADD(BankF::AddUser, "/addusr", Post);
+    METHOD_ADD(BankF::AdminAddUser, "/admin/addusr", Post);
+    METHOD_ADD(BankF::DelUser, "/delusr", Delete);
+    METHOD_ADD(BankF::AdminDelUser, "/admin/delusr", Delete);
+    METHOD_ADD(BankF::SendFunds, "/sendfunds", Post);
+    METHOD_ADD(BankF::ChangePassword, "/changepass", Post);
+    METHOD_ADD(BankF::Contains, "/contains/{name}", Get);
+    METHOD_ADD(BankF::GetBal, "/getbal/{name}", Get);
+    METHOD_ADD(BankF::VerifyPassword, "/vpass", Get);
     METHOD_LIST_END
 };
