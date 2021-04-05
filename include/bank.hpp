@@ -120,21 +120,15 @@ public:
         std::ofstream user_save("users.json");
         Json::Value temp;
 
-        std::vector<std::string> temp_names;
-        temp_names.reserve(users.size());
         {
             std::unique_lock<std::shared_mutex> lock{save_lock}; //grabbing it from any busy add/del opperations
             for (const auto &u : users)
             {
-                temp_names.push_back(u.first);
+                //we know it contains this key but we call this func to grab mutex
+                users.if_contains(u.first, [&temp, &u](const User &u_val) {
+                    temp[u.first] = u_val.Serialize();
+                });
             }
-        }
-
-        for (const std::string &s : temp_names)
-        {
-            users.if_contains(s, [&temp, &s](const User &u) {
-                temp[s] = u.Serialize();
-            });
         }
 
         writer->write(temp, &user_save);
