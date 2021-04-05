@@ -7,9 +7,9 @@
 
 int main(int argc, char **argv)
 {
-    if (argc != 4)
+    if (argc != 3)
     {
-        std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes> <threads>\n";
+        std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes>\n";
         return 0;
     }
     if (geteuid() != 0)
