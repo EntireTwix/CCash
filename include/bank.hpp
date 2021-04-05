@@ -50,20 +50,11 @@ public:
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
-    int_fast64_t GetBal(const std::string &name) const
-    {
-        int_fast64_t res = -1;
-        users.if_contains(name, [&res](const User &u) {
-            res = u.balance;
-        });
-        return res;
-    }
-
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
     {
         //if A exists, A can afford it, and A's password matches
         bool state = false;
-        std::shared_lock<std::shared_mutex> lock{save_lock};
+        std::shared_lock<std::shared_mutex> lock{save_lock}; //because SendFunds is non-atomic, it requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
             if (state = (a.balance >= amount) && (a.password == attempt), state)
             {
@@ -89,6 +80,14 @@ public:
         return state;
     }
 
+    int_fast64_t GetBal(const std::string &name) const
+    {
+        int_fast64_t res = -1;
+        users.if_contains(name, [&res](const User &u) {
+            res = u.balance;
+        });
+        return res;
+    }
     int_fast32_t VerifyPassword(const std::string &name, const std::string &attempt) const
     {
         int_fast32_t res = -1;
@@ -96,6 +95,17 @@ public:
             res = u.password == attempt;
         });
         return res;
+    }
+    int_fast32_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
+    {
+        int_fast32_t res = -1;
+        users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
+            res = (u.password == attempt);
+            if (res)
+            {
+                u.password = new_pass;
+            }
+        });
     }
 
     void Save()
