@@ -21,10 +21,10 @@ int main(int argc, char **argv)
     }
 
     //Loading users from users.json
-    Bank.Load();
+    bank.Load();
 
     //Admin Password
-    Bank.admin_pass = argv[1];
+    bank.admin_pass = argv[1];
 
     //Auto Saving
     const unsigned long saving_freq = std::stoul(argv[2]);
@@ -34,12 +34,12 @@ int main(int argc, char **argv)
             while (1)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                Bank.Save();
+                bank.Save();
             }
         }).detach();
     }
 
-    auto API = std::make_shared<BankFrontend>();
+    auto API = std::make_shared<BankF>();
     app().addListener("0.0.0.0", 80).registerController(API).run();
 
     return 0;
