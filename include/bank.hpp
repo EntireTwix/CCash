@@ -89,6 +89,17 @@ public:
     {
         return users.contains(name, users.hash(name));
     }
+    bool SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
+    {
+        bool state = (admin_pass == attempt);
+        if (state)
+        {
+            users.modify_if(name, [amount](User &u) {
+                u.balance = amount;
+            });
+        }
+        return state;
+    }
 
     int_fast64_t GetBal(const std::string &name) const
     {
