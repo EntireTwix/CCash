@@ -107,7 +107,7 @@ public:
 
     METHOD_ADD(BankF::Help, "/help", Get);
     METHOD_ADD(BankF::VerifyPassword, "/vpass", Get);
-    METHOD_ADD(BankF::Contains, "/{name}/contains", Get);
+    METHOD_ADD(BankF::Contains, "/contains/{name}", Get);
     METHOD_ADD(BankF::GetBal, "/{name}/getbal", Get);
 
     METHOD_ADD(BankF::DelUser, "/user", Delete);
