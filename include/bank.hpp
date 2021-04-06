@@ -87,7 +87,7 @@ public:
     }
     bool Contains(const std::string &name) const
     {
-        return users.if_contains(name, [](const User &) {});
+        return users.contains(name, users.hash(name));
     }
 
     int_fast64_t GetBal(const std::string &name) const
