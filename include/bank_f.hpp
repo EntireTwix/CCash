@@ -72,7 +72,7 @@ public:
     void Close(req_args) const
     {
         GEN_BODY
-        if (body["attempt"].asString() == bank.admin_pass)
+        if (body["attempt"].asCString() == bank.admin_pass)
         {
             bank.Save();
             JSON(true);
@@ -86,32 +86,32 @@ public:
     void AddUser(req_args) const
     {
         GEN_BODY
-        JSON(bank.AddUser(body["name"].asString(), body["init_pass"].asString()));
+        JSON(bank.AddUser(body["name"].asCString(), body["init_pass"].asCString()));
     }
     void AdminAddUser(req_args) const
     {
         GEN_BODY
-        JSON(bank.AdminAddUser(body["attempt"].asString(), body["name"].asString(), body["init_bal"].asUInt(), body["init_pass"].asString()));
+        JSON(bank.AdminAddUser(body["attempt"].asCString(), body["name"].asCString(), body["init_bal"].asUInt(), body["init_pass"].asCString()));
     }
     void DelUser(req_args) const
     {
         GEN_BODY
-        JSON(bank.DelUser(body["name"].asString(), body["attempt"].asString()));
+        JSON(bank.DelUser(body["name"].asCString(), body["attempt"].asCString()));
     }
     void AdminDelUser(req_args) const
     {
         GEN_BODY
-        JSON(bank.AdminDelUser(body["name"].asString(), body["attempt"].asString()));
+        JSON(bank.AdminDelUser(body["name"].asCString(), body["attempt"].asCString()));
     }
     void SendFunds(req_args) const
     {
         GEN_BODY
-        JSON(bank.SendFunds(body["a_name"].asString(), body["b_name"].asString(), body["amount"].asUInt(), body["attempt"].asString()));
+        JSON(bank.SendFunds(body["a_name"].asCString(), body["b_name"].asCString(), body["amount"].asUInt(), body["attempt"].asCString()));
     }
     void ChangePassword(req_args) const
     {
         GEN_BODY
-        JSON(bank.ChangePassword(body["name"].asString(), body["attempt"].asString(), body["new_pass"].asString()));
+        JSON(bank.ChangePassword(body["name"].asCString(), body["attempt"].asCString(), body["new_pass"].asCString()));
     }
     void Contains(req_args, const std::string &name) const
     {
@@ -124,7 +124,7 @@ public:
     void VerifyPassword(req_args) const
     {
         GEN_BODY
-        JSON(bank.VerifyPassword(body["name"].asString(), body["attempt"].asString()));
+        JSON(bank.VerifyPassword(body["name"].asCString(), body["attempt"].asCString()));
     }
 
     METHOD_LIST_BEGIN
