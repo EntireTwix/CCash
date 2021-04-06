@@ -38,3 +38,14 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
+
+### Connected Services
+using the Bank's API allows (you/others) can (make/use) connected services that utilize the bank, a couple ideas are
+* a Market
+* Gambling
+* Shipping
+* Leaderboard
+* High-level bank abstractions such as loans
+* Some trust based system similiar to Paypal
+
+`**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
