@@ -129,7 +129,7 @@ public:
 
     METHOD_LIST_BEGIN
     METHOD_ADD(BankF::Help, "/help", Get);
-    METHOD_ADD(BankF::Close, "/close", Post);
+    METHOD_ADD(BankF::Close, "/admin/close", Post);
     METHOD_ADD(BankF::AddUser, "/addusr", Post);
     METHOD_ADD(BankF::AdminAddUser, "/admin/addusr", Post);
     METHOD_ADD(BankF::DelUser, "/delusr", Delete);
