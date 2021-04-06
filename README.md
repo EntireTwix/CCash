@@ -40,12 +40,14 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
 
 ### Connected Services
-using the Bank's API allows (you/others) can (make/use) connected services that utilize the bank, a couple ideas are
-* a Market
-* Gambling
-* Shipping
-* Leaderboard
-* High-level bank abstractions such as loans
-* Some trust based system similiar to Paypal
+
+Go to {ip}/BankF/help to see the bank's methods. Using the Bank's API allows (you/others) can (make/use) connected services that utilize the bank, a couple ideas are
+
+- a Market
+- Gambling
+- Shipping
+- Leaderboard
+- High-level bank abstractions such as loans
+- Some trust based system similiar to Paypal
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
