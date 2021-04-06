@@ -33,39 +33,7 @@ public:
     {
         auto resp = HttpResponse::newHttpResponse();
         auto handlerInfo = app().getHandlersInfo();
-        std::string funcs;
-        for (auto &info : handlerInfo)
-        {
-            funcs += std::get<0>(info);
-            switch (std::get<1>(info))
-            {
-            case Get:
-                funcs += " (GET) ";
-                break;
-            case Post:
-                funcs += " (POST) ";
-                break;
-            case Delete:
-                funcs += " (DELETE) ";
-                break;
-            case Put:
-                funcs += " (PUT) ";
-                break;
-            case Options:
-                funcs += " (OPTIONS) ";
-                break;
-            case Head:
-                funcs += " (HEAD) ";
-                break;
-            case Patch:
-                funcs += " (PATCH) ";
-                break;
-            default:
-                break;
-            }
-            funcs += "<br>";
-        }
-        resp->setBody(funcs);
+        resp->setBody("<h1>ALL FUNCTIONS (that have args) ARE EXPECTING JSON AS DATA TYPE</h1><h2>/BankF/help (GET)</h2><blockquote><p>the page you're looking at right now!</p></blockquote><h2><br />/BankF/<span style=\"color: #ff0000;\">admin</span>/close (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password</p><blockquote><p>Closes and Saves the server.</p></blockquote><h2><br />/BankF/addusr (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of the user being added</p><p><span style=\"background-color: #808080;\">&nbsp;init_pass&nbsp;</span> - initial password for the user being added</p><blockquote><p>Adds a user to the bank</p></blockquote><h2><br />/BankF/<span style=\"color: #ff0000;\">admin</span>/addusr (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of the user being added</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password required to add user with balance</p><p><span style=\"background-color: #808080;\">&nbsp;init_bal&nbsp;</span> - initial balance for user being added</p><p><span style=\"background-color: #808080;\">&nbsp;init_pass&nbsp;</span> - initial password for user being added</p><blockquote><p>Adds a user with initial balance</p></blockquote><h2><br />/BankF/delusr (DELETE)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being deleted</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of user being deleted</p><blockquote><p>Deletes a user with the password of the user as verification</p></blockquote><h2><br />/BankF/<span style=\"color: #ff0000;\">admin</span>/delusr (DELETE)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being deleted</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password</p><blockquote><p>Deletes a user with admin password as verification</p></blockquote><h2><br />/BankF/sendfunds (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;a_name&nbsp;</span> - sender's name</p><p><span style=\"background-color: #808080;\">&nbsp;b_name&nbsp;</span> - reciever's name</p><p><span style=\"background-color: #808080;\">&nbsp;amount&nbsp;</span> - amount being sent</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of sender</p><blockquote><p>Sends money from one user to another</p></blockquote><h2><br />/BankF/changepass (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user's password being changes</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of user being changed</p><p><span style=\"background-color: #808080;\">&nbsp;new_pass&nbsp;</span> - new password to replace the current user's password</p><blockquote><p>&nbsp;Changes password of a user</p></blockquote><h2><br />/BankF/contains/{name} (GET)</h2><blockquote><p>returns a 0 or 1 based on if the bank contains the user</p></blockquote><h2><br />/BankF/getbal/{name} (GET)</h2><blockquote><p>returns the balance of a given user's name, if -1 that means the user does not exist</p></blockquote><h2><br />/BankF/vpass (GET)</h2><p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being verified</p><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp; </span>- password being verified</p><blockquote><p>returns 0 or 1 based on if [attempt] is equal to the password of the user [name]. The intended usage for this function is for connected services</p></blockquote><p>&nbsp;</p><p>&nbsp;</p>");
         resp->setExpiredTime(0);
         callback(resp);
     }
