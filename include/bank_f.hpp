@@ -96,16 +96,18 @@ public:
     }
 
     METHOD_LIST_BEGIN
-    METHOD_ADD(BankF::Help, "/help", Get);
     METHOD_ADD(BankF::Close, "/admin/close", Post);
     METHOD_ADD(BankF::AddUser, "/addusr", Post);
     METHOD_ADD(BankF::AdminAddUser, "/admin/addusr", Post);
-    METHOD_ADD(BankF::DelUser, "/delusr", Delete);
-    METHOD_ADD(BankF::AdminDelUser, "/admin/delusr", Delete);
     METHOD_ADD(BankF::SendFunds, "/sendfunds", Post);
     METHOD_ADD(BankF::ChangePassword, "/changepass", Post);
+
+    METHOD_ADD(BankF::Help, "/help", Get);
+    METHOD_ADD(BankF::VerifyPassword, "/vpass", Get);
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get);
     METHOD_ADD(BankF::GetBal, "/getbal/{name}", Get);
-    METHOD_ADD(BankF::VerifyPassword, "/vpass", Get);
+
+    METHOD_ADD(BankF::DelUser, "/delusr", Delete);
+    METHOD_ADD(BankF::AdminDelUser, "/admin/delusr", Delete);
     METHOD_LIST_END
 };
