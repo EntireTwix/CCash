@@ -101,7 +101,7 @@ public:
         return state;
     }
 
-    Json::Value::asInt64 GetBal(const std::string &name) const
+    int_fast64_t GetBal(const std::string &name) const
     {
         int_fast64_t res = -1;
         users.if_contains(name, [&res](const User &u) {
