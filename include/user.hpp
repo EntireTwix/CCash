@@ -25,7 +25,7 @@ struct User
     Json::Value Serialize() const
     {
         Json::Value res;
-        res["balance"] = (long)balance;
+        res["balance"] = balance;
         res["password"] = password;
         return res;
     }

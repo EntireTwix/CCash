@@ -21,7 +21,7 @@ INLINE Json::Value JsonReturn(T &&val)
     }
     else
     {
-        res["value"] = (long)val;
+        res["value"] = val;
     }
     return res;
 }
