@@ -42,12 +42,11 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ### Connected Services
 
 Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
-
-- a Market
-- Gambling
-- Shipping
-- Leaderboard
-- High-level bank abstractions such as loans
-- Some trust based system similiar to Paypal
+* a Market
+* Gambling
+* Shipping
+* a Leaderboard ranking player's balances
+* High-level bank operations such as loans
+* Some trust based system for transactions similiar to Paypal
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
