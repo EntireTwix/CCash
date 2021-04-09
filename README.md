@@ -3,14 +3,14 @@
 A complete simplification and improvement to the CCash project. A webserver hosting a bank system for Minecraft, able to be used from web browser or from CC/OC if you're playing modded.
 
 ### Description
-  
+
 the currency model most Minecraft Servers adopt if any, is resource based, usually diamonds, this model is fraught with issues however:
 
-* the primary issue is minecraft worlds are infinite leading to hyper inflation as everyone accrues more diamonds
-* there is no central authority minting the currency, any consumer can introduce more diamonds to the system
-* some resources are passively reapable, making the generation of currency a larger focus then of products
-* locality is required for transaction
-* theft is possible, ownership is possession based
+- the primary issue is minecraft worlds are infinite leading to hyper inflation as everyone accrues more diamonds
+- there is no central authority minting the currency, any consumer can introduce more diamonds to the system
+- some resources are passively reapable, making the generation of currency a larger focus then of products
+- locality is required for transaction
+- theft is possible, ownership is possession based
 
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
@@ -54,11 +54,16 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ### Connected Services
 
 Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
-* a Market
-* Gambling
-* Shipping
-* a Leaderboard ranking player's balances
-* High-level bank operations such as loans
-* Some trust based system for transactions similiar to Paypal
+
+Implemented:
+
+Ideas:
+
+- a Market
+- Gambling
+- Shipping
+- a Leaderboard ranking player's balances
+- High-level bank operations such as loans
+- Some trust based system for transactions similiar to Paypal
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
