@@ -99,7 +99,7 @@ public:
     }
     bool Contains(const std::string &name) const
     {
-        return users.contains(name, users.hash(name));
+        return users.contains(name);
     }
     bool SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
     {
