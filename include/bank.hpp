@@ -60,6 +60,13 @@ public:
     {
         //if A exists, A can afford it, and A's password matches
         bool state = false;
+
+        //cant send money to self, from self
+        if (a_name == b_name)
+        {
+            return false;
+        }
+
         std::shared_lock<std::shared_mutex> lock{save_lock}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
             if (state = (a.balance >= amount) && (a.password == attempt), state)
