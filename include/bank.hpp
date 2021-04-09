@@ -65,7 +65,7 @@ public:
     {
 
         //cant send money to self, from self
-        if (a_name == b_name || !users.contains(a_name) || !users.contains(b_name))
+        if (a_name == b_name)
         {
             return false;
         }
