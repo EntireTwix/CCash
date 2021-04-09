@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
 #include <shared_mutex>
+#include <vector>
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
@@ -58,8 +59,6 @@ public:
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
     {
-        //if A exists, A can afford it, and A's password matches
-        bool state = false;
 
         //cant send money to self, from self
         if (a_name == b_name)
@@ -67,6 +66,8 @@ public:
             return false;
         }
 
+        //if A exists, A can afford it, and A's password matches
+        bool state = false;
         std::shared_lock<std::shared_mutex> lock{save_lock}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
             if (state = (a.balance >= amount) && (a.password == attempt), state)
@@ -145,6 +146,7 @@ public:
         std::ofstream user_save("users.json");
         Json::Value temp;
 
+        //loading info into json temp
         {
             std::unique_lock<std::shared_mutex> lock{save_lock}; //grabbing it from any busy add/del opperations
             for (const auto &u : users)
