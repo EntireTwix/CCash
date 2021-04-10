@@ -15,13 +15,13 @@ template <typename T>
 INLINE Json::Value JsonReturn(T &&val)
 {
     Json::Value res;
-    if constexpr (std::is_same_v<T, bool>)
+    if constexpr (std::is_same_v<T, int_fast8_t>)
     {
         res["value"] = (int)val; //becuase of json lib interpreting 67 as 'A' for example
     }
     else if constexpr (std::is_same_v<T, long>)
     {
-        res["value"] = (Json::UInt64)val;
+        res["value"] = (Json::Int64)val;
     }
     else
     {
