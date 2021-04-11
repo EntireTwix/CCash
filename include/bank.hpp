@@ -158,7 +158,7 @@ public:
             temp_flag = size_lock_flag;
         }
 
-        if (!temp_flag)
+        if (temp_flag)
         {
             temp = Json::Value();
             Json::UInt i = 0;
