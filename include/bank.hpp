@@ -29,18 +29,14 @@ private:
      */
     std::shared_mutex send_funds_l;
 
-    bool size_lock_flag = true;
-    Json::Value temp;
-
 public:
     std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
         std::unique_lock<std::shared_mutex> lock{size_lock};
-        size_lock_flag = true;
         return users.try_emplace_l(
-            name, [this](User &) { size_lock_flag = false; }, std::move(init_pass));
+            name, [](User &) {}, std::move(init_pass));
     }
     bool AdminAddUser(const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass)
     {
@@ -48,7 +44,7 @@ public:
         if (state)
         {
             std::unique_lock<std::shared_mutex> lock{size_lock};
-            size_lock_flag += state = users.try_emplace_l(
+            state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::move(init_pass));
         }
         return state;
@@ -57,16 +53,12 @@ public:
     bool DelUser(const std::string &name, const std::string &attempt)
     {
         std::unique_lock<std::shared_mutex> lock{size_lock};
-        bool state = users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
-        size_lock_flag += state;
-        return state;
+        return users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
         std::unique_lock<std::shared_mutex> lock{size_lock};
-        bool state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
-        size_lock_flag += state;
-        return state;
+        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
@@ -152,23 +144,13 @@ public:
 
     Json::Value AllUsers()
     {
-        bool temp_flag = false;
+        Json::Value temp;
+        Json::UInt i = 0;
+        std::shared_lock<std::shared_mutex> lock{size_lock}; //gives readers of users the lock
+        for (const auto &u : users)
         {
-            std::shared_lock<std::shared_mutex> lock{size_lock};
-            temp_flag = size_lock_flag;
-        }
-
-        if (temp_flag)
-        {
-            temp = Json::Value();
-            Json::UInt i = 0;
-            for (const auto &u : users)
-            {
-                //we know it contains this key but we call this func to grab mutex
-                temp[i++] = u.first;
-            }
-            std::unique_lock<std::shared_mutex> lock{size_lock};
-            size_lock_flag = false;
+            //we know it contains this key but we call this func to grab mutex
+            temp[i++] = u.first;
         }
         return temp;
     }
