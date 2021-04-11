@@ -31,9 +31,7 @@ private:
 
     bool size_lock_flag = true;
     Json::Value temp;
-
-public:
-    std::string admin_pass;
+    z public : std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
@@ -48,10 +46,9 @@ public:
         if (state)
         {
             std::unique_lock<std::shared_mutex> lock{size_lock};
-            state = users.try_emplace_l(
+            size_lock_flag += state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::move(init_pass));
         }
-        size_lock_flag += state;
         return state;
     }
 
