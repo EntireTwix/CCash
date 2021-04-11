@@ -31,7 +31,9 @@ private:
 
     bool size_lock_flag = true;
     Json::Value temp;
-    z public : std::string admin_pass;
+
+public:
+    std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
