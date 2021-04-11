@@ -167,7 +167,6 @@ public:
                 //we know it contains this key but we call this func to grab mutex
                 temp[i++] = u.first;
             }
-            size_lock.unlock_shared();
             std::unique_lock<std::shared_mutex> lock{size_lock};
             size_lock_flag = false;
         }
