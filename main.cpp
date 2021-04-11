@@ -42,10 +42,9 @@ int main(int argc, char **argv)
     auto API = std::make_shared<BankF>();
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
-            //LOG_DEBUG << "postHandling1";
             resp->addHeader("Access-Control-Allow-Origin", "*");
         });
-    app().addListener("0.0.0.0", 80).registerController(API).setThreadNum(std::stoul(argv[3])).run();
+    app().addListener("0.0.0.0", 80).registerController(API).setThreadNum(std::stoul(argv[3])).enableRunAsDaemon().run();
 
     return 0;
 }

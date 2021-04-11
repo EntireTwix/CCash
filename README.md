@@ -1,4 +1,4 @@
-# CCash [INCOMPLETE]
+# CCash 
 
 A webserver hosting a bank system for Minecraft
 
@@ -43,7 +43,6 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 - **Tamper Proof** relative to an in-game implementation
 - **Auto-Saving**, Saves on crash, Saves on close
-- **OpenSSL** (HTTPS)
 
 ### Accessibility
 
@@ -57,12 +56,14 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 Implemented:
 
+In-Dev:
+- a Market
+- a Leaderboard ranking player's balances
+
 Ideas:
 
-- a Market
 - Gambling
 - Shipping
-- a Leaderboard ranking player's balances
 - High-level bank operations such as loans
 - Some trust based system for transactions similiar to Paypal
 
