@@ -55,7 +55,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
 
 Implemented:
-- [a Leaderboard ranking player's balances](https://pastebin.com/jELRCUCw)
+- [a Leaderboard ranking player's balances](https://pastebin.com/u23BNVvP)
 
 In-Dev:
 - a Market
