@@ -18,25 +18,23 @@ private:
         users;
 
     /**
-     * @brief size_l should be grabbed if the operation MODIFIES the size (unique) or READS from the users where size changes could distort (shared)
+     * @brief size_lock should be grabbed if the operation MODIFIES the size (unique) or READS from the users where size changes could distort (shared)
      * 
      */
-    std::shared_mutex size_l;
+    std::shared_mutex size_lock;
 
     /**
      * @brief send_funds_l should be grabbed if balances are being MODIFIED (shared) or if an operation needs to READ without the intermediary states that sendfunds has (unique)
      * 
      */
     std::shared_mutex send_funds_l;
-    Json::Value temp_allusers;
 
 public:
     std::string admin_pass;
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
-        std::unique_lock<std::shared_mutex> lock{size_l};
-        temp_allusers.insert(temp_allusers.size(), name);
+        std::unique_lock<std::shared_mutex> lock{size_lock};
         return users.try_emplace_l(
             name, [](User &) {}, std::move(init_pass));
     }
@@ -45,8 +43,7 @@ public:
         bool state = (admin_pass == attempt);
         if (state)
         {
-            std::unique_lock<std::shared_mutex> lock{size_l};
-            temp_allusers.insert(temp_allusers.size(), name);
+            std::unique_lock<std::shared_mutex> lock{size_lock};
             state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::move(init_pass));
         }
@@ -55,39 +52,13 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        std::unique_lock<std::shared_mutex> lock{size_l};
-        bool state = false;
-        if (state = users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); }))
-        {
-            Json::Value temp;
-            for (Json::ArrayIndex i = 0; i < temp_allusers.size(); ++i)
-            {
-                if (temp_allusers[i] == name)
-                {
-                    temp_allusers.removeIndex(i, &temp);
-                    break;
-                }
-            }
-        }
-        return state;
+        std::unique_lock<std::shared_mutex> lock{size_lock};
+        return users.erase_if(name, [&attempt](const User &u) { return (attempt == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        std::unique_lock<std::shared_mutex> lock{size_l};
-        bool state = false;
-        if (state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); }))
-        {
-            Json::Value temp;
-            for (Json::ArrayIndex i = 0; i < temp_allusers.size(); ++i)
-            {
-                if (temp_allusers[i] == name)
-                {
-                    temp_allusers.removeIndex(i, &temp);
-                    break;
-                }
-            }
-        }
-        return state;
+        std::unique_lock<std::shared_mutex> lock{size_lock};
+        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
@@ -173,8 +144,15 @@ public:
 
     Json::Value AllUsers()
     {
-        std::shared_lock<std::shared_mutex> lock{size_l}; //gives readers of users the lock
-        return temp_allusers;
+        Json::Value temp;
+        Json::UInt i = 0;
+        std::shared_lock<std::shared_mutex> lock{size_lock}; //gives readers of users the lock
+        for (const auto &u : users)
+        {
+            //we know it contains this key but we call this func to grab mutex
+            temp[i++] = u.first;
+        }
+        return temp;
     }
 
     void Save()
@@ -187,7 +165,7 @@ public:
 
         //loading info into json temp
         {
-            std::shared_lock<std::shared_mutex> lock{size_l};             //gives readers of users the lock
+            std::shared_lock<std::shared_mutex> lock{size_lock};          //gives readers of users the lock
             std::unique_lock<std::shared_mutex> halt_funds{send_funds_l}; //halts all send fund requests
             for (const auto &u : users)
             {
@@ -202,6 +180,7 @@ public:
         user_save.close();
     }
 
+    //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
     void Load()
     {
         Json::CharReaderBuilder builder;
@@ -217,11 +196,8 @@ public:
         else
         {
             user_save.close();
-            Json::ArrayIndex i = 0;
-            std::unique_lock<std::shared_mutex> lock{size_l};
             for (const auto &u : temp.getMemberNames())
             {
-                temp_allusers[i++] = u;
                 users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asString()));
             }
         }
