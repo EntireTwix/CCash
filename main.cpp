@@ -44,7 +44,9 @@ int main(int argc, char **argv)
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");
         });
-    app().addListener("0.0.0.0", 80).registerController(API).setThreadNum(std::stoul(argv[3])).enableRunAsDaemon().setSSLFiles("/etc/letsencrypt/live/ccash.ryzerth.com/fullchain.pem", "/etc/letsencrypt/live/ccash.ryzerth.com/privkey.pem").run();
+    app().addListener("0.0.0.0", 80).registerController(API).setThreadNum(std::stoul(argv[3])).enableRunAsDaemon().setSSLFiles("/etc/letsencrypt/live/ccash.ryzerth.com/fullchain.pem", "/etc/letsencrypt/live/ccash.ryzerth.com/privkey.pem");
+    std::cout << app().supportSSL();
+    app().run();
 
     return 0;
 }
