@@ -38,10 +38,6 @@ int main(int argc, char **argv)
             }
         }).detach();
     }
-    for (int i = 0; i < 10000; ++i)
-    {
-        bank.AddUser(std::to_string(i), "root");
-    }
 
     auto API = std::make_shared<BankF>();
     app().registerPostHandlingAdvice(
