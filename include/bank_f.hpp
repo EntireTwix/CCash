@@ -110,6 +110,11 @@ public:
     {
         JSON(bank.AllUsers());
     }
+    void AdminVerifyPass(req_args)
+    {
+        GEN_BODY
+        JSON(bank.AdminVerifyPass(body["attempt"].asCString()));
+    }
 
     METHOD_LIST_BEGIN
     METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
@@ -125,6 +130,7 @@ public:
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
     METHOD_ADD(BankF::AllUsers, "/allusers", Get, Options);
+    METHOD_ADD(BankF::AdminVerifyPass, "/admin/vpass", Get, Options);
 
     METHOD_ADD(BankF::DelUser, "/user", Delete, Options);
     METHOD_ADD(BankF::AdminDelUser, "/admin/user", Delete, Options);

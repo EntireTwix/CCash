@@ -113,6 +113,10 @@ public:
         }
         return state;
     }
+    bool AdminVerifyPass(const std::string &attempt)
+    {
+        return admin_pass == attempt;
+    }
 
     int_fast64_t GetBal(const std::string &name) const
     {
