@@ -54,7 +54,7 @@ public:
     bool DelUser(const std::string &name, const std::string &attempt)
     {
         std::unique_lock<std::shared_mutex> lock{size_lock};
-        return users.erase_if(name, [&attempt](const User &u) { return (XXH64(attempt.data(), attempt.size(), 0) == u.password); });
+        return users.erase_if(name, [&attempt](const User &u) { return (XXH64(attempt.data(), attempt.size(), 1) == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
@@ -75,7 +75,7 @@ public:
         bool state = false;
         std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-            if (state = (a.balance >= amount) && (a.password == XXH64(attempt.data(), attempt.size(), 0)))
+            if (state = (a.balance >= amount) && (a.password == XXH64(attempt.data(), attempt.size(), 1)))
             {
                 a.balance -= amount;
             }
@@ -126,7 +126,7 @@ public:
     {
         int_fast8_t res = -1;
         users.if_contains(name, [&res, &attempt](const User &u) {
-            res = u.password == XXH64(attempt.data(), attempt.size(), 0);
+            res = u.password == XXH64(attempt.data(), attempt.size(), 1);
         });
         return res;
     }
@@ -134,10 +134,10 @@ public:
     {
         int_fast8_t res = -1;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
-            res = (u.password == XXH64(attempt.data(), attempt.size(), 0));
+            res = (u.password == XXH64(attempt.data(), attempt.size(), 1));
             if (res)
             {
-                u.password = XXH64(new_pass.data(), new_pass.size(), 0);
+                u.password = XXH64(new_pass.data(), new_pass.size(), 1);
             }
         });
         return res;
