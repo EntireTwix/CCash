@@ -75,7 +75,7 @@ public:
         bool state = false;
         std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-            if (state = (a.balance >= amount) && (a.password == XXH64(attempt.data(), attempt.size(), 0)), state)
+            if (state = (a.balance >= amount) && (a.password == XXH64(attempt.data(), attempt.size(), 0)))
             {
                 a.balance -= amount;
             }
