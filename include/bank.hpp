@@ -8,7 +8,7 @@
 class
 {
 private:
-    phmap::parallel_node_hash_map<
+    phmap::parallel_flat_hash_map<
         std::string, User,
         phmap::priv::hash_default_hash<std::string>,
         phmap::priv::hash_default_eq<std::string>,
