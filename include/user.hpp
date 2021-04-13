@@ -5,14 +5,14 @@
 struct User
 {
     uint_fast32_t balance = 0;
-    std::string password;
+    size_t password;
 
     /**
      * @brief User constructor
      * 
      * @param init_pass initial password
      */
-    User(std::string &&init_pass) : password(init_pass) {}
+    User(std::string &&init_pass) : password(std::hash<std::string>{}(init_pass)) {}
 
     /**
      * @brief User Constructor for admins
@@ -20,7 +20,7 @@ struct User
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-    User(uint_fast32_t init_bal, std::string &&init_pass) : balance(init_bal), password(init_pass) {}
+    User(uint_fast32_t init_bal, std::string &&init_pass) : balance(init_bal), password(std::hash<std::string>{}(init_pass)) {}
 
     Json::Value Serialize() const
     {

@@ -44,6 +44,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 - **Tamper Proof** relative to an in-game implementation
 - **Auto-Saving**, Saves on crash, Saves on close
 - **HTTPS** (OpenSSL)
+- **Passwords are Hashed**, meaning if the bank is compromised passwords wont be leaked
 
 ### Accessibility
 
