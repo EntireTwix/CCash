@@ -2,7 +2,7 @@
 #include <fstream>
 #include <shared_mutex>
 #include <vector>
-#include <xxh3.h>
+#include "xxhash.h"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
@@ -137,7 +137,7 @@ public:
             res = (u.password == XXH64(attempt.data(), attempt.size(), 0));
             if (res)
             {
-                u.password = std::hash<std::string>{}(new_pass);
+                u.password = XXH64(new_pass.data(), new_pass.size(), 0);
             }
         });
         return res;
