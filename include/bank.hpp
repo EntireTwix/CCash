@@ -2,6 +2,7 @@
 #include <fstream>
 #include <shared_mutex>
 #include <vector>
+#include <xxh3.h>
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
@@ -53,7 +54,7 @@ public:
     bool DelUser(const std::string &name, const std::string &attempt)
     {
         std::unique_lock<std::shared_mutex> lock{size_lock};
-        return users.erase_if(name, [&attempt](const User &u) { return (std::hash<std::string>{}(attempt) == u.password); });
+        return users.erase_if(name, [&attempt](const User &u) { return (XXH64(attempt.data(), attempt.size(), 0) == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
@@ -74,7 +75,7 @@ public:
         bool state = false;
         std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
         users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-            if (state = (a.balance >= amount) && (a.password == std::hash<std::string>{}(attempt)), state)
+            if (state = (a.balance >= amount) && (a.password == XXH64(attempt.data(), attempt.size(), 0)), state)
             {
                 a.balance -= amount;
             }
@@ -125,7 +126,7 @@ public:
     {
         int_fast8_t res = -1;
         users.if_contains(name, [&res, &attempt](const User &u) {
-            res = u.password == std::hash<std::string>{}(attempt);
+            res = u.password == XXH64(attempt.data(), attempt.size(), 0);
         });
         return res;
     }
@@ -133,7 +134,7 @@ public:
     {
         int_fast8_t res = -1;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
-            res = (u.password == std::hash<std::string>{}(attempt));
+            res = (u.password == XXH64(attempt.data(), attempt.size(), 0));
             if (res)
             {
                 u.password = std::hash<std::string>{}(new_pass);
