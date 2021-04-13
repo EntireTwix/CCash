@@ -26,7 +26,7 @@ struct User
     {
         Json::Value res;
         res["balance"] = (Json::UInt)balance;
-        res["password"] = password;
+        res["password"] = (Json::LargestUInt)password;
         return res;
     }
 };
