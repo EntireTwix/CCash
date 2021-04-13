@@ -199,7 +199,7 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
-                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asString()));
+                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
             }
         }
     }

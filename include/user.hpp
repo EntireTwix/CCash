@@ -5,7 +5,7 @@
 struct User
 {
     uint_fast32_t balance = 0;
-    uint_fast64_t password;
+    uint64_t password;
 
     /**
      * @brief User constructor
@@ -26,7 +26,7 @@ struct User
     {
         Json::Value res;
         res["balance"] = (Json::UInt)balance;
-        res["password"] = (Json::LargestUInt)password;
+        res["password"] = (Json::UInt64)password;
         return res;
     }
 };
