@@ -61,8 +61,8 @@ Implemented:
 - [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
 
 In-Dev:
-
-- a Market
+- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
+- [a Market](https://github.com/STBoyden/market-api-2.0)
 
 Ideas:
 
@@ -70,6 +70,5 @@ Ideas:
 - Shipping
 - High-level bank operations such as loans
 - Some trust based system for transactions similiar to Paypal
-- Cute frontend
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
