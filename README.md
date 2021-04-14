@@ -38,13 +38,13 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
+- **Passwords are Hashed**, allowing each user to be 12 bytes, which is trivially copyable
 
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
 - **Auto-Saving**, Saves on crash, Saves on close
 - **HTTPS** (OpenSSL)
-- **Passwords are Hashed**, meaning if the bank is compromised passwords wont be leaked
 
 ### Accessibility
 
