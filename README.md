@@ -17,7 +17,7 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 #### Build
 
 ```
-git clone --recurse-submodule https://github.com/EntireTwix/CCash-2.0/
+git clone --recurse-submodule https://github.com/EntireTwix/CCash/
 mkdir build
 cd build
 cmake ..
