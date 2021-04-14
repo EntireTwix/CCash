@@ -58,7 +58,7 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 Implemented:
 
-- [a Leaderboard ranking player's balances](https://pastebin.com/u23BNVvP)
+- [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
 
 In-Dev:
 
