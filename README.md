@@ -24,6 +24,7 @@ cmake ..
 make -j<threads>
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
+you also have to edit the config file to add your cert locations, I personally use cert bot
 
 #### Dependencies
 
