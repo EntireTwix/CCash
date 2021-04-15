@@ -60,9 +60,9 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 Implemented:
 
 - [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
+- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
 
 In-Dev:
-- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
 - [a Market](https://github.com/STBoyden/market-api-2.0)
 
 Ideas:
