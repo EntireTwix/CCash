@@ -1,6 +1,6 @@
 # CCash
 
-A webserver hosting a bank system for Minecraft
+A webserver hosting a bank system for Minecraft, able to be used from web browser or from CC/OC if you're playing modded.
 
 ### Description
 
