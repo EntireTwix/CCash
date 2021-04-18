@@ -44,7 +44,7 @@ you also have to edit the config file to add your cert locations, I personally u
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
-- **Auto-Saving**, Saves on crash, Saves on close
+- **Auto-Saving**, Saves on close
 - **HTTPS** (OpenSSL)
 
 ### Accessibility
