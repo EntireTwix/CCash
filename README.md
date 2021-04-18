@@ -15,8 +15,11 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
 #### Demo
-https://ccash.ryzerth.com/BankF/help  (BACKEND)
-https://ccashfrontend.herokuapp.com/ (FRONTEND)
+(BACKEND)
+https://ccash.ryzerth.com/BankF/help
+
+(FRONTEND)
+https://ccashfrontend.herokuapp.com
 
 #### Build
 
@@ -30,10 +33,26 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
 you also have to edit the config file to add your cert locations, I personally use cert bot
 
-#### Dependencies
+### Connected Services
 
-- [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
-- [drogon web framework (and all its dependencies)](https://github.com/an-tao/drogon/tree/master)
+Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
+
+Implemented:
+
+- [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
+- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
+
+In-Dev:
+- [a Market](https://github.com/STBoyden/market-api-2.0)
+
+Ideas:
+
+- Gambling
+- Shipping
+- High-level bank operations such as loans
+- Some trust based system for transactions similiar to Paypal
+
+`**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
 
 # Features
 
@@ -57,23 +76,8 @@ you also have to edit the config file to add your cert locations, I personally u
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
 
-### Connected Services
 
-Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
+#### Dependencies
 
-Implemented:
-
-- [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
-- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
-
-In-Dev:
-- [a Market](https://github.com/STBoyden/market-api-2.0)
-
-Ideas:
-
-- Gambling
-- Shipping
-- High-level bank operations such as loans
-- Some trust based system for transactions similiar to Paypal
-
-`**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
+- [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
+- [drogon web framework (and all its dependencies)](https://github.com/an-tao/drogon/tree/master)
