@@ -41,8 +41,9 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 Implemented:
 
-- [Frontend](https://github.com/Expand-sys/ccashfrontend)
-- [Lua API for CC](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
+- [Web Frontend](https://github.com/Expand-sys/ccashfrontend)
+- [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
+- [CC Frontend](https://github.com/Reactified/rpm/blob/main/packages/ccash-wallet/wallet.lua)
 
 In-Dev:
 
@@ -65,7 +66,7 @@ Ideas:
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
-- **Passwords are Hashed**, allowing each user to be 12 bytes, which is allows hashmap to be flat. This hashing is also very fast at 31.5 GB/s on a i7-9700K
+- **Passwords are Hashed**, allowing each user to be 12 bytes, which is allows hashmap to be flat. ([XXH3](https://github.com/Cyan4973/xxHash/blob/dev/README.md))
 
 ### Safety
 
