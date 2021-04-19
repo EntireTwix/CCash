@@ -156,7 +156,9 @@ public:
         {
             //we know it contains this key but we call this func to grab mutex
             temp[i++]["name"] = u.first;
-            temp[i]["balance"] = u.second.balance;
+            users.if_contains(u.first, [&temp, i](const User &u) {
+                temp[i]["balance"] = u.balance;
+            });
         }
         return temp;
     }
