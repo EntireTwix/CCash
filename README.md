@@ -41,7 +41,8 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 Implemented:
 
-- [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
+- [Frontend](https://github.com/Expand-sys/ccashfrontend)
+- [Lua API for CC](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 
 In-Dev:
 
