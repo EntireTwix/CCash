@@ -33,7 +33,7 @@ make -j<threads>
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
 
-you also have to edit the config file to add your cert locations, I personally use cert bot
+**you also have to edit the config file to add your cert locations**, I personally use cert bot
 
 ### Connected Services
 
@@ -77,6 +77,7 @@ Ideas:
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
+- **Logging**
 
 #### Dependencies
 
