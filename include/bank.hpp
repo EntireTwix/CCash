@@ -155,10 +155,11 @@ public:
         for (const auto &u : users)
         {
             //we know it contains this key but we call this func to grab mutex
-            temp[i++]["name"] = u.first;
+            temp[i]["name"] = u.first;
             users.if_contains(u.first, [&temp, i](const User &u) {
                 temp[i]["balance"] = (Json::UInt)u.balance;
             });
+            ++i;
         }
         return temp;
     }
