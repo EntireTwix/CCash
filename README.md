@@ -15,6 +15,7 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
 #### Demo
+
 (BACKEND)
 https://ccash.ryzerth.com/BankF/help
 
@@ -31,6 +32,7 @@ cmake ..
 make -j<threads>
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
+
 you also have to edit the config file to add your cert locations, I personally use cert bot
 
 ### Connected Services
@@ -39,10 +41,10 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 Implemented:
 
-- [a Leaderboard (ComputerCraft)](https://pastebin.com/u23BNVvP)
 - [Cute frontend](https://github.com/Expand-sys/ccashfrontend)
 
 In-Dev:
+
 - [a Market](https://github.com/STBoyden/market-api-2.0)
 
 Ideas:
@@ -75,7 +77,6 @@ Ideas:
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
-
 
 #### Dependencies
 
