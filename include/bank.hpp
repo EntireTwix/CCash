@@ -155,7 +155,8 @@ public:
         for (const auto &u : users)
         {
             //we know it contains this key but we call this func to grab mutex
-            temp[i++] = u.first;
+            temp[i++]["name"] = u.first;
+            temp[i]["balance"] = u.second.balance;
         }
         return temp;
     }
