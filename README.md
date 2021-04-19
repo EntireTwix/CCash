@@ -82,5 +82,5 @@ Ideas:
 #### Dependencies
 
 - [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
-- [drogon web framework (and all its dependencies)](https://github.com/an-tao/drogon/tree/master)
-- [xxhash](https://github.com/Cyan4973/xxHash)
+- [Drogon](https://github.com/an-tao/drogon/tree/master)
+- [XXHASH](https://github.com/Cyan4973/xxHash)
