@@ -157,7 +157,7 @@ public:
             //we know it contains this key but we call this func to grab mutex
             temp[i++]["name"] = u.first;
             users.if_contains(u.first, [&temp, i](const User &u) {
-                temp[i]["balance"] = u.balance;
+                temp[i]["balance"] = (Json::UInt)u.balance;
             });
         }
         return temp;
