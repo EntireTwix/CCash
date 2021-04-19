@@ -64,7 +64,7 @@ Ideas:
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
-- **Passwords are Hashed**, allowing each user to be 12 bytes, which is allows hashmap to be flat
+- **Passwords are Hashed**, allowing each user to be 12 bytes, which is allows hashmap to be flat. This hashing is also very fast at 31.5 GB/s on a i7-9700K
 
 ### Safety
 
@@ -83,3 +83,4 @@ Ideas:
 
 - [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
 - [drogon web framework (and all its dependencies)](https://github.com/an-tao/drogon/tree/master)
+- [xxhash](https://github.com/Cyan4973/xxHash)
