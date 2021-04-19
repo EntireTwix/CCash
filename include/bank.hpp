@@ -35,7 +35,7 @@ public:
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
-        std::unique_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_lock};
         return users.try_emplace_l(
             name, [](User &) {}, std::move(init_pass));
     }
@@ -44,7 +44,7 @@ public:
         bool state = (admin_pass == attempt);
         if (state)
         {
-            std::unique_lock<std::shared_mutex> lock{size_lock};
+            std::shared_lock<std::shared_mutex> lock{size_lock};
             state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::move(init_pass));
         }
@@ -53,12 +53,12 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        std::unique_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_lock};
         return users.erase_if(name, [&attempt](const User &u) { return (XXH64(attempt.data(), attempt.size(), 1) == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        std::unique_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_lock};
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
@@ -147,23 +147,6 @@ public:
         return res;
     }
 
-    Json::Value AllUsers()
-    {
-        Json::Value temp;
-        Json::UInt i = 0;
-        std::shared_lock<std::shared_mutex> lock{size_lock}; //gives readers of users the lock
-        for (const auto &u : users)
-        {
-            //we know it contains this key but we call this func to grab mutex
-            temp[i]["name"] = u.first;
-            users.if_contains(u.first, [&temp, i](const User &u) {
-                temp[i]["balance"] = (Json::UInt)u.balance;
-            });
-            ++i;
-        }
-        return temp;
-    }
-
     void Save()
     {
         Json::StreamWriterBuilder builder;
@@ -174,8 +157,7 @@ public:
 
         //loading info into json temp
         {
-            std::shared_lock<std::shared_mutex> lock{size_lock};          //gives readers of users the lock
-            std::unique_lock<std::shared_mutex> halt_funds{send_funds_l}; //halts all send fund requests
+            std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_lock, send_funds_l};
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
