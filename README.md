@@ -14,13 +14,13 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
-#### Demo
+### Demo
 
 [Frontend](https://ccashfrontend.herokuapp.com)
 
 [Backend](https://ccash.ryzerth.com/BankF/help)
 
-#### Build
+### Build
 
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
