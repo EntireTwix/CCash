@@ -80,8 +80,6 @@ Ideas:
 - **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
--
-
 
 #### Dependencies
 
