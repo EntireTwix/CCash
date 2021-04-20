@@ -19,7 +19,7 @@ private:
         users;
 
     /**
-     * @brief size_lock should be grabbed if the operation MODIFIES the size (unique) or READS from the users where size changes could distort (shared)
+     * @brief size_lock should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
      * 
      */
     std::shared_mutex size_lock;
