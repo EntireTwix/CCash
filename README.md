@@ -16,11 +16,9 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 
 #### Demo
 
-(BACKEND)
-https://ccash.ryzerth.com/BankF/help
+[Frontend](https://ccashfrontend.herokuapp.com)
 
-(FRONTEND)
-https://ccashfrontend.herokuapp.com
+[Backend](https://ccash.ryzerth.com/BankF/help)
 
 #### Build
 
