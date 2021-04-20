@@ -65,7 +65,7 @@ Ideas:
 - **NOT** written in Lua
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
-- **parallel hashmaps** a far superior HashMap implementation to the STD, that also benefit from multi-threaded
+- **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefit from multi-threaded
 - **Passwords are Hashed**, allowing each user to be 12 bytes, which is allows hashmap to be flat ([XXH3](https://github.com/Cyan4973/xxHash/blob/dev/README.md))
 - **Drogon** is a very fast [web framework](https://github.com/the-benchmarker/web-frameworks)
 
