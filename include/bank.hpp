@@ -80,9 +80,9 @@ public:
         }
 
         //if A exists, A can afford it, and A's password matches
+        bool state = false;
         {
             std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
-            bool state = false;
             users.modify_if(a_name, [&state, amount, &attempt](User &a) {
                 if (state = (a.balance >= amount) && (a.password == XXH3_64bits(attempt.data(), attempt.size())))
                 {
@@ -192,8 +192,9 @@ public:
                     res[99 - i]["recieving"] = l.data[i].recieving;
                 }
             });
+            return res;
         }
-        return res;
+        return -1;
     }
 
     void Save()
