@@ -111,6 +111,11 @@ public:
         GEN_BODY
         JSON(bank.AdminVerifyPass(body["attempt"].asCString()));
     }
+    void GetLog(req_args, const std::string &name)
+    {
+        GEN_BODY
+        JSON(bank.GetLogs(name, body["attempt"].asCString()));
+    }
 
     METHOD_LIST_BEGIN
     METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
@@ -126,6 +131,7 @@ public:
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
     METHOD_ADD(BankF::AdminVerifyPass, "/admin/vpass", Post, Options);
+    METHOD_ADD(BankF::GetLog, "/{name}/log", Post, Options);
 
     METHOD_ADD(BankF::DelUser, "/user", Delete, Options);
     METHOD_ADD(BankF::AdminDelUser, "/admin/user", Delete, Options);

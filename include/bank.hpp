@@ -1,10 +1,10 @@
 #pragma once
 #include <fstream>
 #include <shared_mutex>
-#include <vector>
 #include "xxhash.h"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
+#include "log.hpp"
 
 class
 {
@@ -18,11 +18,19 @@ private:
         std::mutex>
         users;
 
+    phmap::parallel_flat_hash_map<
+        std::string, Log,
+        phmap::priv::hash_default_hash<std::string>,
+        phmap::priv::hash_default_eq<std::string>,
+        phmap::priv::Allocator<phmap::priv::Pair<const std::string, Log>>,
+        4UL,
+        std::mutex>
+        logs;
     /**
-     * @brief size_lock should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
+     * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
      * 
      */
-    std::shared_mutex size_lock;
+    std::shared_mutex size_l;
 
     /**
      * @brief send_funds_l should be grabbed if balances are being MODIFIED (shared) or if an operation needs to READ without the intermediary states that sendfunds has (unique)
@@ -35,7 +43,7 @@ public:
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
-        std::shared_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_l};
         return users.try_emplace_l(
             name, [](User &) {}, std::move(init_pass));
     }
@@ -44,7 +52,7 @@ public:
         bool state = (admin_pass == attempt);
         if (state)
         {
-            std::shared_lock<std::shared_mutex> lock{size_lock};
+            std::shared_lock<std::shared_mutex> lock{size_l};
             state = users.try_emplace_l(
                 name, [](User &) {}, init_bal, std::move(init_pass));
         }
@@ -53,20 +61,20 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        std::shared_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_l};
         return users.erase_if(name, [&attempt](const User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        std::shared_lock<std::shared_mutex> lock{size_lock};
+        std::shared_lock<std::shared_mutex> lock{size_l};
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
     {
 
-        //cant send money to self, from self
-        if (a_name == b_name)
+        //cant send money to self, from self or amount is 0
+        if (a_name == b_name || !amount)
         {
             return false;
         }
@@ -94,6 +102,18 @@ public:
                 });
                 state = false; //because had to refund transaction
             }
+        }
+
+        if (state)
+        {
+            Transaction temp(a_name, b_name, amount, false);
+            logs.modify_if(a_name, [&temp](Log &l) {
+                l.AddTrans(temp);
+            });
+            temp.recieving = true;
+            logs.modify_if(b_name, [&temp](Log &l) {
+                l.AddTrans(temp);
+            });
         }
 
         return state;
@@ -147,6 +167,33 @@ public:
         return res;
     }
 
+    Json::Value GetLogs(const std::string &name, const std::string &attempt)
+    {
+        Json::Value res;
+        bool state = false;
+        users.if_contains(name, [&state, &attempt](const User &u) {
+            state = XXH3_64bits(attempt.data(), attempt.size()) == u.password;
+        });
+
+        if (state)
+        {
+            logs.if_contains(name, [&res](const Log &l) {
+                for (uint32_t i = l.data.size() - 1; i >= 0; --i)
+                {
+                    if (!l.data[i].amount)
+                    {
+                        break;
+                    }
+                    res[99 - i]["to"] = l.data[i].to;
+                    res[99 - i]["from"] = l.data[i].from;
+                    res[99 - i]["amount"] = l.data[i].amount;
+                    res[99 - i]["recieving"] = l.data[i].recieving;
+                }
+            });
+        }
+        return res;
+    }
+
     void Save()
     {
         Json::StreamWriterBuilder builder;
@@ -157,7 +204,7 @@ public:
 
         //loading info into json temp
         {
-            std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_lock, send_funds_l};
+            std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_l, send_funds_l};
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
@@ -189,6 +236,7 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
+                logs.try_emplace(u);
                 users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
             }
         }
