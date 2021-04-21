@@ -80,27 +80,29 @@ public:
         }
 
         //if A exists, A can afford it, and A's password matches
-        bool state = false;
-        std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
-        users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-            if (state = (a.balance >= amount) && (a.password == XXH3_64bits(attempt.data(), attempt.size())))
-            {
-                a.balance -= amount;
-            }
-        });
-
-        if (state)
         {
-            //if B doesnt exist
-            if (!users.modify_if(b_name, [amount](User &b) {
-                    b.balance += amount;
-                }))
+            std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
+            bool state = false;
+            users.modify_if(a_name, [&state, amount, &attempt](User &a) {
+                if (state = (a.balance >= amount) && (a.password == XXH3_64bits(attempt.data(), attempt.size())))
+                {
+                    a.balance -= amount;
+                }
+            });
+
+            if (state)
             {
-                //attempt to refund if A exist
-                users.modify_if(a_name, [amount](User &a) {
-                    a.balance += amount;
-                });
-                state = false; //because had to refund transaction
+                //if B doesnt exist
+                if (!users.modify_if(b_name, [amount](User &b) {
+                        b.balance += amount;
+                    }))
+                {
+                    //attempt to refund if A exist
+                    users.modify_if(a_name, [amount](User &a) {
+                        a.balance += amount;
+                    });
+                    state = false; //because had to refund transaction
+                }
             }
         }
 
