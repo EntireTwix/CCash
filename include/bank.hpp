@@ -98,11 +98,12 @@ public:
         if (state)
         {
             Transaction temp(a_name, b_name, amount);
+            Transaction temp2 = temp;
             users.modify_if(a_name, [&temp](User &a) {
-                a.log.AddTrans(std::forward<Transaction>(temp));
+                a.log.AddTrans(std::move(temp));
             });
-            users.modify_if(b_name, [&temp](User &b) {
-                b.log.AddTrans(std::move(temp));
+            users.modify_if(b_name, [&temp2](User &b) {
+                b.log.AddTrans(std::move(temp2));
             });
         }
 
