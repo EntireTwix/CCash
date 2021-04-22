@@ -61,25 +61,27 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
+        bool state;
         {
             std::shared_lock<std::shared_mutex> lock{size_l};
-            bool state = users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
+            state = users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
         }
         if (state)
         {
-            logs.erase_if(name, [](User &u) {})
+            logs.erase(name);
         }
         return state;
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
+        bool state;
         {
             std::shared_lock<std::shared_mutex> lock{size_l};
-            bool state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
+            state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
         }
         if (state)
         {
-            logs.erase_if(name, [](User &u) {});
+            logs.erase(name);
         }
         return state;
     }
