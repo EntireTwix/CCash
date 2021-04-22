@@ -160,31 +160,33 @@ public:
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
         Json::Value res;
-        users.if_contains(name, [&res, &attempt](const User &u) {
-            if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
-            {
-                res = 0;
-                return;
-            }
-
-            if (u.log.data.size())
-            {
-                uint32_t j;
-                for (uint32_t i = u.log.data.size() - 1; i > 0; --i)
+        if (!users.if_contains(name, [&res, &attempt](const User &u) {
+                if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                 {
-                    j = u.log.data.size() - 1 - i;
-                    if (!u.log.data[i].amount)
-                    {
-                        return;
-                    }
-                    res[j]["to"] = u.log.data[i].to;
-                    res[j]["from"] = u.log.data[i].from;
-                    res[j]["amount"] = u.log.data[i].amount;
-                    res[j]["time"] = (Json::UInt64)u.log.data[i].time;
+                    res = 0;
+                    return;
                 }
-            }
-            res = -1;
-        });
+
+                if (u.log.data.size())
+                {
+                    uint32_t j;
+                    for (uint32_t i = u.log.data.size() - 1; i > 0; --i)
+                    {
+                        j = u.log.data.size() - 1 - i;
+                        if (!u.log.data[i].amount)
+                        {
+                            return;
+                        }
+                        res[j]["to"] = u.log.data[i].to;
+                        res[j]["from"] = u.log.data[i].from;
+                        res[j]["amount"] = u.log.data[i].amount;
+                        res[j]["time"] = (Json::UInt64)u.log.data[i].time;
+                    }
+                }
+            }))
+        {
+            return -1;
+        }
         return res;
     }
 
