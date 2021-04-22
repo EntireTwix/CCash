@@ -108,10 +108,19 @@ public:
 
         if (state)
         {
+            //if user lacks a log, one is created, this is to reduce usage
             Transaction temp(a_name, b_name, amount, false);
+            if (!logs.contains(a_name))
+            {
+                logs.try_emplace(a_name);
+            }
             logs.modify_if(a_name, [&temp](Log &l) {
                 l.AddTrans(temp);
             });
+            if (!logs.contains(b_name))
+            {
+                logs.try_emplace(b_name);
+            }
             temp.recieving = true;
             logs.modify_if(b_name, [&temp](Log &l) {
                 l.AddTrans(temp);
@@ -194,7 +203,7 @@ public:
             });
             return res;
         }
-        return -1;
+        return users.contains(name); // so that if the user has no logs, but does exist
     }
 
     void Save()
@@ -239,7 +248,6 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
-                logs.try_emplace(u);
                 users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
             }
         }
