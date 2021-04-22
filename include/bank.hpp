@@ -109,21 +109,22 @@ public:
         if (state)
         {
             //if user lacks a log, one is created, this is to reduce usage
-            Transaction temp(a_name, b_name, amount, false);
+            Transaction temp(a_name, b_name, amount);
+            Transaction temp2(a_name, b_name, amount);
+
             if (!logs.contains(a_name))
             {
                 logs.try_emplace(a_name);
             }
             logs.modify_if(a_name, [&temp](Log &l) {
-                l.AddTrans(temp);
+                l.AddTrans(std::move(temp));
             });
             if (!logs.contains(b_name))
             {
                 logs.try_emplace(b_name);
             }
-            temp.recieving = true;
-            logs.modify_if(b_name, [&temp](Log &l) {
-                l.AddTrans(temp);
+            logs.modify_if(b_name, [&temp2](Log &l) {
+                l.AddTrans(std::move(temp2));
             });
         }
 
