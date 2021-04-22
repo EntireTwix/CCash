@@ -218,7 +218,7 @@ public:
                     res[j]["to"] = l.data[i].to;
                     res[j]["from"] = l.data[i].from;
                     res[j]["amount"] = l.data[i].amount;
-                    res[j]["time"] = l.data[i].time;
+                    res[j]["time"] = (Json::UInt64)l.data[i].time;
                 }
             })))
         {
