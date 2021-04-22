@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");
         });
-    app().loadConfigFile("../config.json").registerController(API).setThreadNum(std::stoul(argv[3])).run();
+    app().loadConfigFile("../config.json").registerController(API).setThreadNum(std::stoul(argv[3])).enableRunAsDaemon().run();
 
     return 0;
 }
