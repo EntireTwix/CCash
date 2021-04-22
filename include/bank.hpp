@@ -214,7 +214,7 @@ public:
                 uint32_t j;
                 for (uint32_t i = l.data.size() - 1; i > 0; --i)
                 {
-                    j = 99 - i;
+                    j = 24 - i;
                     if (!l.data[i].amount)
                     {
                         return;
@@ -222,7 +222,7 @@ public:
                     res[j]["to"] = l.data[i].to;
                     res[j]["from"] = l.data[i].from;
                     res[j]["amount"] = l.data[i].amount;
-                    res[j]["time"] = (Json::UInt64)l.data[i].time;
+                    res[j]["time"] = (Json::UInt)l.data[i].time;
                 }
             })))
         {
