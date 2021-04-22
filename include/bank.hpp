@@ -217,10 +217,9 @@ public:
                     res[99 - i]["from"] = l.data[i].from;
                     res[99 - i]["amount"] = l.data[i].amount;
                 }
-                res = 1;
             })))
         {
-            return -1;
+            return -1 * users.contains(name);
         }
         return res;
     }
