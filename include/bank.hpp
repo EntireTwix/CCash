@@ -219,7 +219,7 @@ public:
                 }
             })))
         {
-            return -1 * users.contains(name);
+            return (-1 * users.contains(name)) + users.contains(name);
         }
         return res;
     }
