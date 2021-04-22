@@ -126,9 +126,9 @@ public:
         {
             //if user lacks a log, one is created, this is to reduce usage
             Transaction temp(a_name, b_name, amount);
-            Transaction temp2(a_name, b_name, amount);
+            Transaction temp2 = temp; // to keep same time
 
-            users.if_contains(a_name, [&temp, &a_name](const User &u) {
+            users.if_contains(a_name, [this, &temp, &a_name](const User &u) {
                 if (logs.try_emplace_l(a_name, [&temp](Log &l) { l.AddTrans(std::move(temp)); }))
                 {
                     logs.modify_if(a_name, [&temp](Log &l) {
@@ -136,7 +136,7 @@ public:
                     });
                 }
             });
-            users.if_contains(a_name, [&temp, &a_name](const User &u) {
+            users.if_contains(a_name, [this, &temp2, &b_name](const User &u) {
                 if (logs.try_emplace_l(b_name, [&temp2](Log &l) { l.AddTrans(std::move(temp2)); }))
                 {
                     logs.modify_if(b_name, [&temp2](Log &l) {
