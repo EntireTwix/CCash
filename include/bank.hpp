@@ -128,18 +128,22 @@ public:
             Transaction temp(a_name, b_name, amount);
             Transaction temp2(a_name, b_name, amount);
 
-            if (logs.try_emplace_l(a_name, [&temp](Log &l) { l.AddTrans(std::move(temp)); }))
-            {
-                logs.modify_if(a_name, [&temp](Log &l) {
-                    l.AddTrans(std::move(temp));
-                });
-            }
-            if (logs.try_emplace_l(b_name, [&temp2](Log &l) { l.AddTrans(std::move(temp2)); }))
-            {
-                logs.modify_if(b_name, [&temp2](Log &l) {
-                    l.AddTrans(std::move(temp2));
-                });
-            }
+            users.if_contains(a_name, [&temp, &a_name](const User &u) {
+                if (logs.try_emplace_l(a_name, [&temp](Log &l) { l.AddTrans(std::move(temp)); }))
+                {
+                    logs.modify_if(a_name, [&temp](Log &l) {
+                        l.AddTrans(std::move(temp));
+                    });
+                }
+            });
+            users.if_contains(a_name, [&temp, &a_name](const User &u) {
+                if (logs.try_emplace_l(b_name, [&temp2](Log &l) { l.AddTrans(std::move(temp2)); }))
+                {
+                    logs.modify_if(b_name, [&temp2](Log &l) {
+                        l.AddTrans(std::move(temp2));
+                    });
+                }
+            });
         }
 
         return state;
