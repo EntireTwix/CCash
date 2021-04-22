@@ -61,13 +61,27 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        std::shared_lock<std::shared_mutex> lock{size_l};
-        return users.erase_if(name, [&attempt](const User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
+        {
+            std::shared_lock<std::shared_mutex> lock{size_l};
+            bool state = users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
+        }
+        if (state)
+        {
+            logs.erase_if(name, [](User &u) {})
+        }
+        return state;
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        std::shared_lock<std::shared_mutex> lock{size_l};
-        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
+        {
+            std::shared_lock<std::shared_mutex> lock{size_l};
+            bool state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
+        }
+        if (state)
+        {
+            logs.erase_if(name, [](User &u) {});
+        }
+        return state;
     }
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)

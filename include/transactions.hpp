@@ -1,6 +1,7 @@
 #pragma once
 #include <cstdint>
 
+//24 bytes total
 struct Transaction
 {
     std::string from = "", to = "";
