@@ -22,8 +22,8 @@ struct User
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-    User(uint_fast32_t init_bal, std::string &&init_pass, bool state = false) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
-    User(uint_fast32_t init_bal, uint64_t init_pass, bool state = false) : balance(init_bal), password(init_pass) {}
+    User(uint_fast32_t init_bal, std::string &&init_pass) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+    User(uint_fast32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
 
     Json::Value Serialize() const
     {
