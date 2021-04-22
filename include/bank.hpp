@@ -4,7 +4,6 @@
 #include "xxhash.h"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
-#include "log.hpp"
 
 class
 {
@@ -18,14 +17,6 @@ private:
         std::mutex>
         users;
 
-    phmap::parallel_flat_hash_map<
-        std::string, Log,
-        phmap::priv::hash_default_hash<std::string>,
-        phmap::priv::hash_default_eq<std::string>,
-        phmap::priv::Allocator<phmap::priv::Pair<const std::string, Log>>,
-        4UL,
-        std::mutex>
-        logs;
     /**
      * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
      * 
@@ -61,34 +52,17 @@ public:
 
     bool DelUser(const std::string &name, const std::string &attempt)
     {
-        bool state;
-        {
-            std::shared_lock<std::shared_mutex> lock{size_l};
-            state = users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
-        }
-        if (state)
-        {
-            logs.erase(name);
-        }
-        return state;
+        std::shared_lock<std::shared_mutex> lock{size_l};
+        return users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
     }
     bool AdminDelUser(const std::string &name, const std::string &attempt)
     {
-        bool state;
-        {
-            std::shared_lock<std::shared_mutex> lock{size_l};
-            state = users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
-        }
-        if (state)
-        {
-            logs.erase(name);
-        }
-        return state;
+        std::shared_lock<std::shared_mutex> lock{size_l};
+        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
     bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
     {
-
         //cant send money to self, from self or amount is 0
         if (a_name == b_name || !amount)
         {
@@ -121,28 +95,14 @@ public:
                 }
             }
         }
-
         if (state)
         {
-            //if user lacks a log, one is created, this is to reduce usage
             Transaction temp(a_name, b_name, amount);
-            Transaction temp2 = temp; // to keep same time
-
-            users.if_contains(a_name, [this, &temp, &a_name](const User &u) {
-                if (logs.try_emplace_l(a_name, [&temp](Log &l) { l.AddTrans(std::move(temp)); }))
-                {
-                    logs.modify_if(a_name, [&temp](Log &l) {
-                        l.AddTrans(std::move(temp));
-                    });
-                }
+            users.modify_if(a_name, [&temp](User &a) {
+                a.log.AddTrans(std::forward<Transaction>(temp));
             });
-            users.if_contains(a_name, [this, &temp2, &b_name](const User &u) {
-                if (logs.try_emplace_l(b_name, [&temp2](Log &l) { l.AddTrans(std::move(temp2)); }))
-                {
-                    logs.modify_if(b_name, [&temp2](Log &l) {
-                        l.AddTrans(std::move(temp2));
-                    });
-                }
+            users.modify_if(b_name, [&temp](User &b) {
+                b.log.AddTrans(std::move(temp));
             });
         }
 
@@ -199,44 +159,26 @@ public:
 
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
-        bool state = false;
-        users.if_contains(name, [&state, &attempt](const User &u) {
-            state = XXH3_64bits(attempt.data(), attempt.size()) == u.password;
-        });
-
-        if (!state)
-        {
-            return 0;
-        }
-
-        Json::Value res;
-        if (!(logs.if_contains(name, [&res](const Log &l) {
-                uint32_t j;
-                for (uint32_t i = l.data.size() - 1; i > 0; --i)
-                {
-                    j = 24 - i;
-                    if (!l.data[i].amount)
-                    {
-                        return;
-                    }
-                    res[j]["to"] = l.data[i].to;
-                    res[j]["from"] = l.data[i].from;
-                    res[j]["amount"] = l.data[i].amount;
-                    res[j]["time"] = (Json::UInt)l.data[i].time;
-                }
-            })))
-        {
-            if (users.contains(name))
+        Json::Value res = -1;
+        users.if_contains(name, [&res](const User &u) {
+            uint32_t j;
+            for (uint32_t i = u.log.data.size() - 1; i > 0; --i)
             {
-                return 1;
+                j = u.log.data.size() - 1 - i;
+                if (!u.log.data[i].amount)
+                {
+                    return;
+                }
+                res[j]["to"] = u.log.data[i].to;
+                res[j]["from"] = u.log.data[i].from;
+                res[j]["amount"] = u.log.data[i].amount;
+                res[j]["time"] = (Json::UInt64)u.log.data[i].time;
             }
-            return -1;
-        }
+        });
         return res;
     }
 
-    void
-    Save()
+    void Save()
     {
         Json::StreamWriterBuilder builder;
         const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());

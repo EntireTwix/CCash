@@ -8,7 +8,7 @@ struct Transaction
 
     std::string from = "", to = "";
     uint32_t amount = 0;
-    uint32_t time = 0;
+    uint64_t time = 0;
 
     void Concatinate(std::string &s)
     {
