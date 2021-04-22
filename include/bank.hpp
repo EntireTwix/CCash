@@ -160,8 +160,8 @@ public:
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
         Json::Value res = -1;
-        users.if_contains(name, [&res](const User &u) {
-            if (u.log.data.size())
+        users.if_contains(name, [&res, &attempt](const User &u) {
+            if (u.log.data.size() && u.password == XXH3_64bits(attempt.data(), attempt.size()))
             {
                 uint32_t j;
                 for (uint32_t i = u.log.data.size() - 1; i > 0; --i)
@@ -176,6 +176,10 @@ public:
                     res[j]["amount"] = u.log.data[i].amount;
                     res[j]["time"] = (Json::UInt64)u.log.data[i].time;
                 }
+            }
+            else
+            {
+                res = 0;
             }
         });
         return res;
