@@ -5,7 +5,6 @@ struct Transaction
 {
     std::string from = "", to = "";
     uint32_t amount = 0;
-    bool recieving = false;
 
     void Concatinate(std::string &s)
     {
@@ -19,7 +18,7 @@ struct Transaction
     }
 
     Transaction() = default;
-    Transaction(std::string from_str, std::string to_str, uint32_t amount, bool recieving) : amount(amount), recieving(recieving)
+    Transaction(std::string from_str, std::string to_str, uint32_t amount) : amount(amount)
     {
         Concatinate(from_str);
         Concatinate(to_str);
