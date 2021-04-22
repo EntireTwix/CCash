@@ -200,27 +200,33 @@ public:
             state = XXH3_64bits(attempt.data(), attempt.size()) == u.password;
         });
 
-        if (state)
+        if (!state)
         {
-            Json::Value res;
-            logs.if_contains(name, [&res](const Log &l) {
-                for (uint32_t i = l.data.size() - 1; i >= 0; --i)
+            return 0;
+        }
+
+        Json::Value res;
+        if (!(logs.if_contains(name, [&res](const Log &l) {
+                for (uint32_t i = l.data.size() - 1; i > 0; --i)
                 {
                     if (!l.data[i].amount)
                     {
-                        break;
+                        return;
                     }
                     res[99 - i]["to"] = l.data[i].to;
                     res[99 - i]["from"] = l.data[i].from;
                     res[99 - i]["amount"] = l.data[i].amount;
                 }
-            });
-            return res;
+                res = 1;
+            })))
+        {
+            return -1;
         }
-        return users.contains(name); // so that if the user has no logs, but does exist
+        return res;
     }
 
-    void Save()
+    void
+    Save()
     {
         Json::StreamWriterBuilder builder;
         const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
