@@ -219,7 +219,11 @@ public:
                 }
             })))
         {
-            return (-1 * users.contains(name)) + users.contains(name);
+            if (users.contains(name))
+            {
+                return 1;
+            }
+            return -1;
         }
         return res;
     }
