@@ -207,15 +207,18 @@ public:
 
         Json::Value res;
         if (!(logs.if_contains(name, [&res](const Log &l) {
+                uint32_t j;
                 for (uint32_t i = l.data.size() - 1; i > 0; --i)
                 {
+                    j = 99 - i;
                     if (!l.data[i].amount)
                     {
                         return;
                     }
-                    res[99 - i]["to"] = l.data[i].to;
-                    res[99 - i]["from"] = l.data[i].from;
-                    res[99 - i]["amount"] = l.data[i].amount;
+                    res[j]["to"] = l.data[i].to;
+                    res[j]["from"] = l.data[i].from;
+                    res[j]["amount"] = l.data[i].amount;
+                    res[j]["time"] = l.data[i].time;
                 }
             })))
         {
