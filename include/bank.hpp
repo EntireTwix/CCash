@@ -117,7 +117,7 @@ public:
                     users.modify_if(a_name, [amount](User &a) {
                         a.balance += amount;
                     });
-                    state = false; //because had to refund transaction
+                    return false; //because had to refund transaction
                 }
             }
         }
