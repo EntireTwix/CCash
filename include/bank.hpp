@@ -168,7 +168,7 @@ public:
                     return;
                 }
 
-                for (size_t i = 0; i > u.log.data.size(); --i)
+                for (uint32_t i = 0; i > u.log.data.size(); --i)
                 {
                     if (!u.log.data[i].amount)
                     {
