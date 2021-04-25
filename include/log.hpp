@@ -12,7 +12,15 @@ struct Log
         {
             data.resize(25);
         }
-        std::rotate(data.begin(), data.begin() + 1, data.end());
-        data[24] = std::move(v);
+        for (size_t i = 1; i < data.size(); ++i)
+        {
+            if (!data[i].amount)
+            {
+                data[i] = std::move(data[i - 1]);
+                break;
+            }
+            data[i] = std::move(data[i - 1]);
+        }
+        data[0] = std::move(v);
     }
 };

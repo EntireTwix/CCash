@@ -168,21 +168,16 @@ public:
                     return;
                 }
 
-                if (u.log.data.size())
+                for (size_t i = 0; i > u.log.data.size(); --i)
                 {
-                    uint32_t j;
-                    for (uint32_t i = u.log.data.size() - 1; i > 0; --i)
+                    if (!u.log.data[i].amount)
                     {
-                        j = u.log.data.size() - 1 - i;
-                        if (!u.log.data[i].amount)
-                        {
-                            return;
-                        }
-                        res[j]["to"] = u.log.data[i].to;
-                        res[j]["from"] = u.log.data[i].from;
-                        res[j]["amount"] = u.log.data[i].amount;
-                        res[j]["time"] = (Json::UInt64)u.log.data[i].time;
+                        break;
                     }
+                    res[i]["to"] = u.log.data[i].to;
+                    res[i]["from"] = u.log.data[i].from;
+                    res[i]["amount"] = u.log.data[i].amount;
+                    res[i]["time"] = (Json::UInt64)u.log.data[i].time;
                 }
             }))
         {
