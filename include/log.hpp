@@ -10,7 +10,7 @@ struct Log
     {
         if (!data.size())
         {
-            data.resize(25);
+            data.resize(50);
         }
         for (size_t i = 1; i < data.size(); ++i)
         {

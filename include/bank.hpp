@@ -34,12 +34,20 @@ public:
 
     bool AddUser(const std::string &name, std::string &&init_pass)
     {
+        if (name.size() > 50)
+        {
+            return false;
+        }
         std::shared_lock<std::shared_mutex> lock{size_l};
         return users.try_emplace_l(
             name, [](User &) {}, std::move(init_pass));
     }
     bool AdminAddUser(const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass)
     {
+        if (name.size() > 50)
+        {
+            return false;
+        }
         bool state = (admin_pass == attempt);
         if (state)
         {
