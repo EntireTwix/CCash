@@ -21,7 +21,15 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 [Backend](https://ccash.ryzerth.com/BankF/help)
 
 ### Build
-
+drogon depedencies
+```
+sudo apt install libjsoncpp-dev
+sudo apt install uuid-dev
+sudo apt install openssl
+sudo apt install libssl-dev
+sudo apt install zlib1g-dev
+```
+building the project
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
 mkdir build
