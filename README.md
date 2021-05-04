@@ -39,18 +39,20 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
 
-Implemented:
+#### Implemented:
 
 - [Web Frontend](https://github.com/Expand-sys/ccashfrontend)
 ![image](https://user-images.githubusercontent.com/31377881/116965729-4ab44500-ac63-11eb-9f11-dc04be6b3d63.png)
 - [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 - [CC Frontend](https://github.com/Reactified/rpm/blob/main/packages/ccash-wallet/wallet.lua)
 
-In-Dev:
+![image](https://user-images.githubusercontent.com/31377881/116967157-8b618d80-ac66-11eb-8f2e-4a6297ef0b16.png)
+
+#### In-Dev:
 
 - [a Market](https://github.com/STBoyden/market-api-2.0)
 
-Ideas:
+#### Ideas:
 
 - Gambling
 - Shipping
