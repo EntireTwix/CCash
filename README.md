@@ -14,12 +14,6 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
-### Demo
-
-[Frontend](https://ccash.herokuapp.com/)
-
-[Backend](https://ccash.ryzerth.com/BankF/help)
-
 ### Build
 drogon depedencies
 ```
@@ -48,6 +42,7 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 Implemented:
 
 - [Web Frontend](https://github.com/Expand-sys/ccashfrontend)
+![image](https://user-images.githubusercontent.com/31377881/116965729-4ab44500-ac63-11eb-9f11-dc04be6b3d63.png)
 - [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 - [CC Frontend](https://github.com/Reactified/rpm/blob/main/packages/ccash-wallet/wallet.lua)
 
