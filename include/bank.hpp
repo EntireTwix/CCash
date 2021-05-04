@@ -107,6 +107,7 @@ public:
         {
             Transaction temp(a_name, b_name, amount);
             Transaction temp2 = temp;
+            std::cout << temp.from << ' ' << temp.to << '\n';
             users.modify_if(a_name, [&temp](User &a) {
                 a.log.AddTrans(std::move(temp));
             });
@@ -176,12 +177,8 @@ public:
                     return;
                 }
 
-                for (uint32_t i = 0; i < u.log.data.size(); ++i)
+                for (uint32_t i = 0; i < u.log.data.size() && u.log.data[i].amount; ++i)
                 {
-                    if (!u.log.data[i].amount)
-                    {
-                        break;
-                    }
                     res[i]["to"] = u.log.data[i].to;
                     res[i]["from"] = u.log.data[i].from;
                     res[i]["amount"] = u.log.data[i].amount;
