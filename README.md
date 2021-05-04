@@ -30,10 +30,15 @@ mkdir build
 cd build
 cmake ..
 make -j<threads>
+```
+then edit config.json to include the paths to your certs for HTTPS (I use certbot), or just remove the listener for port 443.
+```
+vim ../config.json
+```
+finally, run the program
+```
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
-
-**you also have to edit the config file to add your cert locations**, I personally use cert bot
 
 ### Connected Services
 
@@ -79,7 +84,6 @@ Go to `{ip}/BankF/help` to see the bank's methods. Using the Bank's API allows (
 
 ### Accessibility
 
-- **Web front-end**
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
 
