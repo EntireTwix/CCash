@@ -72,6 +72,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 - **multi-threaded**
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
 - **Drogon** is a very fast [web framework](https://github.com/the-benchmarker/web-frameworks)
+- **Lightweight**, typically <1% CPU usage on average, <10% at peak, 0.0% idle
 
 ### Safety
 
