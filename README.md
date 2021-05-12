@@ -67,7 +67,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 ### Performance
 
-- **NOT** written in Lua
+- **NOT** written in Lua, like a OC/CC implementation
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
