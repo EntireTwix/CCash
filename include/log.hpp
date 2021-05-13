@@ -17,7 +17,6 @@ struct Log
         {
             for (uint32_t i = end; i > 0; --i)
             {
-                std::cout << i << '\n';
                 data[i] = std::move(data[i - 1]);
             }
         }
