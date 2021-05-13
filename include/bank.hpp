@@ -107,7 +107,6 @@ public:
         {
             Transaction temp(a_name, b_name, amount);
             Transaction temp2 = temp;
-            std::cout << temp.from << ' ' << temp.to << '\n';
             users.modify_if(a_name, [&temp](User &a) {
                 a.log.AddTrans(std::move(temp));
             });
