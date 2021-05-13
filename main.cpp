@@ -5,6 +5,7 @@
 #include <unistd.h>
 #include "bank_f.hpp"
 
+using namespace std::chrono;
 using namespace drogon;
 
 int main(int argc, char **argv)
@@ -35,7 +36,7 @@ int main(int argc, char **argv)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
                 bank.Save();
-                std::cout<<"Saving\n";
+                std::cout<<"Saving "<<duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()<<'\n';
             }
         }).detach();
     }
