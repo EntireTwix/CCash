@@ -35,6 +35,7 @@ int main(int argc, char **argv)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
                 bank.Save();
+                std::cout<<"Saving\n";
             }
         }).detach();
     }
@@ -44,7 +45,7 @@ int main(int argc, char **argv)
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");
         });
-    app().loadConfigFile("../config.json").registerController(API).setThreadNum(std::stoul(argv[3])).enableRunAsDaemon().run();
+    app().loadConfigFile("../config.json").registerController(API).setThreadNum(std::stoul(argv[3])).run();
 
     return 0;
 }
