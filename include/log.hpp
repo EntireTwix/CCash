@@ -1,6 +1,7 @@
 #pragma once
 #include <array>
 #include <algorithm>
+#include "log_consts.hpp"
 #include "transactions.hpp"
 
 struct Log
@@ -9,19 +10,16 @@ struct Log
     uint32_t end = 0;
     void AddTrans(Transaction &&v)
     {
-        if (!data.size())
+        if (data.size() == end)
         {
-            data.resize(50);
+            data.resize(data.size()+pre_log_size); //prefetching memory
         }
-        if (end)
+        for (uint32_t i = end; i > 0; --i)
         {
-            for (uint32_t i = end; i > 0; --i)
-            {
-                data[i] = std::move(data[i - 1]);
-            }
+            data[i] = std::move(data[i - 1]);
         }
         data[0] = std::move(v);
-        if (end < 50)
+        if (end < max_log_size)
         {
             ++end;
         }

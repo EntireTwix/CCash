@@ -34,7 +34,7 @@ struct User
     {
         if(log_j.size())
         {
-            log.data.resize(50);
+            log.data.resize(log_j.size()+pre_log_size);
             log.end = log_j.size();
             for(uint32_t i = 0; i < log_j.size(); ++i)
             {
