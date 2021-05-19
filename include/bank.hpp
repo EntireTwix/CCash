@@ -239,7 +239,7 @@ public:
                 }
                 else
                 {
-                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
+                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
                 }
             }
         }
