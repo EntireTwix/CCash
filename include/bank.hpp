@@ -103,16 +103,19 @@ public:
                 }
             }
         }
-        if (state)
+        if constexpr (max_log_size)
         {
-            Transaction temp(a_name, b_name, amount);
-            Transaction temp2 = temp;
-            users.modify_if(a_name, [&temp](User &a) {
-                a.log.AddTrans(std::move(temp));
-            });
-            users.modify_if(b_name, [&temp2](User &b) {
-                b.log.AddTrans(std::move(temp2));
-            });
+            if (state)
+            {
+                Transaction temp(a_name, b_name, amount);
+                Transaction temp2 = temp;
+                users.modify_if(a_name, [&temp](User &a) {
+                    a.log.AddTrans(std::move(temp));
+                });
+                users.modify_if(b_name, [&temp2](User &b) {
+                    b.log.AddTrans(std::move(temp2));
+                });
+            }
         }
 
         return state;
@@ -169,7 +172,9 @@ public:
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
         Json::Value res;
-        if (!users.if_contains(name, [&res, &attempt](const User &u) {
+        if constexpr (max_log_size)
+        {
+            if (!users.if_contains(name, [&res, &attempt](const User &u) {
                 if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                 {
                     res = 0;
@@ -179,8 +184,9 @@ public:
                     res = u.log.Serialize();
                 }
             }))
-        {
-            return -1;
+            {
+                return -1;
+            }
         }
         return res;
     }
@@ -227,7 +233,14 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
-                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
+                if constexpr(max_log_size)
+                {
+                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
+                }
+                else
+                {
+                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
+                }
             }
         }
     }
