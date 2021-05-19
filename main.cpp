@@ -5,8 +5,20 @@
 #include <unistd.h>
 #include "bank_f.hpp"
 
+#include <signal.h>
+#include <stdlib.h>
+#include <stdio.h>
+#include <unistd.h>
+
 using namespace std::chrono;
 using namespace drogon;
+
+void SaveSig(int s)
+{
+    bank.Save();
+    std::cout<<"\nSaving on close...\n";
+    exit(1);
+}
 
 int main(int argc, char **argv)
 {
@@ -23,6 +35,15 @@ int main(int argc, char **argv)
 
     //Loading users from users.json
     bank.Load();
+
+    //Sig handling
+    struct sigaction sigIntHandler;
+
+    sigIntHandler.sa_handler = SaveSig;
+    sigemptyset(&sigIntHandler.sa_mask);
+    sigIntHandler.sa_flags = 0;
+
+    sigaction(SIGINT, &sigIntHandler, NULL);
 
     //Admin Password
     bank.admin_pass = argv[1];
