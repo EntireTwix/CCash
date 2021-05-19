@@ -37,7 +37,7 @@ struct User
         {
             log.data.resize(log_j.size()+pre_log_size);
             log.end = log_j.size();
-            for(uint32_t i = 0; i < log_j.size(); ++i)
+            for(uint32_t i = 0; i < log_j.size() && i < max_log_size; ++i)
             {
                 log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
             }
