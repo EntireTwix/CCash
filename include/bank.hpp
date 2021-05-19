@@ -42,7 +42,7 @@ public:
         return users.try_emplace_l(
             name, [](User &) {}, std::move(init_pass));
     }
-    bool AdminAddUser(const std::string &attempt, std::string &&name, uint_fast32_t init_bal, std::string &&init_pass)
+    bool AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
     {
         if (name.size() > 50)
         {
@@ -69,7 +69,7 @@ public:
         return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
     }
 
-    bool SendFunds(const std::string &a_name, const std::string &b_name, uint_fast32_t amount, const std::string &attempt)
+    bool SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
     {
         //cant send money to self, from self or amount is 0
         if (a_name == b_name || !amount)
@@ -173,15 +173,10 @@ public:
                 if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                 {
                     res = 0;
-                    return;
                 }
-
-                for (uint32_t i = 0; i < u.log.data.size() && u.log.data[i].amount; ++i)
+                else
                 {
-                    res[i]["to"] = u.log.data[i].to;
-                    res[i]["from"] = u.log.data[i].from;
-                    res[i]["amount"] = u.log.data[i].amount;
-                    res[i]["time"] = (Json::UInt64)u.log.data[i].time;
+                    res = u.log.Serialize();
                 }
             }))
         {
@@ -232,7 +227,7 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
-                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
+                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
             }
         }
     }

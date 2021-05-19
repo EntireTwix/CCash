@@ -26,6 +26,18 @@ struct Log
             ++end;
         }
     }
+    Json::Value Serialize() const
+    {
+        Json::Value res;
+        for (uint32_t i = 0; i < data.size() && data[i].amount; ++i)
+        {
+            res[i]["to"] = data[i].to;
+            res[i]["from"] = data[i].from;
+            res[i]["amount"] = data[i].amount;
+            res[i]["time"] = (Json::UInt64)data[i].time;
+        }
+        return res;
+    }
 };
 
 //[*][*][]

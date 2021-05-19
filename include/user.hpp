@@ -5,7 +5,7 @@
 
 struct User
 {
-    uint_fast32_t balance = 0;
+    uint32_t balance = 0;
     uint64_t password;
     Log log;
 
@@ -22,14 +22,30 @@ struct User
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-    User(uint_fast32_t init_bal, std::string &&init_pass) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
-    User(uint_fast32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
+    User(uint32_t init_bal, std::string &&init_pass) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+
+    /**
+     * @brief User Constructor for loading
+     * 
+     * @param init_bal 
+     * @param init_pass 
+     */
+    User(uint32_t init_bal, uint64_t init_pass, Json::Value&& log_j) : balance(init_bal), password(init_pass) 
+    {
+        log.data.resize(log_j.size());
+        log.end = log_j.size();
+        for(uint32_t i = 0; i < log_j.size(); ++i)
+        {
+            log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
+        }
+    }
 
     Json::Value Serialize() const
     {
         Json::Value res;
         res["balance"] = (Json::UInt)balance;
         res["password"] = (Json::UInt64)password;
+        res["log"] = log.Serialize();
         return res;
     }
 };
