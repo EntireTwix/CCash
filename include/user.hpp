@@ -30,6 +30,7 @@ struct User
      * @param init_bal 
      * @param init_pass 
      */
+    User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
     User(uint32_t init_bal, uint64_t init_pass, Json::Value&& log_j) : balance(init_bal), password(init_pass) 
     {
         if(log_j.size())
