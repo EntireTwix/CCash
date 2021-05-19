@@ -84,7 +84,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
-- **Logging** of all transactions, configurable in (log_consts.hpp)[include/log_consts.hpp]
+- **Logging** of all transactions, configurable in [log_consts.hpp](include/log_consts.hpp)
 
 ## Dependencies
 
