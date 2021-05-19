@@ -32,11 +32,14 @@ struct User
      */
     User(uint32_t init_bal, uint64_t init_pass, Json::Value&& log_j) : balance(init_bal), password(init_pass) 
     {
-        log.data.resize(log_j.size());
-        log.end = log_j.size();
-        for(uint32_t i = 0; i < log_j.size(); ++i)
+        if(log_j.size())
         {
-            log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
+            log.data.resize(50);
+            log.end = log_j.size();
+            for(uint32_t i = 0; i < log_j.size(); ++i)
+            {
+                log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
+            }
         }
     }
 
