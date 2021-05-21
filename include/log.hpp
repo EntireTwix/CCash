@@ -31,7 +31,7 @@ struct Log
         {
             res[i]["to"] = data[i].to;
             res[i]["from"] = data[i].from;
-            res[i]["amount"] = data[i].amount;
+            res[i]["amount"] = (Json::UInt)data[i].amount;
             res[i]["time"] = (Json::UInt64)data[i].time;
         }
         return res;
