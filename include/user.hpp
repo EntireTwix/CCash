@@ -33,7 +33,6 @@ struct User
     User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
     User(uint32_t init_bal, uint64_t init_pass, Json::Value &&log_j) : balance(init_bal), password(init_pass)
     {
-        std::cout << log_j << '\n';
         if (log_j.size())
         {
             if (max_log_size > log_j.size() + pre_log_size)
