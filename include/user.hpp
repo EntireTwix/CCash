@@ -38,19 +38,16 @@ struct User
         {
             if (max_log_size > log_j.size() + pre_log_size)
             {
-                std::cout << "setting size to " << log_j.size() + pre_log_size << '\n';
                 log.data.resize(log_j.size() + pre_log_size);
                 log.end = log_j.size();
             }
             else
             {
-                std::cout << "setting size to " << max_log_size << '\n';
                 log.data.resize(max_log_size);
                 log.end = max_log_size;
             }
             for (uint32_t i = 0; i < log_j.size() && i < max_log_size; ++i)
             {
-                std::cout << i << '\n';
                 log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
             }
         }
