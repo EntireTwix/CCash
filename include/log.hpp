@@ -12,7 +12,7 @@ struct Log
     {
         if (data.size() == end)
         {
-            data.resize(data.size()+pre_log_size); //prefetching memory
+            data.resize(data.size() + pre_log_size); //prefetching memory
         }
         for (uint32_t i = end; i > 0; --i)
         {
@@ -27,7 +27,7 @@ struct Log
     Json::Value Serialize() const
     {
         Json::Value res;
-        for (uint32_t i = 0; i < data.size() && data[i].amount; ++i)
+        for (uint32_t i = 0; i < end; ++i)
         {
             res[i]["to"] = data[i].to;
             res[i]["from"] = data[i].from;

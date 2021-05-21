@@ -175,15 +175,15 @@ public:
         if constexpr (max_log_size)
         {
             if (!users.if_contains(name, [&res, &attempt](const User &u) {
-                if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
-                {
-                    res = 0;
-                }
-                else
-                {
-                    res = u.log.Serialize();
-                }
-            }))
+                    if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
+                    {
+                        res = 0;
+                    }
+                    else
+                    {
+                        res = u.log.Serialize();
+                    }
+                }))
             {
                 return -1;
             }
@@ -233,7 +233,7 @@ public:
             user_save.close();
             for (const auto &u : temp.getMemberNames())
             {
-                if constexpr(max_log_size)
+                if constexpr (max_log_size)
                 {
                     users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
                 }
