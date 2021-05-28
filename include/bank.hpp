@@ -171,9 +171,9 @@ public:
 
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
-        Json::Value res;
         if constexpr (max_log_size)
         {
+        Json::Value res;
             if (!users.if_contains(name, [&res, &attempt](const User &u) {
                     if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                     {
@@ -187,8 +187,12 @@ public:
             {
                 return -1;
             }
-        }
         return res;
+        }
+        else
+        {
+            return "logs are disabled";
+        }
     }
 
     void Save()
