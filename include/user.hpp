@@ -31,11 +31,11 @@ struct User
      * @param init_pass 
      */
     User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
-    User(uint32_t init_bal, uint64_t init_pass, Json::Value &&log_j) : balance(init_bal), password(init_pass)
+    User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : balance(init_bal), password(init_pass)
     {
         if (log_j.size())
         {
-            if (max_log_size > log_j.size() + pre_log_size)
+            if (max_log_size > (log_j.size() + pre_log_size))
             {
                 log.data.resize(log_j.size() + pre_log_size);
                 log.end = log_j.size();
@@ -45,9 +45,9 @@ struct User
                 log.data.resize(max_log_size);
                 log.end = max_log_size;
             }
-            for (uint32_t i = 0; i < log_j.size() && i < max_log_size; ++i)
+            for (uint32_t i = 0; i < log.end; ++i)
             {
-                log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["balance"].asUInt()));
+                log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["amount"].asUInt()));
             }
         }
     }

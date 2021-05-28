@@ -235,7 +235,7 @@ public:
             {
                 if constexpr (max_log_size)
                 {
-                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), std::move(temp[u]["log"]));
+                    users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), temp[u]["log"]);
                 }
                 else
                 {

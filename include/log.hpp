@@ -12,7 +12,14 @@ struct Log
     {
         if (data.size() <= end+1 && end+1 < max_log_size) //if memory reserved is full
         {
-            data.resize(data.size() + pre_log_size); //prefetching memory
+            if(data.size() + pre_log_size > max_log_size)
+            {
+                data.resize(max_log_size);
+            }
+            else
+            {
+                data.resize(data.size() + pre_log_size); //prefetching memory
+            }
         }
         for (uint32_t i = end; i > 0; --i)
         {
