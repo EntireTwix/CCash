@@ -10,7 +10,7 @@ struct Log
     uint32_t end = 0;
     void AddTrans(Transaction &&v)
     {
-        if (data.size() <= end+1 && end+1 <= max_log_size) //if memory reserved is full
+        if (data.size() <= end+1 && end+1 < max_log_size) //if memory reserved is full
         {
             data.resize(data.size() + pre_log_size); //prefetching memory
         }
