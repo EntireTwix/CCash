@@ -10,7 +10,7 @@ struct Log
     uint32_t end = 0;
     void AddTrans(Transaction &&v)
     {
-        if (data.size() == end)
+        if (data.size() <= end+1 && end+1 <= max_log_size) //if memory reserved is full
         {
             data.resize(data.size() + pre_log_size); //prefetching memory
         }
@@ -19,10 +19,7 @@ struct Log
             data[i] = std::move(data[i - 1]);
         }
         data[0] = std::move(v);
-        if (end < max_log_size)
-        {
-            ++end;
-        }
+        end += (end < max_log_size); //branchless
     }
     Json::Value Serialize() const
     {
@@ -37,5 +34,3 @@ struct Log
         return res;
     }
 };
-
-//[*][*][]
