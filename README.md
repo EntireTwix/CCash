@@ -56,6 +56,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 ### In-Dev:
 
 - [a Market](https://github.com/STBoyden/market-api-2.0)
+- [Ebay equivelant](https://github.com/EntireTwix/CSHBay)
 
 ### Ideas:
 
