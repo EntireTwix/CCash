@@ -47,7 +47,7 @@ struct User
             }
             for (uint32_t i = 0; i < log.end; ++i)
             {
-                log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["amount"].asUInt()));
+                log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["amount"].asUInt(), log_j[i]["time"].asUInt64()));
             }
         }
     }
