@@ -57,7 +57,10 @@ struct User
         Json::Value res;
         res["balance"] = (Json::UInt)balance;
         res["password"] = (Json::UInt64)password;
-        res["log"] = log.Serialize();
+        if constexpr (max_log_size)
+        {
+            res["log"] = log.Serialize();
+        }
         return res;
     }
 };
