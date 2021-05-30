@@ -75,8 +75,8 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
-- **Drogon** is a very fast [web framework](https://github.com/the-benchmarker/web-frameworks)
-- **Lightweight**, anecodotally I experienced <1% CPU usage on average, 7% at peak (1000 requests in parallel of 8), 0.0% idle
+- **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
+- **Lightweight**, anecodotally I experienced 0.0% idle, <1% CPU usage on average, 7% at peak, 1000 requests in 0.85s
 
 ### Safety
 
