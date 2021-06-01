@@ -214,8 +214,10 @@ public:
                 });
             }
         }
-
-        writer->write(temp, &user_save);
+        if(!temp.isNull())
+        {
+            writer->write(temp, &user_save);
+        }
         user_save.close();
     }
 
@@ -230,6 +232,8 @@ public:
         JSONCPP_STRING errs;
         if (!parseFromStream(builder, user_save, &temp, &errs))
         {
+            std::cerr<<errs<<'\n';
+            throw std::invalid_argument("Parsing Failed\n");
             user_save.close();
         }
         else
