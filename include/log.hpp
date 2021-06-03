@@ -31,12 +31,15 @@ struct Log
     Json::Value Serialize() const
     {
         Json::Value res;
-        for (uint32_t i = 0; i < end; ++i)
+        if(data.size())
         {
-            res[i]["to"] = data[i].to;
-            res[i]["from"] = data[i].from;
-            res[i]["amount"] = (Json::UInt)data[i].amount;
-            res[i]["time"] = (Json::UInt64)data[i].time;
+            for (uint32_t i = 0; i < end + 1; ++i)
+            {
+                res[i]["to"] = data[i].to;
+                res[i]["from"] = data[i].from;
+                res[i]["amount"] = (Json::UInt)data[i].amount;
+                res[i]["time"] = (Json::UInt64)data[i].time;
+            }
         }
         return res;
     }
