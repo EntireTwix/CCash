@@ -24,11 +24,11 @@ struct Log
         }
         if (data.size() == max_log_size)
         {
-            for (size_t i = 0; i < data.size() - 1; ++i)
+            for (size_t i = data.size() - 1; i > 0; --i)
             {
-                data[i] = std::move(data[i + 1]);
+                data[i] = std::move(data[i - 1]);
             }
-            data[data.size() - 1] = std::move(v);
+            data[0] = std::move(v);
         }
         else
         {
