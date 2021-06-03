@@ -8,7 +8,7 @@ struct Log
 {
     std::vector<Transaction> data;
     void AddTrans(Transaction &&v)
-    {                                                                     //branchless
+    {
         if (data.capacity() == data.size() && data.size() < max_log_size) //if memory reserved is full and max isnt reached
         {
             if (data.size() + pre_log_size > max_log_size) //if prefetched memory is larger then max
@@ -22,7 +22,18 @@ struct Log
                 data.reserve(data.size() + pre_log_size); //prefetching memory
             }
         }
-        data.push_back(v);
+        if (data.size() == max_log_size)
+        {
+            for (size_t i = 0; i < data.size() - 1; ++i)
+            {
+                data[i] = std::move(data[i + 1]);
+            }
+            data[data.size() - 1] = std::move(v);
+        }
+        else
+        {
+            data.push_back(std::move(v));
+        }
         //std::cout << "size is " << data.size() << '\n';
     }
     Json::Value Serialize() const
