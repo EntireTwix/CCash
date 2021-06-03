@@ -113,8 +113,17 @@ public:
     }
     void GetLog(req_args, const std::string &name)
     {
-        GEN_BODY
-        JSON(bank.GetLogs(name, body["attempt"].asCString()));
+        if constexpr (max_log_size)
+        {
+            GEN_BODY
+            JSON(bank.GetLogs(name, body["attempt"].asCString()));
+        }
+        else
+        {
+            auto resp = HttpResponse::newHttpJsonResponse(JsonReturn("Logs are Disabled"));
+            resp->setExpiredTime(0); //cached forever
+            callback(resp);
+        }
     }
 
     METHOD_LIST_BEGIN

@@ -171,28 +171,21 @@ public:
 
     Json::Value GetLogs(const std::string &name, const std::string &attempt)
     {
-        if constexpr (max_log_size)
+        Json::Value res;
+        if (!users.if_contains(name, [&res, &attempt](const User &u) {
+                if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
+                {
+                    res = 0;
+                }
+                else
+                {
+                    res = u.log.Serialize();
+                }
+            }))
         {
-            Json::Value res;
-            if (!users.if_contains(name, [&res, &attempt](const User &u) {
-                    if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
-                    {
-                        res = 0;
-                    }
-                    else
-                    {
-                        res = u.log.Serialize();
-                    }
-                }))
-            {
-                return -1;
-            }
-            return res;
+            return -1;
         }
-        else
-        {
-            return "logs are disabled";
-        }
+        return res;
     }
 
     void Save()
@@ -214,7 +207,7 @@ public:
                 });
             }
         }
-        if(!temp.isNull())
+        if (!temp.isNull())
         {
             writer->write(temp, &user_save);
         }
@@ -232,7 +225,7 @@ public:
         JSONCPP_STRING errs;
         if (!parseFromStream(builder, user_save, &temp, &errs))
         {
-            std::cerr<<errs<<'\n';
+            std::cerr << errs << '\n';
             throw std::invalid_argument("Parsing Failed\n");
             user_save.close();
         }
