@@ -11,7 +11,7 @@ struct Log
     void AddTrans(Transaction &&v)
     {
         end += (end < max_log_size); //branchless
-        if (data.size() <= end && end < max_log_size) //if memory reserved is full and max isnt reached
+        if (data.size() == end && end < max_log_size) //if memory reserved is full and max isnt reached
         {
             if (data.size() + pre_log_size > max_log_size) //if prefetched memory is larger then max
             {
