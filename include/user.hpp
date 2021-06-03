@@ -45,7 +45,7 @@ struct User
                 //std::cout << "allocating " << max_log_size << '\n';
                 log.data.reserve(max_log_size); //allocate max amount
             }
-            for (uint32_t i = log_j.size(); i > 0; ++i)
+            for (uint32_t i = log_j.size(); i > 0; --i)
             {
                 log.data.push_back(std::move(Transaction(log_j[i - 1]["from"].asCString(), log_j[i - 1]["to"].asCString(), log_j[i - 1]["amount"].asUInt(), log_j[i - 1]["time"].asUInt64())));
             }
