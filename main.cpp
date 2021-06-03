@@ -16,12 +16,13 @@ using namespace drogon;
 void SaveSig(int s)
 {
     bank.Save();
-    std::cout<<"\nSaving on close...\n";
+    std::cout << "\nSaving on close...\n";
     exit(1);
 }
 
 int main(int argc, char **argv)
 {
+    static_assert(pre_log_size < max_log_size);
     if (argc != 4)
     {
         std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes> <threads>\n";
@@ -57,7 +58,7 @@ int main(int argc, char **argv)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
                 bank.Save();
-                std::cout<<"Saving "<<duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count()<<'\n';
+                std::cout << "Saving " << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() << '\n';
             }
         }).detach();
     }
