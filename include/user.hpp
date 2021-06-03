@@ -35,17 +35,17 @@ struct User
     {
         if (log_j.size())
         {
-            if (max_log_size > (log_j.size() + pre_log_size))
+            if (max_log_size > (log_j.size() + pre_log_size)) //if current imported log's size + prefetch amount is less then max
             {
-                log.data.resize(log_j.size() + pre_log_size - 1);
-                log.end = log_j.size() - 1;
+                log.data.resize(log_j.size() + pre_log_size); //allocate that amount
+                log.end = log_j.size();
             }
             else
             {
-                log.data.resize(max_log_size);
-                log.end = max_log_size - 1;
+                log.data.resize(max_log_size); //allocate max amount
+                log.end = max_log_size;
             }
-            for (uint32_t i = 0; i < log.end + 1; ++i)
+            for (uint32_t i = 0; i < log.end; ++i)
             {
                 log.data[i] = std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["amount"].asUInt(), log_j[i]["time"].asUInt64()));
             }
