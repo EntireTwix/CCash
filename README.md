@@ -52,6 +52,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 ![image](https://user-images.githubusercontent.com/31377881/120050327-de163700-bfd1-11eb-9d5a-f75c003e867c.png)
 ![image](https://user-images.githubusercontent.com/31377881/120050367-09992180-bfd2-11eb-9a22-449d73c196cf.png)
 - [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
+- [CC ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank) an ATM for economies allowing for an initial exchange to start up
 
 ### In-Dev:
 
