@@ -182,7 +182,6 @@ public:
                     Json::Value temp;
                     for (uint32_t i = u.log.data.size(); i > 0; --i)
                     {
-                        std::cout << i << '\n';
                         temp[i - 1]["to"] = u.log.data[i - 1].to;
                         temp[i - 1]["from"] = u.log.data[i - 1].from;
                         temp[i - 1]["amount"] = (Json::UInt)u.log.data[i - 1].amount;
