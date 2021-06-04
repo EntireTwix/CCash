@@ -7,39 +7,25 @@
 struct Log
 {
     std::vector<Transaction> data;
-    void AddTrans(Transaction &&v)
+    void AddTrans(Transaction &&t)
     {
-        if (data.capacity() == data.size() && data.size() < max_log_size) //if memory reserved is full and max isnt reached
+        if (data.size() == max_log_size) // If we hit the max size
         {
-            if (data.size() + pre_log_size > max_log_size) //if prefetched memory is larger then max
+            for (auto i = data.size() - 1; i > 0; i--) // Make room at the back
             {
-                //std::cout << "allocating " << max_log_size << '\n';
-                data.reserve(max_log_size); //just allocate max
-            }
-            else
-            {
-                //std::cout << "allocating " << data.size() + pre_log_size << '\n';
-                data.reserve(data.size() + pre_log_size); //prefetching memory
+                data[i - 1] == std::move(data[i]) // Shifts everything left
             }
         }
-        if (data.size() == max_log_size)
+        else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
         {
-            for (size_t i = data.size() - 1; i > 0; --i)
-            {
-                data[i] = std::move(data[i - 1]);
-            }
-            data[0] = std::move(v);
+            data.reserve(data.capacity() + pre_alloc) // Reserve more memory
         }
-        else
-        {
-            data.push_back(std::move(v));
-        }
-        //std::cout << "size is " << data.size() << '\n';
+        data[data.size() - 1] = std::move(t) // In any case, place new at the back
     }
     Json::Value Serialize() const
     {
         Json::Value res;
-        for (uint32_t i = 0; i < data.size(); ++i)
+        for (uint32_t i = 0; i < end; ++i)
         {
             res[i]["to"] = data[i].to;
             res[i]["from"] = data[i].from;

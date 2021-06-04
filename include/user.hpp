@@ -1,6 +1,7 @@
 #pragma once
 #include <json/json.h>
 #include <string>
+#include <algorithm>
 #include "log.hpp"
 
 struct User
@@ -35,19 +36,16 @@ struct User
     {
         if (log_j.size())
         {
-            if (max_log_size > (log_j.size() + pre_log_size)) //if current imported log's size + prefetch amount is less then max
+            auto size = ((log_j.size() / pre_log_size) + 1) * pre_log_size; // Ensures that we have a log size aligned on a multiple of `pre_log_size`
+            log.data.reserve(std::min(size, max_log_size)); // Ensures that the log size is under `max_log_size`
+            for (uint32_t i = 0; i < log.size(); i++) // Matches the logs
             {
-                //std::cout << "allocating " << log_j.size() + pre_log_size << '\n';
-                log.data.reserve(log_j.size() + pre_log_size); //allocate that amount
-            }
-            else
-            {
-                //std::cout << "allocating " << max_log_size << '\n';
-                log.data.reserve(max_log_size); //allocate max amount
-            }
-            for (uint32_t i = 0; i < log_j.size(); ++i)
-            {
-                log.data.push_back(std::move(Transaction(log_j[i]["from"].asCString(), log_j[i]["to"].asCString(), log_j[i]["amount"].asUInt(), log_j[i]["time"].asUInt64())));
+                log.data[i] = std::move(Transaction(
+                    log_j[i]["from"].asCString(),
+                    log_j[i]["to"].asCString(),
+                    log_j[i]["amount"].asUInt(),
+                    log_j[i]["time"].asUInt64()
+                ));
             }
         }
     }
