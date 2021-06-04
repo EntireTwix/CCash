@@ -22,7 +22,9 @@ void SaveSig(int s)
 
 int main(int argc, char **argv)
 {
-    static_assert(pre_log_size < max_log_size);
+    static_assert(pre_log_size < max_log_size, "`max_log_size` must be larger than `pre_log_size`.");
+    static_assert(!(max_log_size % pre_log_size), "`max_log_size` must be a multiple of `pre_log_size`.");
+
     if (argc != 4)
     {
         std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes> <threads>\n";
