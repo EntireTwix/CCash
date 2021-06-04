@@ -36,17 +36,17 @@ struct User
     {
         if (log_j.size())
         {
-            unsigned size = ((log_j.size() / pre_log_size) + 1) * pre_log_size; // Ensures that we have a log size aligned on a multiple of `pre_log_size`
-            log.data.reserve(size);                                             // Ensures that the log size is under `max_log_size`
-            size = std::min(log_j.size(), max_log_size);
-            log.data.resize(size);
-            for (uint32_t i = 0; i < size; ++i)
+            log.data.reserve(
+                std::min(((log_j.size() / pre_log_size) + 1) * pre_log_size, max_log_size)
+            ); // Ensures that the log size is under `max_log_size` and is aligned on multiple of `pre_log_size`
+            for (uint32_t i = 0; i < std::min(log_j.size(), max_log_size); i++) //Matches the logs
             {
-                log.data[i] = std::move(Transaction(
+                log.data.push_back(std::move(Transaction(
                     log_j[i]["from"].asCString(),
                     log_j[i]["to"].asCString(),
                     log_j[i]["amount"].asUInt(),
-                    log_j[i]["time"].asUInt64()));
+                    log_j[i]["time"].asUInt64()
+                )));
             }
         }
     }
