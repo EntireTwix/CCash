@@ -13,7 +13,7 @@ struct Log
         {
             for (auto i = data.size() - 1; i > 0; i--) // Make room at the back
             {
-                data[i - 1] == std::move(data[i])
+                data[i - 1] == std::move(data[i]) // Shifts everything left
             }
         }
         else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
