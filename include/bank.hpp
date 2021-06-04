@@ -179,7 +179,15 @@ public:
                 }
                 else
                 {
-                    res = u.log.Serialize();
+                    Json::Value temp;
+                    for (uint32_t i = u.log.data.size(); i > 0; --i)
+                    {
+                        temp[i - 1]["to"] = u.log.data[u.log.data.size() - i - 1].to;
+                        temp[i - 1]["from"] = u.log.data[u.log.data.size() - i - 1].from;
+                        temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i - 1].amount;
+                        temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i - 1].time;
+                    }
+                    res = std::move(temp);
                 }
             }))
         {
