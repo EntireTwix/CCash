@@ -7,25 +7,36 @@
 struct Log
 {
     std::vector<Transaction> data;
-    void AddTrans(Transaction &&t)
+    void AddTrans(Transaction &&v)
     {
-        if (data.size() == max_log_size) // If we hit the max size
+        if (data.capacity() == data.size() && data.size() < max_log_size) //if memory reserved is full and max isnt reached
         {
-            for (auto i = data.size() - 1; i > 0; i--) // Make room at the back
+            if (data.size() + pre_log_size > max_log_size) //if prefetched memory is larger then max
             {
-                data[i - 1] == std::move(data[i]) // Shifts everything left
+                data.reserve(max_log_size); //just allocate max
+            }
+            else
+            {
+                data.reserve(data.size() + pre_log_size); //prefetching memory
             }
         }
-        else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
+        if (data.size() == max_log_size)
         {
-            data.reserve(data.capacity() + pre_alloc) // Reserve more memory
+            for (size_t i = 0; i < data.size() - 1; ++i)
+            {
+                data[i] = std::move(data[i + 1]);
+            }
+            data[data.size() - 1] = std::move(v);
         }
-        data[data.size() - 1] = std::move(t) // In any case, place new at the back
+        else
+        {
+            data.push_back(std::move(v));
+        }
     }
     Json::Value Serialize() const
     {
         Json::Value res;
-        for (uint32_t i = 0; i < end; ++i)
+        for (uint32_t i = 0; i < data.size(); ++i)
         {
             res[i]["to"] = data[i].to;
             res[i]["from"] = data[i].from;
