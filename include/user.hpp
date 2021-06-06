@@ -38,12 +38,14 @@ struct User
         {
             uint32_t newLogSize = std::min(pre_log_size * ((log_j.size() / pre_log_size) + 1), max_log_size);
             log.data.reserve(newLogSize);
-            for (uint32_t i = std::max(0, log_j.size() - max_log_size); i < log_j.size(); i++) {
-                log.data.push_back(std::move(Transaction(
-                    log_j[i]["from"].asCString(),
+            for (uint32_t i = (log_j.size() - max_log_size) * (log_j.size() > max_log_size); i < log_j.size(); i++) 
+            {
+                log.data.push_back(std::move(Transaction( // Push back because `i` is not at the beginning 
+                    log_j[i]["from"].asCString(),         // and no array creation with `vector::resize()`
                     log_j[i]["to"].asCString(),
                     log_j[i]["amount"].asUInt(),
-                    log_j[i]["time"].asUInt64())));
+                    log_j[i]["time"].asUInt64()
+                )));
             }
         }
     }
