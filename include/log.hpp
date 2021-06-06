@@ -11,8 +11,9 @@ struct Log
     {
         if (data.size() == max_log_size) // If we hit the max size
         {
-            for (uint32_t i = 0; i < data.size() - 1; i--) // Make room at the back
+            for (uint32_t i = 1; i < data.size(); i++) // Make room at the back
             {
+                std::cout << i << '\n';
                 data[i - 1] = std::move(data[i]); // Shifts everything left
             }
             data[data.size() - 1] = std::move(t); // Place new in opened spot
