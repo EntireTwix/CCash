@@ -22,15 +22,9 @@ void SaveSig(int s)
 
 int main(int argc, char **argv)
 {
-    static_assert(pre_log_size <= max_log_size, "`max_log_size` must be larger than `pre_log_size`.");
-    if constexpr (max_log_size)
-    {
-        if (max_log_size % pre_log_size)
-        {
-            std::cerr << "`max_log_size` must be a multiple of `pre_log_size`.";
-            return 0;
-        }
-    }
+    // Static assertations for logging only (!max_log_size)
+    static_assert(!max_log_size || pre_log_size < max_log_size, "`max_log_size` must be larger than `pre_log_size`.");
+    static_assert(!max_log_size || !(max_log_size % pre_log_size), "`max_log_size` must be a multiple of `pre_log_size`.");
 
     if (argc != 4)
     {

@@ -7,31 +7,22 @@
 struct Log
 {
     std::vector<Transaction> data;
-    void AddTrans(Transaction &&v)
+    void AddTrans(Transaction &&t)
     {
-        if (data.capacity() == data.size() && data.size() < max_log_size) //if memory reserved is full and max isnt reached
+        if (data.size() == max_log_size) // If we hit the max size
         {
-            if (data.size() + pre_log_size > max_log_size) //if prefetched memory is larger then max
+            for (uint32_t i = 0; i < data.size() - 1; i--) // Make room at the back
             {
-                data.reserve(max_log_size); //just allocate max
+                data[i - 1] = std::move(data[i]); // Shifts everything left
             }
-            else
-            {
-                data.reserve(data.size() + pre_log_size); //prefetching memory
-            }
+            data[data.size() - 1] = std::move(t); // Place new in opened spot
+            return;
         }
-        if (data.size() == max_log_size)
+        else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
         {
-            for (size_t i = 0; i < data.size() - 1; ++i)
-            {
-                data[i] = std::move(data[i + 1]);
-            }
-            data[data.size() - 1] = std::move(v);
+            data.reserve(data.capacity() + pre_log_size); // Reserve more memory
         }
-        else
-        {
-            data.push_back(std::move(v));
-        }
+        data.push_back(std::move(t)); // In either case we have space under max length, move to new spot
     }
     Json::Value Serialize() const
     {
