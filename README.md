@@ -76,8 +76,12 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
 
-## Contributions
+## FAQ
+**Q:** how is money initially injected into the economy
+**A:** you can take any approach you want, one that I recommend is using a one way exchange via the CC ATM above to have players mine the initial currency, this rewards early adopters and has a sunk cost effect in that the resource is promptly burned
 
+## Contributions
+Thank you to the contributors
 | Name | Work |
 | :--- | --- |
 | [Expand](https://github.com/Expand-sys) | Frontend |
