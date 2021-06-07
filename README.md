@@ -77,17 +77,23 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
 
 ## FAQ
+**Q:** how is money initially injected into the economy
 
-some frequently asked questions are
+**A:** you can take any approach you want, one that I recommend is using a one way exchange via the CC ATM above to have players mine the initial currency, this rewards early adopters and has a sunk cost effect in that the resource is promptly burned
 
-## Contributions
+## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
+Thank you to the contributors
+| Name | Work |
+| :--- | --- |
+| [Expand](https://github.com/Expand-sys) | Frontend |
+| [React](https://github.com/Reactified) | CC {API, Shops, and ATM} |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized |
 
-[Doggo](https://github.com/FearlessDoggo21) Logs Optimized
 
 ## Features
 
 ### Performance
-
+- In memory database instead of on disk
 - **NOT** written in Lua, like a OC/CC implementation
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
