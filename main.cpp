@@ -22,15 +22,9 @@ void SaveSig(int s)
 
 int main(int argc, char **argv)
 {
-    static_assert(pre_log_size <= max_log_size, "`max_log_size` must be larger than `pre_log_size`.");
-    if constexpr (max_log_size && pre_log_size)
-    {
-        if (max_log_size % pre_log_size)
-        {
-            std::cerr << "`max_log_size` must be a multiple of `pre_log_size`.";
-            return 0;
-        }
-    }
+    static_assert(bool(max_log_size) == bool(pre_log_size), "You must either utilize both or neither logging variables.\n");
+    static_assert(max_log_size >= pre_log_size, "The maximum log size must be larger than or equal to the amount preallocated.\n");
+    static_assert(!max_log_size || !(max_log_size % pre_log_size), "The maximum log size must be divisible by the preallocation size.\n");
 
     if (argc != 4)
     {
