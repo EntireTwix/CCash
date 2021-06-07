@@ -23,7 +23,7 @@ void SaveSig(int s)
 int main(int argc, char **argv)
 {
     static_assert(pre_log_size <= max_log_size, "`max_log_size` must be larger than `pre_log_size`.");
-    if constexpr (max_log_size)
+    if constexpr (max_log_size && pre_log_size)
     {
         if (max_log_size % pre_log_size)
         {
