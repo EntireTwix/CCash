@@ -76,18 +76,14 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
 
-## FAQ
-
-some frequently asked questions are
-
 ## Contributions
 
-[Doggo](https://github.com/FearlessDoggo21) Logs Optimized
+[Doggo](https://github.com/FearlessDoggo21) : Logs Optimized
 
 ## Features
 
 ### Performance
-
+- In memory database instead of on disk
 - **NOT** written in Lua, like a OC/CC implementation
 - written in **C++**, arguably the fastest language
 - **multi-threaded**
