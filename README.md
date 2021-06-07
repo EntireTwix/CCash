@@ -78,6 +78,7 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 ## FAQ
 **Q:** how is money initially injected into the economy
+
 **A:** you can take any approach you want, one that I recommend is using a one way exchange via the CC ATM above to have players mine the initial currency, this rewards early adopters and has a sunk cost effect in that the resource is promptly burned
 
 ## Contributions
