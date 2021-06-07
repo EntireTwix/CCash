@@ -13,7 +13,9 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
 ## Build
+
 drogon depedencies
+
 ```
 sudo apt install libjsoncpp-dev
 sudo apt install uuid-dev
@@ -21,7 +23,9 @@ sudo apt install openssl
 sudo apt install libssl-dev
 sudo apt install zlib1g-dev
 ```
+
 building the project
+
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
 mkdir build
@@ -29,11 +33,15 @@ cd build
 cmake ..
 make -j<threads>
 ```
+
 then edit config.json to include the paths to your certs for HTTPS (I use certbot), or just remove the listener for port 443.
+
 ```
 vim ../config.json
 ```
+
 finally, run the program
+
 ```
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
 ```
@@ -45,12 +53,12 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 ### Implemented:
 
 - [Web Frontend](https://github.com/Expand-sys/ccashfrontend)
-![image](https://user-images.githubusercontent.com/31377881/116965729-4ab44500-ac63-11eb-9f11-dc04be6b3d63.png)
+  ![image](https://user-images.githubusercontent.com/31377881/116965729-4ab44500-ac63-11eb-9f11-dc04be6b3d63.png)
 - [CC Frontend](https://github.com/Reactified/rpm/blob/main/packages/ccash-wallet)
-![image](https://user-images.githubusercontent.com/31377881/116967157-8b618d80-ac66-11eb-8f2e-4a6297ef0b16.png)
+  ![image](https://user-images.githubusercontent.com/31377881/116967157-8b618d80-ac66-11eb-8f2e-4a6297ef0b16.png)
 - [CC Shop](https://github.com/Reactified/rpm/tree/main/packages/ccash-shop)
-![image](https://user-images.githubusercontent.com/31377881/120050327-de163700-bfd1-11eb-9d5a-f75c003e867c.png)
-![image](https://user-images.githubusercontent.com/31377881/120050367-09992180-bfd2-11eb-9a22-449d73c196cf.png)
+  ![image](https://user-images.githubusercontent.com/31377881/120050327-de163700-bfd1-11eb-9d5a-f75c003e867c.png)
+  ![image](https://user-images.githubusercontent.com/31377881/120050367-09992180-bfd2-11eb-9a22-449d73c196cf.png)
 - [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 - [CC ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank) an ATM for economies allowing for an initial exchange to start up
 
@@ -67,6 +75,14 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 - Some trust based system for transactions similiar to Paypal
 
 `**WARNING** : abruptly killing the program will result in data loss, use Close() method to close safely`
+
+## FAQ
+
+some frequently asked questions are
+
+## Contributions
+
+[Doggo](https://github.com/FearlessDoggo21) Logs Optimized
 
 ## Features
 
