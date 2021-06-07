@@ -78,7 +78,12 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 ## Contributions
 
-[Doggo](https://github.com/FearlessDoggo21) : Logs Optimized
+| Name | Work |
+| :--- | --- |
+| [Expand](https://github.com/Expand-sys) | Frontend |
+| [React](https://github.com/Reactified) | In-Game connected services |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs Optimized |
+
 
 ## Features
 
