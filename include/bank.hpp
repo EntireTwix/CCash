@@ -286,6 +286,9 @@ public:
         if (!temp.isNull())
         {
             writer->write(temp, &user_save);
+        }
+        else
+        {
             throw std::invalid_argument("Saving Failed\n");
         }
         user_save.close();
@@ -303,8 +306,8 @@ public:
         if (!parseFromStream(builder, user_save, &temp, &errs))
         {
             std::cerr << errs << '\n';
-            throw std::invalid_argument("Parsing Failed\n");
             user_save.close();
+            throw std::invalid_argument("Parsing Failed\n");
         }
         else
         {
