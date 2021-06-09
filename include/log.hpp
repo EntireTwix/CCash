@@ -1,7 +1,7 @@
 #pragma once
 #include <array>
 #include <algorithm>
-#include "log_consts.hpp"
+#include "consts.hpp"
 #include "transactions.hpp"
 
 struct Log

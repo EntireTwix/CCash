@@ -68,25 +68,25 @@ public:
         GEN_BODY
         JSON(bank.AdminAddUser(body["attempt"].asCString(), body["name"].asCString(), body["init_bal"].asUInt(), body["init_pass"].asCString()));
     }
-    void DelUser(req_args) const
+    void DelUser(req_args, const std::string &name) const
     {
         GEN_BODY
-        JSON(bank.DelUser(body["name"].asCString(), body["attempt"].asCString()));
+        JSON(bank.DelUser(name, body["attempt"].asCString()));
     }
-    void AdminDelUser(req_args) const
+    void AdminDelUser(req_args, const std::string &name) const
     {
         GEN_BODY
-        JSON(bank.AdminDelUser(body["name"].asCString(), body["attempt"].asCString()));
+        JSON(bank.AdminDelUser(name, body["attempt"].asCString()));
     }
     void SendFunds(req_args) const
     {
         GEN_BODY
         JSON(bank.SendFunds(body["a_name"].asCString(), body["b_name"].asCString(), body["amount"].asUInt(), body["attempt"].asCString()));
     }
-    void ChangePassword(req_args) const
+    void ChangePassword(req_args, const std::string &name) const
     {
         GEN_BODY
-        JSON(bank.ChangePassword(body["name"].asCString(), body["attempt"].asCString(), body["new_pass"].asCString()));
+        JSON(bank.ChangePassword(name, body["attempt"].asCString(), body["new_pass"].asCString()));
     }
     void Contains(req_args, const std::string &name) const
     {
@@ -96,10 +96,10 @@ public:
     {
         JSON(bank.GetBal(name));
     }
-    void VerifyPassword(req_args) const
+    void VerifyPassword(req_args, const std::string &name) const
     {
         GEN_BODY
-        JSON(bank.VerifyPassword(body["name"].asCString(), body["attempt"].asCString()));
+        JSON(bank.VerifyPassword(name, body["attempt"].asCString()));
     }
     void SetBal(req_args, const std::string &name) const
     {
@@ -132,17 +132,17 @@ public:
     METHOD_ADD(BankF::AdminAddUser, "/admin/user", Post, Options);
     METHOD_ADD(BankF::SendFunds, "/sendfunds", Post, Options);
 
-    METHOD_ADD(BankF::ChangePassword, "/changepass", Patch, Options);
+    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
     METHOD_ADD(BankF::SetBal, "/admin/{name}/bal", Patch, Options);
 
     METHOD_ADD(BankF::Help, "/help", Get, Options);
-    METHOD_ADD(BankF::VerifyPassword, "/vpass", Post, Options);
+    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Post, Options);
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
-    METHOD_ADD(BankF::AdminVerifyPass, "/admin/vpass", Post, Options);
+    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Post, Options);
     METHOD_ADD(BankF::GetLog, "/{name}/log", Post, Options);
 
-    METHOD_ADD(BankF::DelUser, "/user", Delete, Options);
-    METHOD_ADD(BankF::AdminDelUser, "/admin/user", Delete, Options);
+    METHOD_ADD(BankF::DelUser, "/user/{name}", Delete, Options);
+    METHOD_ADD(BankF::AdminDelUser, "/admin/user/{name}", Delete, Options);
     METHOD_LIST_END
 };
