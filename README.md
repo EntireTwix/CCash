@@ -48,7 +48,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 ## Connected Services
 
-Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as help.html). Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
+Go to `{ip}/BankF/help` to see the bank's methods (also found in help.html). Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas are
 
 ### Implemented:
 
