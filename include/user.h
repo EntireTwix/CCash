@@ -2,7 +2,7 @@
 #include <json/json.h>
 #include <string>
 #include <algorithm>
-#include "xxhash.h"
+#include <xxhash.h>
 #include "log.h"
 
 struct User

@@ -18,7 +18,10 @@ drogon depedencies (varies by OS/distro)
 ```
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 ```
-
+xxhash depedency
+```
+sudo apt install xxhash
+```
 building the project
 
 ```
@@ -54,10 +57,10 @@ Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (y
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name | Work |
-| :--- | --- |
-| [Expand](https://github.com/Expand-sys) | Frontend |
-| [React](https://github.com/Reactified) | CC {API, Shops, and ATM} |
+| Name                                        | Work                                      |
+| :------------------------------------------ | ----------------------------------------- |
+| [Expand](https://github.com/Expand-sys)     | Frontend                                  |
+| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM}                  |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API |
 
 

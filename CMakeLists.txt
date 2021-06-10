@@ -11,6 +11,7 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(Threads)
+find_package(xxhash)
 add_executable(${PROJECT_NAME} main.cpp )
 target_sources(${PROJECT_NAME} PRIVATE
     src/bank_f.cpp
@@ -18,7 +19,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/log.cpp
     src/transaction.cpp
     src/user.cpp
-    src/xxhash.c
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
@@ -28,3 +28,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC third_party/drogon/lib/inc)
 add_subdirectory(third_party/drogon)
 target_link_libraries(${PROJECT_NAME} PRIVATE drogon)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${CMAKE_THREAD_LIBS_INIT} )
+target_link_libraries(${PROJECT_NAME} PRIVATE xxhash)
