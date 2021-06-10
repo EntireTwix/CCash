@@ -137,11 +137,11 @@ public:
     METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
 
     METHOD_ADD(BankF::Help, "/help", Get, Options);
-    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Post, Options); //maybe get?
+    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Get, Options);
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
-    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Post, Options); //maybe get?
-    METHOD_ADD(BankF::GetLog, "/{name}/log", Post, Options);
+    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Get, Options);
+    METHOD_ADD(BankF::GetLog, "/{name}/log", Get, Options);
 
     METHOD_ADD(BankF::DelUser, "/user/{name}", Delete, Options);
     METHOD_ADD(BankF::AdminDelUser, "/admin/user/{name}", Delete, Options);
