@@ -10,6 +10,7 @@ using namespace drogon;
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
+#define PASS_HEADER std::string pass = req->getHeader("Password");
 
 template <typename T>
 INLINE Json::Value JsonReturn(T &&val)
@@ -43,9 +44,9 @@ public:
     }
     void Close(req_args) const
     {
-        GEN_BODY
+        PASS_HEADER
         bool res;
-        if (body["attempt"].asCString() == bank.admin_pass)
+        if (pass == bank.admin_pass)
         {
             bank.Save();
 
@@ -58,35 +59,35 @@ public:
         }
         JSON(res);
     }
-    void AddUser(req_args) const
+    void AddUser(req_args, std::string &&name) const
     {
-        GEN_BODY
-        JSON(bank.AddUser(body["name"].asCString(), body["init_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.AddUser(std::move(name), std::move(pass)));
     }
-    void AdminAddUser(req_args) const
+    void AdminAddUser(req_args, std::string &&name, uint32_t init_bal, std::string &&init_pass) const
     {
-        GEN_BODY
-        JSON(bank.AdminAddUser(body["attempt"].asCString(), body["name"].asCString(), body["init_bal"].asUInt(), body["init_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminAddUser(pass, std::move(name), init_bal, std::move(init_pass)));
     }
     void DelUser(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.DelUser(name, body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.DelUser(name, pass));
     }
     void AdminDelUser(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.AdminDelUser(name, body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminDelUser(name, pass));
     }
     void SendFunds(req_args, const std::string name, const std::string to, uint32_t amount) const
     {
-        GEN_BODY
-        JSON(bank.SendFunds(name, to, amount, body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.SendFunds(name, to, amount, pass));
     }
     void ChangePassword(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.ChangePassword(name, body["attempt"].asCString(), body["new_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.ChangePassword(name, pass, std::string(req->getBody())));
     }
     void Contains(req_args, const std::string &name) const
     {

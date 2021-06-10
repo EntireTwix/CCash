@@ -286,12 +286,13 @@ public:
         if (!temp.isNull())
         {
             writer->write(temp, &user_save);
+            user_save.close();
         }
         else
         {
+            user_save.close();
             throw std::invalid_argument("Saving Failed\n");
         }
-        user_save.close();
     }
 
     //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
