@@ -39,7 +39,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
     }
     else
     {
-        return state * ErrorResponse::WrongPassword;
+        return (!state * ErrorResponse::WrongAdminPassword) + (state);
     }
 }
 //not branchless yet
@@ -53,7 +53,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     }
     else
     {
-        return state * ErrorResponse::WrongAdminPassword;
+        return (!state * ErrorResponse::WrongAdminPassword) + (state);
     }
 }
 
