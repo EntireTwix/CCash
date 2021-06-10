@@ -14,8 +14,7 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 
 ## Build
 
-drogon depedencies
-
+drogon depedencies (varies by OS/distro)
 ```
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 ```
