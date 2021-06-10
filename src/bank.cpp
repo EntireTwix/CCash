@@ -148,7 +148,7 @@ bool Bank::Contains(const std::string &name) const
 }
 bool Bank::AdminVerifyPass(const std::string &attempt)
 {
-    return (admin_pass != attempt);
+    return (admin_pass == attempt);
 }
 
 int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
