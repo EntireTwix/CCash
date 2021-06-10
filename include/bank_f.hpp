@@ -19,7 +19,7 @@ INLINE Json::Value JsonReturn(T &&val)
     {
         res["value"] = (int)val; //becuase of json lib interpreting 67 as 'A' for example
     }
-    else if constexpr (std::is_same_v<T, long>)
+    else if constexpr (std::is_same_v<T, uint64_t>)
     {
         res["value"] = (Json::Int64)val;
     }
