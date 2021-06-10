@@ -49,6 +49,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 ## Connected Services
 
+
 Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as help.html). Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
 
 ## FAQ
@@ -58,11 +59,12 @@ Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as hel
 
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
-| Name                                        | Work                          |
-| :------------------------------------------ | ----------------------------- |
-| [Expand](https://github.com/Expand-sys)     | Frontend                      |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM}      |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized |
+
+| Name | Work |
+| :--- | --- |
+| [Expand](https://github.com/Expand-sys) | Frontend |
+| [React](https://github.com/Reactified) | CC {API, Shops, and ATM} |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API |
 
 
 ## Features
@@ -85,7 +87,7 @@ Thank you to the contributors
 ### Accessibility
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
-- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
+- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
 - **Logging** of all transactions, configurable in [log_consts.hpp](include/log_consts.hpp)
 
 ## Dependencies
