@@ -2,6 +2,7 @@
 #include <fstream>
 #include <shared_mutex>
 #include "xxhash.h"
+#include "error_responses.hpp"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
@@ -32,125 +33,189 @@ private:
 public:
     std::string admin_pass;
 
-    bool AddUser(const std::string &name, std::string &&init_pass)
+    int_fast8_t AddUser(const std::string &name, std::string &&init_pass)
     {
-        if (name.size() > 50)
+        if (name.size() > max_name_size)
         {
-            return false;
+            return ErrorResponse::NameTooLong;
         }
-        std::shared_lock<std::shared_mutex> lock{size_l};
-        return users.try_emplace_l(
-            name, [](User &) {}, std::move(init_pass));
-    }
-    bool AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
-    {
-        if (name.size() > 50)
-        {
-            return false;
-        }
-        bool state = (admin_pass == attempt);
-        if (state)
         {
             std::shared_lock<std::shared_mutex> lock{size_l};
-            state = users.try_emplace_l(
-                name, [](User &) {}, init_bal, std::move(init_pass));
+            if (!users.try_emplace_l(
+                    name, [](User &) {}, std::move(init_pass)))
+            {
+                return ErrorResponse::UserAlreadyExists;
+            }
+            else
+            {
+                return true;
+            }
         }
-        return state;
+    }
+    int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
+    {
+        if (name.size() > max_name_size)
+        {
+            return ErrorResponse::NameTooLong;
+        }
+        if (admin_pass != attempt)
+        {
+            return ErrorResponse::WrongAdminPassword;
+        }
+        {
+            std::shared_lock<std::shared_mutex> lock{size_l};
+            if (!users.try_emplace_l(
+                    name, [](User &) {}, init_bal, std::move(init_pass)))
+            {
+                return ErrorResponse::UserAlreadyExists;
+            }
+            else
+            {
+                return true;
+            }
+        }
     }
 
-    bool DelUser(const std::string &name, const std::string &attempt)
+    int_fast8_t DelUser(const std::string &name, const std::string &attempt)
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        return users.erase_if(name, [&attempt](User &u) { return (XXH3_64bits(attempt.data(), attempt.size()) == u.password); });
+        bool state = false;
+        if (!users.erase_if(name, [&state, &attempt](User &u) { return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password); }))
+        {
+            return ErrorResponse::UserNotFound;
+        }
+        else
+        {
+            return state * ErrorResponse::WrongPassword;
+        }
     }
-    bool AdminDelUser(const std::string &name, const std::string &attempt)
+    int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt)
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        return users.erase_if(name, [this, &attempt](const User &) { return (admin_pass == attempt); });
+        bool state = false;
+        if (!users.erase_if(name, [&state, this, &attempt](const User &) { return state = (admin_pass == attempt); }))
+        {
+            return ErrorResponse::UserNotFound;
+        }
+        else
+        {
+            return state * ErrorResponse::WrongAdminPassword;
+        }
     }
 
-    bool SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
+    int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
     {
         //cant send money to self, from self or amount is 0
         if (a_name == b_name || !amount)
         {
-            return false;
+            return ErrorResponse::InvalidRequest;
         }
 
-        //if A exists, A can afford it, and A's password matches
-        bool state = false;
+        int_fast8_t state = false;
         {
             std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
-            users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-                if (state = (a.balance >= amount) && (a.password == XXH3_64bits(attempt.data(), attempt.size())))
-                {
-                    a.balance -= amount;
-                }
-            });
-
-            if (state)
+            if (users.modify_if(a_name, [&state, amount, &attempt](User &a) {
+                    //if A exists, A can afford it, and A's password matches
+                    if (a.balance < amount)
+                    {
+                        state = ErrorResponse::InsufficientFunds;
+                    }
+                    else
+                    {
+                        if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
+                        {
+                            state = ErrorResponse::WrongPassword;
+                        }
+                        else
+                        {
+                            a.balance -= amount;
+                            state = true;
+                        }
+                    }
+                }))
             {
-                //if B doesnt exist
-                if (!users.modify_if(b_name, [amount](User &b) {
-                        b.balance += amount;
-                    }))
+                return ErrorResponse::UserNotFound;
+            }
+            else
+            {
+                if (!state)
                 {
-                    //attempt to refund if A exist
-                    users.modify_if(a_name, [amount](User &a) {
-                        a.balance += amount;
-                    });
-                    return false; //because had to refund transaction
+                    return state;
+                }
+                else
+                {
+                    //if B doesnt exist
+                    if (!users.modify_if(b_name, [amount](User &b) {
+                            b.balance += amount;
+                        }))
+                    {
+                        //attempt to refund if A exist
+                        users.modify_if(a_name, [amount](User &a) {
+                            a.balance += amount;
+                        });
+                        return ErrorResponse::UserNotFound; //because had to refund transaction
+                    }
+                    else
+                    {
+                        if constexpr (max_log_size)
+                        {
+                            Transaction temp(a_name, b_name, amount);
+                            Transaction temp2 = temp;
+                            users.modify_if(a_name, [&temp](User &a) {
+                                a.log.AddTrans(std::move(temp));
+                            });
+                            users.modify_if(b_name, [&temp2](User &b) {
+                                b.log.AddTrans(std::move(temp2));
+                            });
+                        }
+                        return true;
+                    }
                 }
             }
         }
-        if constexpr (max_log_size)
-        {
-            if (state)
-            {
-                Transaction temp(a_name, b_name, amount);
-                Transaction temp2 = temp;
-                users.modify_if(a_name, [&temp](User &a) {
-                    a.log.AddTrans(std::move(temp));
-                });
-                users.modify_if(b_name, [&temp2](User &b) {
-                    b.log.AddTrans(std::move(temp2));
-                });
-            }
-        }
-
-        return state;
     }
+
     bool Contains(const std::string &name) const
     {
         return users.contains(name);
     }
-    bool SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
-    {
-        bool state = (admin_pass == attempt);
-        if (state)
-        {
-            users.modify_if(name, [amount](User &u) {
-                u.balance = amount;
-            });
-        }
-        return state;
-    }
     bool AdminVerifyPass(const std::string &attempt)
     {
-        return admin_pass == attempt;
+        return (admin_pass != attempt);
     }
 
+    int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
+    {
+        if (admin_pass != attempt)
+        {
+            return ErrorResponse::WrongAdminPassword;
+        }
+        else
+        {
+            if (!users.modify_if(name, [amount](User &u) {
+                    u.balance = amount;
+                }))
+            {
+                return ErrorResponse::UserNotFound;
+            }
+            else
+            {
+                return true;
+            }
+        }
+    }
     int_fast64_t GetBal(const std::string &name) const
     {
-        int_fast64_t res = -1;
+        int_fast64_t res = ErrorResponse::UserNotFound;
         users.if_contains(name, [&res](const User &u) {
             res = u.balance;
         });
         return res;
     }
+
     int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const
     {
-        int_fast8_t res = -1;
+        int_fast8_t res = ErrorResponse::UserNotFound;
         users.if_contains(name, [&res, &attempt](const User &u) {
             res = u.password == XXH3_64bits(attempt.data(), attempt.size());
         });
@@ -158,10 +223,13 @@ public:
     }
     int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
     {
-        int_fast8_t res = -1;
+        int_fast8_t res = ErrorResponse::UserNotFound;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
-            res = (u.password == XXH3_64bits(attempt.data(), attempt.size()));
-            if (res)
+            if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
+            {
+                res = ErrorResponse::WrongPassword;
+            }
+            else
             {
                 u.password = XXH3_64bits(new_pass.data(), new_pass.size());
             }
@@ -175,7 +243,7 @@ public:
         if (!users.if_contains(name, [&res, &attempt](const User &u) {
                 if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                 {
-                    res = 0;
+                    res = ErrorResponse::WrongPassword;
                 }
                 else
                 {
@@ -191,17 +259,13 @@ public:
                 }
             }))
         {
-            return -1;
+            return ErrorResponse::UserNotFound;
         }
         return res;
     }
 
     void Save()
     {
-        Json::StreamWriterBuilder builder;
-        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-
-        std::ofstream user_save("../users.json");
         Json::Value temp;
 
         //loading info into json temp
@@ -217,9 +281,16 @@ public:
         }
         if (!temp.isNull())
         {
+            std::ofstream user_save("../users.json");
+            Json::StreamWriterBuilder builder;
+            const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
             writer->write(temp, &user_save);
+            user_save.close();
         }
-        user_save.close();
+        else
+        {
+            throw std::invalid_argument("Saving Failed\n");
+        }
     }
 
     //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
@@ -234,8 +305,8 @@ public:
         if (!parseFromStream(builder, user_save, &temp, &errs))
         {
             std::cerr << errs << '\n';
-            throw std::invalid_argument("Parsing Failed\n");
             user_save.close();
+            throw std::invalid_argument("Parsing Failed\n");
         }
         else
         {
@@ -254,3 +325,5 @@ public:
         }
     }
 } bank;
+
+//TODO make branchless

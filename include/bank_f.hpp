@@ -10,6 +10,7 @@ using namespace drogon;
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
+#define PASS_HEADER std::string pass = req->getHeader("Password");
 
 template <typename T>
 INLINE Json::Value JsonReturn(T &&val)
@@ -19,7 +20,7 @@ INLINE Json::Value JsonReturn(T &&val)
     {
         res["value"] = (int)val; //becuase of json lib interpreting 67 as 'A' for example
     }
-    else if constexpr (std::is_same_v<T, long>)
+    else if constexpr (std::is_same_v<T, uint64_t>)
     {
         res["value"] = (Json::Int64)val;
     }
@@ -37,15 +38,15 @@ public:
     {
         auto resp = HttpResponse::newHttpResponse();
         auto handlerInfo = app().getHandlersInfo();
-        resp->setBody("<body> <h1>ALL FUNCTIONS (that have args) ARE EXPECTING JSON AS DATA TYPE</h1> <h2>/BankF/<span style=\"color: #993300;\">admin</span>/close (POST)</h2> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password</p> <blockquote> <p>Closes and Saves the server.</p> </blockquote> <h2>/BankF/user (POST)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of the user being added (must be less then 50 characters)</p> <p><span style=\"background-color: #808080;\">&nbsp;init_pass&nbsp;</span> - initial password for the user being added</p> <blockquote> <p>Adds a user to the bank</p> </blockquote> <h2>/BankF/<span style=\"color: #993300;\">admin</span>/user (POST)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of the user being added</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password required to add user with balance</p> <p><span style=\"background-color: #808080;\">&nbsp;init_bal&nbsp;</span> - initial balance for user being added</p> <p><span style=\"background-color: #808080;\">&nbsp;init_pass&nbsp;</span> - initial password for user being added</p> <blockquote> <p>Adds a user with initial balance</p> </blockquote> <h2>/BankF/sendfunds (POST)</h2> <p><span style=\"background-color: #808080;\">&nbsp;a_name&nbsp;</span> - sender's name</p> <p><span style=\"background-color: #808080;\">&nbsp;b_name&nbsp;</span> - reciever's name</p> <p><span style=\"background-color: #808080;\">&nbsp;amount&nbsp;</span> - amount being sent</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of sender</p> <blockquote> <p>Sends money from one user to another</p> </blockquote> <h2>/BankF/changepass (PATCH)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user's password being changes</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of user being changed</p> <p><span style=\"background-color: #808080;\">&nbsp;new_pass&nbsp;</span> - new password to replace the current user's password</p> <blockquote> <p>Changes password of a user, returns -1 if user doesnt exist</p> </blockquote> <h2>/BankF/<span style=\"color: #993300;\">admin</span>/{<span style=\"color: #339966;\">name</span>}/bal (PATCH)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - the name of the user being set</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - the admin password required</p> <p><span style=\"background-color: #808080;\">&nbsp;amount&nbsp;</span> - the new balance of the user</p> <blockquote> <p>Sets the balance of a user</p> </blockquote> <h2>/BankF/help (GET)</h2> <blockquote> <p>the page you're looking at right now!</p> </blockquote> <h2>/BankF/vpass (POST)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being verified</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password being verified</p> <blockquote> <p>returns 0 or 1 based on if [attempt] is equal to the password of the user [name], or -1 if user does not exist. The intended usage for this function is for connected services</p> </blockquote> <h2>/BankF/contains/{<span style=\"color: #339966;\">name</span>} (GET)</h2> <blockquote> <p>returns a 0 or 1 based on if the bank contains the user</p> </blockquote> <h2>/BankF/{<span style=\"color: #339966;\">name</span>}/bal (GET)</h2> <blockquote> <p>returns the balance of a given user's name, if -1 that means the user does not exist</p> </blockquote> <h2>/BankF/<span style=\"color: #993300;\">admin</span>/vpass (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password</p> <blockquote> <p>Verifies if password entered is admin password</p> </blockquote> <h2>/BankF/{<span style=\"color: #339966;\">name</span>}/log (POST)</h2><p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - user password</p> <blockquote> <p>returns a list of last 100 transactions, -1 if user not found, 0 if invalid password</p> </blockquote><h2>/BankF/user (DELETE)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being deleted</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - password of user being deleted</p> <blockquote> <p>Deletes a user with the password of the user as verification</p> </blockquote> <h2>/BankF/<span style=\"color: #993300;\">admin</span>/user (DELETE)</h2> <p><span style=\"background-color: #808080;\">&nbsp;name&nbsp;</span> - name of user being deleted</p> <p><span style=\"background-color: #808080;\">&nbsp;attempt&nbsp;</span> - admin password</p> <blockquote> <p>Deletes a user with admin password as verification</p> </blockquote> </body>");
+        resp->setBody("<h1 class=\"code-line\" data-line-start=0 data-line-end=1 ><a id=\"Error_Responses_0\"></a>Error Responses</h1> <table class=\"table table-striped table-bordered\"> <thead> <tr> <th>#</th> <th>meaning</th> </tr> </thead> <tbody> <tr> <td>-1</td> <td>UserNotFound</td> </tr> <tr> <td>-2</td> <td>WrongPassword</td> </tr> <tr> <td>-3</td> <td>InvalidRequest</td> </tr> <tr> <td>-4</td> <td>WrongAdminPassword</td> </tr> <tr> <td>-5</td> <td>NameTooLong</td> </tr> <tr> <td>-6</td> <td>UserAlreadyExists</td> </tr> <tr> <td>-7</td> <td>InsufficientFunds</td> </tr> </tbody> </table> <h1 class=\"code-line\" data-line-start=12 data-line-end=13 ><a id=\"Things_of_Note_12\"></a>Things of Note</h1> <ul> <li class=\"has-line-data\" data-line-start=\"13\" data-line-end=\"14\">all endpoints respond with <strong>JSON</strong> file type</li> <li class=\"has-line-data\" data-line-start=\"14\" data-line-end=\"16\">&quot;<strong>A</strong>&quot; denotes requiring Authentication in the form of a header titled &quot;<strong>Password</strong>&quot;</li> </ul> <h1 class=\"code-line\" data-line-start=16 data-line-end=17 ><a id=\"Usage_16\"></a>Usage</h1> <table class=\"table table-striped table-bordered\"> <thead> <tr> <th style=\"text-align:center\">Name</th> <th style=\"text-align:left\">Path</th> <th style=\"text-align:center\">Method</th> <th style=\"text-align:center\">A</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td style=\"text-align:center\">GetBal</td> <td style=\"text-align:left\">/{name}/bal</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">true</td> <td>returns the balance of a given user <code>{name}</code></td> </tr> <tr> <td style=\"text-align:center\">GetLog</td> <td style=\"text-align:left\">/{name}/log</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">true</td> <td>returns a list of last <code>n</code> number of transactions (a configurable amount) of a given user <code>{name}</code></td> </tr> <tr> <td style=\"text-align:center\">SendFunds</td> <td style=\"text-align:left\">/{name}/send/{to}/amount={amount}</td> <td style=\"text-align:center\">POST</td> <td style=\"text-align:center\">false</td> <td>sends <code>{amount}</code> from user <code>{name}</code> to user <code>{to}</code></td> </tr> <tr> <td style=\"text-align:center\">VerifyPassword</td> <td style=\"text-align:left\">/{name}/pass/verify</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">true</td> <td>returns <code>true</code> or <code>false</code> depending on if the supplied user <code>{name}</code>'s password matches the password supplied in the header</td> </tr> </tbody> </table> <h1 class=\"code-line\" data-line-start=24 data-line-end=25 ><a id=\"Meta_Usage_24\"></a>Meta Usage</h1> <table class=\"table table-striped table-bordered\"> <thead> <tr> <th style=\"text-align:center\">Name</th> <th style=\"text-align:left\">Path</th> <th style=\"text-align:center\">Method</th> <th style=\"text-align:center\">A</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td style=\"text-align:center\">ChangePassword</td> <td style=\"text-align:left\">/{name}/pass/change</td> <td style=\"text-align:center\">PATCH</td> <td style=\"text-align:center\">true</td> <td>if the password supplied in the header matches the user <code>{name}</code>'s password, the user’s password is changed to the one given in the body</td> </tr> <tr> <td style=\"text-align:center\">SetBal</td> <td style=\"text-align:left\">/admin/{name}/bal/amount={amount}</td> <td style=\"text-align:center\">PATCH</td> <td style=\"text-align:center\">true</td> <td>sets the balance of a give user <code>{name}</code> if the supplied password matches the admin password</td> </tr> </tbody> </table> <h1 class=\"code-line\" data-line-start=30 data-line-end=31 ><a id=\"System_Usage_30\"></a>System Usage</h1> <table class=\"table table-striped table-bordered\"> <thead> <tr> <th style=\"text-align:center\">Name</th> <th style=\"text-align:left\">Path</th> <th style=\"text-align:center\">Method</th> <th style=\"text-align:center\">A</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td style=\"text-align:center\">Help</td> <td style=\"text-align:left\">/help</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">false</td> <td>the page you’re looking at right now!</td> </tr> <tr> <td style=\"text-align:center\">Close</td> <td style=\"text-align:left\">/admin/close</td> <td style=\"text-align:center\">POST</td> <td style=\"text-align:center\">true</td> <td>saves and then closes the program if the supplied password matches the admin password</td> </tr> <tr> <td style=\"text-align:center\">Contains</td> <td style=\"text-align:left\">/contains/{name}</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">false</td> <td>returns <code>true</code> or <code>false</code> depending on if the supplied user <code>{name}</code> exists</td> </tr> <tr> <td style=\"text-align:center\">AdminVerifyPass</td> <td style=\"text-align:left\">/admin/verify</td> <td style=\"text-align:center\">GET</td> <td style=\"text-align:center\">true</td> <td>returns <code>true</code> or <code>false</code> depending on if the password supplied in the header matches the admin password</td> </tr> </tbody> </table> <h1 class=\"code-line\" data-line-start=38 data-line-end=39 ><a id=\"User_Management_38\"></a>User Management</h1> <table class=\"table table-striped table-bordered\"> <thead> <tr> <th style=\"text-align:center\">Name</th> <th style=\"text-align:left\">Path</th> <th style=\"text-align:center\">Method</th> <th style=\"text-align:center\">A</th> <th>Description</th> </tr> </thead> <tbody> <tr> <td style=\"text-align:center\">AddUser</td> <td style=\"text-align:left\">/user/{name}</td> <td style=\"text-align:center\">POST</td> <td style=\"text-align:center\">true</td> <td>registers a user with the name <code>{name}</code>, balance of 0 and a password of the password supplied in the header</td> </tr> <tr> <td style=\"text-align:center\">AdminAddUser</td> <td style=\"text-align:left\">/admin/user/{name}?init_bal={init_bal}</td> <td style=\"text-align:center\">POST</td> <td style=\"text-align:center\">true</td> <td>if the password supplied in the header matches the admin password, then it registers a user with the name <code>{name}</code>, balance of <code>init_bal</code> and a password supplied by the body of the request</td> </tr> <tr> <td style=\"text-align:center\">DelUser</td> <td style=\"text-align:left\">/user/{name}</td> <td style=\"text-align:center\">DELETE</td> <td style=\"text-align:center\">true</td> <td>if the password supplied in the header matches the user <code>{name}</code>'s password, then the user is deleted</td> </tr> <tr> <td style=\"text-align:center\">AdminDelUser</td> <td style=\"text-align:left\">/admin/user/{name}</td> <td style=\"text-align:center\">DELETE</td> <td style=\"text-align:center\">true</td> <td>if the password supplied in the header matches the admin password, then the user is deleted</td> </tr> </tbody> </table>");
         resp->setExpiredTime(0);
         callback(resp);
     }
     void Close(req_args) const
     {
-        GEN_BODY
+        PASS_HEADER
         bool res;
-        if (body["attempt"].asCString() == bank.admin_pass)
+        if (pass == bank.admin_pass)
         {
             bank.Save();
 
@@ -58,35 +59,35 @@ public:
         }
         JSON(res);
     }
-    void AddUser(req_args) const
+    void AddUser(req_args, std::string &&name) const
     {
-        GEN_BODY
-        JSON(bank.AddUser(body["name"].asCString(), body["init_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.AddUser(std::move(name), std::move(pass)));
     }
-    void AdminAddUser(req_args) const
+    void AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const
     {
-        GEN_BODY
-        JSON(bank.AdminAddUser(body["attempt"].asCString(), body["name"].asCString(), body["init_bal"].asUInt(), body["init_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminAddUser(pass, std::move(name), init_bal, std::string(req->getBody())));
     }
-    void DelUser(req_args) const
+    void DelUser(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.DelUser(body["name"].asCString(), body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.DelUser(name, pass));
     }
-    void AdminDelUser(req_args) const
+    void AdminDelUser(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.AdminDelUser(body["name"].asCString(), body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminDelUser(name, pass));
     }
-    void SendFunds(req_args) const
+    void SendFunds(req_args, const std::string name, const std::string to, uint32_t amount) const
     {
-        GEN_BODY
-        JSON(bank.SendFunds(body["a_name"].asCString(), body["b_name"].asCString(), body["amount"].asUInt(), body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.SendFunds(name, to, amount, pass));
     }
-    void ChangePassword(req_args) const
+    void ChangePassword(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.ChangePassword(body["name"].asCString(), body["attempt"].asCString(), body["new_pass"].asCString()));
+        PASS_HEADER
+        JSON(bank.ChangePassword(name, pass, std::string(req->getBody())));
     }
     void Contains(req_args, const std::string &name) const
     {
@@ -96,27 +97,27 @@ public:
     {
         JSON(bank.GetBal(name));
     }
-    void VerifyPassword(req_args) const
+    void VerifyPassword(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.VerifyPassword(body["name"].asCString(), body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.VerifyPassword(name, pass));
     }
-    void SetBal(req_args, const std::string &name) const
+    void SetBal(req_args, const std::string &name, uint32_t amount) const
     {
-        GEN_BODY
-        JSON(bank.SetBal(name, body["attempt"].asCString(), body["amount"].asUInt()));
+        PASS_HEADER
+        JSON(bank.SetBal(name, pass, amount));
     }
     void AdminVerifyPass(req_args)
     {
-        GEN_BODY
-        JSON(bank.AdminVerifyPass(body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminVerifyPass(pass));
     }
     void GetLog(req_args, const std::string &name)
     {
         if constexpr (max_log_size)
         {
-            GEN_BODY
-            JSON(bank.GetLogs(name, body["attempt"].asCString()));
+            PASS_HEADER
+            JSON(bank.GetLogs(name, pass));
         }
         else
         {
@@ -127,22 +128,28 @@ public:
     }
 
     METHOD_LIST_BEGIN
-    METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
-    METHOD_ADD(BankF::AddUser, "/user", Post, Options);
-    METHOD_ADD(BankF::AdminAddUser, "/admin/user", Post, Options);
-    METHOD_ADD(BankF::SendFunds, "/sendfunds", Post, Options);
 
-    METHOD_ADD(BankF::ChangePassword, "/changepass", Patch, Options);
-    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal", Patch, Options);
-
-    METHOD_ADD(BankF::Help, "/help", Get, Options);
-    METHOD_ADD(BankF::VerifyPassword, "/vpass", Post, Options);
-    METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
+    //Usage
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
-    METHOD_ADD(BankF::AdminVerifyPass, "/admin/vpass", Post, Options);
-    METHOD_ADD(BankF::GetLog, "/{name}/log", Post, Options);
+    METHOD_ADD(BankF::GetLog, "/{name}/log", Get, Options);
+    METHOD_ADD(BankF::SendFunds, "/{name}/send/{to}/amount={amount}", Post, Options);
+    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Get, Options);
 
-    METHOD_ADD(BankF::DelUser, "/user", Delete, Options);
-    METHOD_ADD(BankF::AdminDelUser, "/admin/user", Delete, Options);
+    //Meta Usage
+    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
+    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
+
+    //System Usage
+    METHOD_ADD(BankF::Help, "/help", Get, Options);
+    METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
+    METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
+    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Get, Options);
+
+    //User Managment
+    METHOD_ADD(BankF::AddUser, "/user/{name}", Post, Options);
+    METHOD_ADD(BankF::AdminAddUser, "/admin/user/{name}?init_bal={init_bal}", Post, Options);
+    METHOD_ADD(BankF::DelUser, "/user/{name}", Delete, Options);
+    METHOD_ADD(BankF::AdminDelUser, "/admin/user/{name}", Delete, Options);
+
     METHOD_LIST_END
 };
