@@ -19,7 +19,7 @@
 | :------------: | :-------------------------------- | :----: | :---: | --------------------------------------------------------------------------------------------------------------------------- |
 |     GetBal     | /{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                                                |
 |     GetLog     | /{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}`                          |
-|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | false | sends `{amount}` from user `{name}` to user `{to}`                                                                          |
+|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                                          |
 | VerifyPassword | /{name}/pass/verify               |  GET   | true  | returns `true` or `false` depending on if the supplied user `{name}`'s password matches the password supplied in the header |
 
 # Meta Usage
