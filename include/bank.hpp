@@ -266,10 +266,6 @@ public:
 
     void Save()
     {
-        Json::StreamWriterBuilder builder;
-        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-
-        std::ofstream user_save("../users.json");
         Json::Value temp;
 
         //loading info into json temp
@@ -285,12 +281,14 @@ public:
         }
         if (!temp.isNull())
         {
+            std::ofstream user_save("../users.json");
+            Json::StreamWriterBuilder builder;
+            const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
             writer->write(temp, &user_save);
             user_save.close();
         }
         else
         {
-            user_save.close();
             throw std::invalid_argument("Saving Failed\n");
         }
     }
