@@ -3,7 +3,7 @@
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
-#include "bank_f.hpp"
+#include "bank_f.h"
 
 #include <signal.h>
 #include <stdlib.h>
@@ -12,6 +12,8 @@
 
 using namespace std::chrono;
 using namespace drogon;
+
+static Bank bank;
 
 void SaveSig(int s)
 {
@@ -66,7 +68,7 @@ int main(int argc, char **argv)
         }).detach();
     }
 
-    auto API = std::make_shared<BankF>();
+    auto API = std::make_shared<BankF>(&bank);
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");

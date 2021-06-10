@@ -14,14 +14,9 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 
 ## Build
 
-drogon depedencies
-
+drogon depedencies (varies by OS/distro)
 ```
-sudo apt install libjsoncpp-dev
-sudo apt install uuid-dev
-sudo apt install openssl
-sudo apt install libssl-dev
-sudo apt install zlib1g-dev
+sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 ```
 
 building the project
@@ -49,8 +44,7 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 ## Connected Services
 
-
-Go to `{ip}/BankF/help` to see the bank's methods (also found in releases as help.html). Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
+Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
 
 ## FAQ
 **Q:** how is money initially injected into the economy

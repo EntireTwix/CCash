@@ -17,9 +17,9 @@
 # Usage
 |      Name      | Path                              | Method |   A   | Description                                                                                                                 |
 | :------------: | :-------------------------------- | :----: | :---: | --------------------------------------------------------------------------------------------------------------------------- |
-|     GetBal     | /{name}/bal                       |  GET   | true  | returns the balance of a given user `{name}`                                                                                |
+|     GetBal     | /{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                                                |
 |     GetLog     | /{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}`                          |
-|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | false | sends `{amount}` from user `{name}` to user `{to}`                                                                          |
+|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                                          |
 | VerifyPassword | /{name}/pass/verify               |  GET   | true  | returns `true` or `false` depending on if the supplied user `{name}`'s password matches the password supplied in the header |
 
 # Meta Usage
@@ -39,7 +39,7 @@
 # User Management
 |     Name     | Path                                   | Method |   A   | Description                                                                                                                                                                                  |
 | :----------: | :------------------------------------- | :----: | :---: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   AddUser    | /user/{name}                           |  POST  | true  | registers a user with the name `{name}`, balance of 0 and a password of the password supplied in the header                                                                                  |
+|   AddUser    | /user/{name}                           |  POST  | true  | registers a user with the name `{name}`, balance of 0 and a password of the password supplied in the body                                                                                    |
 | AdminAddUser | /admin/user/{name}?init_bal={init_bal} |  POST  | true  | if the password supplied in the header matches the admin password, then it registers a user with the name `{name}`, balance of `init_bal` and a password supplied by the body of the request |
 |   DelUser    | /user/{name}                           | DELETE | true  | if the password supplied in the header matches the user `{name}`'s password, then the user is deleted                                                                                        |
 | AdminDelUser | /admin/user/{name}                     | DELETE | true  | if the password supplied in the header matches the admin password, then the user is deleted                                                                                                  |
