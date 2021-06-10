@@ -2,7 +2,7 @@
 #include <fstream>
 #include <shared_mutex>
 #include "xxhash.h"
-#include "endpoints.hpp"
+#include "error_responses.hpp"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.hpp"
 
