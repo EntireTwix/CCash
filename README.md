@@ -53,11 +53,12 @@ Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (y
 
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
-| Name                                        | Work                          |
-| :------------------------------------------ | ----------------------------- |
-| [Expand](https://github.com/Expand-sys)     | Frontend                      |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM}      |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized |
+
+| Name | Work |
+| :--- | --- |
+| [Expand](https://github.com/Expand-sys) | Frontend |
+| [React](https://github.com/Reactified) | CC {API, Shops, and ATM} |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API |
 
 
 ## Features
@@ -80,7 +81,7 @@ Thank you to the contributors
 ### Accessibility
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
-- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**. In contrast to an in-game modded implementation that would be range limited.
+- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
 - **Logging** of all transactions, configurable in [log_consts.hpp](include/log_consts.hpp)
 
 ## Dependencies
