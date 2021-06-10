@@ -78,10 +78,10 @@ public:
         GEN_BODY
         JSON(bank.AdminDelUser(name, body["attempt"].asCString()));
     }
-    void SendFunds(req_args) const
+    void SendFunds(req_args, const std::string name, const std::string to, uint32_t amount) const
     {
         GEN_BODY
-        JSON(bank.SendFunds(body["a_name"].asCString(), body["b_name"].asCString(), body["amount"].asUInt(), body["attempt"].asCString()));
+        JSON(bank.SendFunds(name, to, amount, body["attempt"].asCString()));
     }
     void ChangePassword(req_args, const std::string &name) const
     {
@@ -101,10 +101,10 @@ public:
         GEN_BODY
         JSON(bank.VerifyPassword(name, body["attempt"].asCString()));
     }
-    void SetBal(req_args, const std::string &name) const
+    void SetBal(req_args, const std::string &name, uint32_t amount) const
     {
         GEN_BODY
-        JSON(bank.SetBal(name, body["attempt"].asCString(), body["amount"].asUInt()));
+        JSON(bank.SetBal(name, body["attempt"].asCString(), amount));
     }
     void AdminVerifyPass(req_args)
     {
@@ -128,12 +128,12 @@ public:
 
     METHOD_LIST_BEGIN
     METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
-    METHOD_ADD(BankF::AddUser, "/user", Post, Options);
-    METHOD_ADD(BankF::AdminAddUser, "/admin/user", Post, Options);
-    METHOD_ADD(BankF::SendFunds, "/sendfunds", Post, Options);
+    METHOD_ADD(BankF::AddUser, "/user/{name}", Post, Options);
+    METHOD_ADD(BankF::AdminAddUser, "/admin/user/{name}", Post, Options);
+    METHOD_ADD(BankF::SendFunds, "{name}/send/{to}/amount={amount}", Post, Options);
 
-    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
-    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal", Patch, Options);
+    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options); //sub optimal
+    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
 
     METHOD_ADD(BankF::Help, "/help", Get, Options);
     METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Post, Options);
