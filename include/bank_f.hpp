@@ -99,25 +99,25 @@ public:
     }
     void VerifyPassword(req_args, const std::string &name) const
     {
-        GEN_BODY
-        JSON(bank.VerifyPassword(name, body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.VerifyPassword(name, pass));
     }
     void SetBal(req_args, const std::string &name, uint32_t amount) const
     {
-        GEN_BODY
-        JSON(bank.SetBal(name, body["attempt"].asCString(), amount));
+        PASS_HEADER
+        JSON(bank.SetBal(name, pass, amount));
     }
     void AdminVerifyPass(req_args)
     {
-        GEN_BODY
-        JSON(bank.AdminVerifyPass(body["attempt"].asCString()));
+        PASS_HEADER
+        JSON(bank.AdminVerifyPass(pass));
     }
     void GetLog(req_args, const std::string &name)
     {
         if constexpr (max_log_size)
         {
-            GEN_BODY
-            JSON(bank.GetLogs(name, body["attempt"].asCString()));
+            PASS_HEADER
+            JSON(bank.GetLogs(name, pass));
         }
         else
         {
@@ -137,10 +137,10 @@ public:
     METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
 
     METHOD_ADD(BankF::Help, "/help", Get, Options);
-    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Post, Options);
+    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Post, Options); //maybe get?
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
-    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Post, Options);
+    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Post, Options); //maybe get?
     METHOD_ADD(BankF::GetLog, "/{name}/log", Post, Options);
 
     METHOD_ADD(BankF::DelUser, "/user/{name}", Delete, Options);
