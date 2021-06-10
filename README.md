@@ -28,6 +28,7 @@ building the project
 
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
+cd CCash
 mkdir build
 cd build
 cmake ..
