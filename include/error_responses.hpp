@@ -1,5 +1,5 @@
 #pragma once
-enum Endpoint
+enum ErrorResponse
 {
     UserNotFound = -1,
     WrongPassword = -2,

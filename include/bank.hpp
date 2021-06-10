@@ -37,14 +37,14 @@ public:
     {
         if (name.size() > max_name_size)
         {
-            return Endpoint::NameTooLong;
+            return ErrorResponse::NameTooLong;
         }
         {
             std::shared_lock<std::shared_mutex> lock{size_l};
             if (!users.try_emplace_l(
                     name, [](User &) {}, std::move(init_pass)))
             {
-                return Endpoint::UserAlreadyExists;
+                return ErrorResponse::UserAlreadyExists;
             }
             else
             {
@@ -56,18 +56,18 @@ public:
     {
         if (name.size() > max_name_size)
         {
-            return Endpoint::NameTooLong;
+            return ErrorResponse::NameTooLong;
         }
         if (admin_pass != attempt)
         {
-            return Endpoint::WrongAdminPassword;
+            return ErrorResponse::WrongAdminPassword;
         }
         {
             std::shared_lock<std::shared_mutex> lock{size_l};
             if (!users.try_emplace_l(
                     name, [](User &) {}, init_bal, std::move(init_pass)))
             {
-                return Endpoint::UserAlreadyExists;
+                return ErrorResponse::UserAlreadyExists;
             }
             else
             {
@@ -82,11 +82,11 @@ public:
         bool state = false;
         if (!users.erase_if(name, [&state, &attempt](User &u) { return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password); }))
         {
-            return Endpoint::UserNotFound;
+            return ErrorResponse::UserNotFound;
         }
         else
         {
-            return state * Endpoint::WrongPassword;
+            return state * ErrorResponse::WrongPassword;
         }
     }
     int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt)
@@ -95,11 +95,11 @@ public:
         bool state = false;
         if (!users.erase_if(name, [&state, this, &attempt](const User &) { return state = (admin_pass == attempt); }))
         {
-            return Endpoint::UserNotFound;
+            return ErrorResponse::UserNotFound;
         }
         else
         {
-            return state * Endpoint::WrongAdminPassword;
+            return state * ErrorResponse::WrongAdminPassword;
         }
     }
 
@@ -108,7 +108,7 @@ public:
         //cant send money to self, from self or amount is 0
         if (a_name == b_name || !amount)
         {
-            return Endpoint::InvalidRequest;
+            return ErrorResponse::InvalidRequest;
         }
 
         int_fast8_t state = false;
@@ -118,13 +118,13 @@ public:
                     //if A exists, A can afford it, and A's password matches
                     if (a.balance < amount)
                     {
-                        state = Endpoint::InsufficientFunds;
+                        state = ErrorResponse::InsufficientFunds;
                     }
                     else
                     {
                         if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
                         {
-                            state = Endpoint::WrongPassword;
+                            state = ErrorResponse::WrongPassword;
                         }
                         else
                         {
@@ -134,7 +134,7 @@ public:
                     }
                 }))
             {
-                return Endpoint::UserNotFound;
+                return ErrorResponse::UserNotFound;
             }
             else
             {
@@ -153,7 +153,7 @@ public:
                         users.modify_if(a_name, [amount](User &a) {
                             a.balance += amount;
                         });
-                        return Endpoint::UserNotFound; //because had to refund transaction
+                        return ErrorResponse::UserNotFound; //because had to refund transaction
                     }
                     else
                     {
@@ -188,7 +188,7 @@ public:
     {
         if (admin_pass != attempt)
         {
-            return Endpoint::WrongAdminPassword;
+            return ErrorResponse::WrongAdminPassword;
         }
         else
         {
@@ -196,7 +196,7 @@ public:
                     u.balance = amount;
                 }))
             {
-                return Endpoint::UserNotFound;
+                return ErrorResponse::UserNotFound;
             }
             else
             {
@@ -206,7 +206,7 @@ public:
     }
     int_fast64_t GetBal(const std::string &name) const
     {
-        int_fast64_t res = Endpoint::UserNotFound;
+        int_fast64_t res = ErrorResponse::UserNotFound;
         users.if_contains(name, [&res](const User &u) {
             res = u.balance;
         });
@@ -215,7 +215,7 @@ public:
 
     int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const
     {
-        int_fast8_t res = Endpoint::UserNotFound;
+        int_fast8_t res = ErrorResponse::UserNotFound;
         users.if_contains(name, [&res, &attempt](const User &u) {
             res = u.password == XXH3_64bits(attempt.data(), attempt.size());
         });
@@ -223,11 +223,11 @@ public:
     }
     int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
     {
-        int_fast8_t res = Endpoint::UserNotFound;
+        int_fast8_t res = ErrorResponse::UserNotFound;
         users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
             if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
             {
-                res = Endpoint::WrongPassword;
+                res = ErrorResponse::WrongPassword;
             }
             else
             {
@@ -243,7 +243,7 @@ public:
         if (!users.if_contains(name, [&res, &attempt](const User &u) {
                 if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
                 {
-                    res = Endpoint::WrongPassword;
+                    res = ErrorResponse::WrongPassword;
                 }
                 else
                 {
@@ -259,7 +259,7 @@ public:
                 }
             }))
         {
-            return Endpoint::UserNotFound;
+            return ErrorResponse::UserNotFound;
         }
         return res;
     }

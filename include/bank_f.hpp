@@ -133,7 +133,7 @@ public:
     METHOD_ADD(BankF::AdminAddUser, "/admin/user/{name}", Post, Options);
     METHOD_ADD(BankF::SendFunds, "{name}/send/{to}/amount={amount}", Post, Options);
 
-    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options); //sub optimal
+    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
     METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
 
     METHOD_ADD(BankF::Help, "/help", Get, Options);
