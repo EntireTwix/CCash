@@ -8,15 +8,8 @@ int_fast8_t Bank::AddUser(const std::string &name, std::string &&init_pass)
     }
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        if (!users.try_emplace_l(
-                name, [](User &) {}, std::move(init_pass)))
-        {
-            return ErrorResponse::UserAlreadyExists;
-        }
-        else
-        {
-            return true;
-        }
+        return ErrorResponse::UserNotFound + (2 * users.try_emplace_l(
+                                                      name, [](User &) {}, std::move(init_pass))); //branchless if 1 else -1
     }
 }
 int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
@@ -31,18 +24,11 @@ int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, u
     }
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        if (!users.try_emplace_l(
-                name, [](User &) {}, init_bal, std::move(init_pass)))
-        {
-            return ErrorResponse::UserAlreadyExists;
-        }
-        else
-        {
-            return true;
-        }
+        return ErrorResponse::UserAlreadyExists + (7 * (!users.try_emplace_l(
+                                                           name, [](User &) {}, init_bal, std::move(init_pass))));
     }
 }
-
+//not branchless yet
 int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
@@ -56,6 +42,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
         return state * ErrorResponse::WrongPassword;
     }
 }
+//not branchless yet
 int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
@@ -70,6 +57,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     }
 }
 
+//not branchless yet
 int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
 {
     //cant send money to self, from self or amount is 0
@@ -157,19 +145,9 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
     {
         return ErrorResponse::WrongAdminPassword;
     }
-    else
-    {
-        if (!users.modify_if(name, [amount](User &u) {
-                u.balance = amount;
-            }))
-        {
-            return ErrorResponse::UserNotFound;
-        }
-        else
-        {
-            return true;
-        }
-    }
+    return ErrorResponse::UserNotFound + (2 * !users.modify_if(name, [amount](User &u) {
+               u.balance = amount;
+           }));
 }
 int_fast64_t Bank::GetBal(const std::string &name) const
 {
