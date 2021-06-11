@@ -118,24 +118,12 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
         }
         else
         {
-            if (!state)
-            {
-                return state;
-            }
-            else
+            if (state)
             {
                 //if B doesnt exist
-                if (!users.modify_if(b_name, [amount](User &b) {
+                if (users.modify_if(b_name, [amount](User &b) {
                         b.balance += amount;
                     }))
-                {
-                    //attempt to refund if A exist
-                    users.modify_if(a_name, [amount](User &a) {
-                        a.balance += amount;
-                    });
-                    return ErrorResponse::UserNotFound; //because had to refund transaction
-                }
-                else
                 {
                     if constexpr (max_log_size)
                     {
@@ -150,6 +138,18 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                     }
                     return true;
                 }
+                else
+                {
+                    //attempt to refund if A exist
+                    users.modify_if(a_name, [amount](User &a) {
+                        a.balance += amount;
+                    });
+                    return ErrorResponse::UserNotFound; //because had to refund transaction
+                }
+            }
+            else
+            {
+                return state;
             }
         }
     }
@@ -256,17 +256,17 @@ void Bank::Save()
             });
         }
     }
-    if (!temp.isNull())
+    if (temp.isNull())
+    {
+        throw std::invalid_argument("Saving Failed\n");
+    }
+    else
     {
         std::ofstream user_save("../users.json");
         Json::StreamWriterBuilder builder;
         const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
         writer->write(temp, &user_save);
         user_save.close();
-    }
-    else
-    {
-        throw std::invalid_argument("Saving Failed\n");
     }
 }
 
