@@ -34,23 +34,23 @@ public:
     std::string admin_pass;
 
     int_fast8_t AddUser(const std::string &name, std::string &&init_pass);
-    int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass);
+    int_fast8_t AdminAddUser(std::string_view attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass);
 
-    int_fast8_t DelUser(const std::string &name, const std::string &attempt);
-    int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt);
+    int_fast8_t DelUser(const std::string &name, std::string_view attempt);
+    int_fast8_t AdminDelUser(const std::string &name, std::string_view attempt);
 
-    int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt);
+    int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, std::string_view attempt);
 
     bool Contains(const std::string &name) const;
-    bool AdminVerifyPass(const std::string &attempt);
+    bool AdminVerifyPass(std::string_view attempt);
 
-    int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount);
+    int_fast8_t SetBal(const std::string &name, std::string_view attempt, uint32_t amount);
     int_fast64_t GetBal(const std::string &name) const;
 
-    int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const;
-    int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass);
+    int_fast8_t VerifyPassword(const std::string &name, std::string_view attempt) const;
+    int_fast8_t ChangePassword(const std::string &name, std::string_view attempt, std::string &&new_pass);
 
-    Json::Value GetLogs(const std::string &name, const std::string &attempt);
+    Json::Value GetLogs(const std::string &name, std::string_view attempt);
 
     void Save();
 

@@ -19,7 +19,7 @@ int_fast8_t Bank::AddUser(const std::string &name, std::string &&init_pass)
         }
     }
 }
-int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
+int_fast8_t Bank::AdminAddUser(std::string_view attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
 {
     if (name.size() > max_name_size)
     {
@@ -42,7 +42,7 @@ int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, u
         }
     }
 }
-int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
+int_fast8_t Bank::DelUser(const std::string &name, std::string_view attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
@@ -62,7 +62,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
         }
     }
 }
-int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt)
+int_fast8_t Bank::AdminDelUser(const std::string &name, std::string_view attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
@@ -83,7 +83,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     }
 }
 
-int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
+int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, std::string_view attempt)
 {
     //cant send money to self, from self or amount is 0
     if (a_name == b_name || !amount)
@@ -159,12 +159,12 @@ bool Bank::Contains(const std::string &name) const
 {
     return users.contains(name);
 }
-bool Bank::AdminVerifyPass(const std::string &attempt)
+bool Bank::AdminVerifyPass(std::string_view attempt)
 {
     return (admin_pass == attempt);
 }
 
-int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
+int_fast8_t Bank::SetBal(const std::string &name, std::string_view attempt, uint32_t amount)
 {
     if (admin_pass != attempt)
     {
@@ -190,7 +190,7 @@ int_fast64_t Bank::GetBal(const std::string &name) const
     return res;
 }
 
-int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &attempt) const
+int_fast8_t Bank::VerifyPassword(const std::string &name, std::string_view attempt) const
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
     users.if_contains(name, [&res, &attempt](const User &u) {
@@ -198,7 +198,7 @@ int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &att
     });
     return res;
 }
-int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
+int_fast8_t Bank::ChangePassword(const std::string &name, std::string_view attempt, std::string &&new_pass)
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
     users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
@@ -214,7 +214,7 @@ int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &att
     return res;
 }
 
-Json::Value Bank::GetLogs(const std::string &name, const std::string &attempt)
+Json::Value Bank::GetLogs(const std::string &name, std::string_view attempt)
 {
     Json::Value res;
     if (!users.if_contains(name, [&res, &attempt](const User &u) {
