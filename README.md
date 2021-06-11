@@ -18,10 +18,7 @@ drogon depedencies (varies by OS/distro)
 ```
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 ```
-xxhash depedency
-```
-sudo apt install xxhash
-```
+
 building the project
 
 ```
