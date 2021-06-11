@@ -14,7 +14,7 @@ public:
     BankF(Bank *b);
     void Help(req_args) const;
     void Close(req_args) const;
-    void AddUser(req_args, std::string &&name) const;
+    void AddUser(req_args, const std::string &name) const;
     void AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const;
     void DelUser(req_args, const std::string &name) const;
     void AdminDelUser(req_args, const std::string &name) const;

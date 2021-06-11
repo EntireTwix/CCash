@@ -11,8 +11,8 @@ struct User
     uint64_t password;
     Log log;
 
-    User(std::string &&init_pass);
-    User(uint32_t init_bal, std::string &&init_pass);
+    User(const std::string &init_pass);
+    User(uint32_t init_bal, const std::string &init_pass);
     User(uint32_t init_bal, uint64_t init_pass);
     User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j);
 

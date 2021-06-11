@@ -52,9 +52,9 @@ void BankF::Close(req_args) const
     }
     JSON(res);
 }
-void BankF::AddUser(req_args, std::string &&name) const
+void BankF::AddUser(req_args, const std::string &name) const
 {
-    JSON(bank.AddUser(std::move(name), std::string(req->getBody())));
+    JSON(bank.AddUser(std::move(name), PASS_HEADER));
 }
 void BankF::AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const
 {
