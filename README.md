@@ -60,7 +60,7 @@ Thank you to the contributors
 | Name                                        | Work                                      |
 | :------------------------------------------ | ----------------------------------------- |
 | [Expand](https://github.com/Expand-sys)     | Frontend                                  |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM}                  |
+| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}            |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API |
 
 
