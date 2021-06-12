@@ -21,6 +21,7 @@
 
 ### Ideas:
 
+- an API in your preferred language (if not found in [APIs.md](APIs.md)
 - Gambling
 - Shipping
 - High-level bank operations such as loans
