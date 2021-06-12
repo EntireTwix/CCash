@@ -301,5 +301,3 @@ void Bank::Load()
         }
     }
 }
-
-//TODO make branchless
