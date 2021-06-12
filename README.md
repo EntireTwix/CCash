@@ -82,7 +82,7 @@ Thank you to the contributors
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
-- **Logging** of all transactions, configurable in [log_consts.hpp](include/log_consts.hpp)
+- **Logging** of all transactions, configurable in [consts.hpp](include/consts.hpp)
 
 ## Dependencies
 
