@@ -44,7 +44,10 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 ## Connected Services
 
-Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
+Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
+
+Go to [here](help.md) to see the API's endpoints. 
+Language specific APIs can be found [here](APIs.md).
 
 ## FAQ
 **Q:** how is money initially injected into the economy
