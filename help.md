@@ -33,7 +33,7 @@
 |      Help       | BankF/help            |  GET   | false | the page you're looking at right now!                                                 |
 |      Ping       | BankF/ping            |  GET   | false | for pinging the server to see if its online                                           |
 |      Close      | BankF/admin/close     |  POST  | true  | saves and then closes the program if the supplied password matches the admin password |
-|    Contains     | BankF/contains/{name} |  GET   | false | returns `true` or `false` depending on if the supplied user `{name}` exists           |
+|    Contains     | BankF/contains/{name} |  GET   | false | returns `1` if the supplied user `{name}` exists                                      |
 | AdminVerifyPass | BankF/admin/verify    |  GET   | true  | returns `1` if the password supplied in the header matches the admin password         |
 
 # User Management

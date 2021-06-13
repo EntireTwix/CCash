@@ -163,9 +163,16 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
     }
 }
 
-bool Bank::Contains(const std::string &name) const
+int_fast8_t Bank::Contains(const std::string &name) const
 {
-    return users.contains(name);
+    if (users.contains(name))
+    {
+        return true;
+    }
+    else
+    {
+        return ErrorResponse::UserNotFound;
+    }
 }
 int_fast8_t Bank::AdminVerifyPass(const std::string &attempt)
 {
