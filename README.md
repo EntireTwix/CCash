@@ -54,11 +54,11 @@ Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (y
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name                                        | Work                                                              |
-| :------------------------------------------ | ----------------------------------------------------------------- |
-| [Expand](https://github.com/Expand-sys)     | Frontend                                                          |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                                    |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API, convention suggestions |
+| Name                                        | Work                                                       |
+| :------------------------------------------ | ---------------------------------------------------------- |
+| [Expand](https://github.com/Expand-sys)     | Frontend                                                   |
+| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                             |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions |
 
 
 ## Features
