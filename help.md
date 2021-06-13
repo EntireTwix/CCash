@@ -24,7 +24,7 @@
 # Meta Usage
 |      Name      | Path                                   | Method |   A   | Description                                                                                                                              |
 | :------------: | :------------------------------------- | :----: | :---: | ---------------------------------------------------------------------------------------------------------------------------------------- |
-| ChangePassword | BankF/{name}/pass/change               | PATCH  | true  | if the password supplied in the header matches the user `{name}`'s password, the user's password is changed to the one given in the body |
+| ChangePassword | BankF/{name}/pass/change               | PATCH  | true  | if the password supplied in the header matches the user `{name}`'s password, the user's password is changed to the one given in the body, with a key of `password`. i.e. { "password": "NewPassword" } |
 |     SetBal     | BankF/admin/{name}/bal/amount={amount} | PATCH  | true  | sets the balance of a give user `{name}` if the supplied password matches the admin password                                             |
 
 # System Usage
@@ -40,6 +40,6 @@
 |     Name     | Path                                        | Method |   A   | Description                                                                                                                                                                                  |
 | :----------: | :------------------------------------------ | :----: | :---: | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 |   AddUser    | BankF/user/{name}                           |  POST  | true  | registers a user with the name `{name}`, balance of 0 and a password of the password supplied in the header                                                                                  |
-| AdminAddUser | BankF/admin/user/{name}?init_bal={init_bal} |  POST  | true  | if the password supplied in the header matches the admin password, then it registers a user with the name `{name}`, balance of `init_bal` and a password supplied by the body of the request |
+| AdminAddUser | BankF/admin/user/{name}?init_bal={init_bal} |  POST  | true  | if the password supplied in the header matches the admin password, then it registers a user with the name `{name}`, balance of `init_bal` and a password that is supplied in the body of the request. i.e. { "password": "ThePassword" } |
 |   DelUser    | BankF/user/{name}                           | DELETE | true  | if the password supplied in the header matches the user `{name}`'s password, then the user is deleted                                                                                        |
 | AdminDelUser | BankF/admin/user/{name}                     | DELETE | true  | if the password supplied in the header matches the admin password, then the user is deleted                                                                                                  |
