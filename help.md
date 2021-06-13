@@ -1,14 +1,13 @@
 # Error Responses
 
-| #   | meaning            |
-| --- | ------------------ |
-| -1  | UserNotFound       |
-| -2  | WrongPassword      |
-| -3  | InvalidRequest     |
-| -4  | WrongAdminPassword |
-| -5  | NameTooLong        |
-| -6  | UserAlreadyExists  |
-| -7  | InsufficientFunds  |
+| #   | meaning           |
+| --- | ----------------- |
+| -1  | UserNotFound      |
+| -2  | WrongPassword     |
+| -3  | InvalidRequest    |
+| -4  | NameTooLong       |
+| -5  | UserAlreadyExists |
+| -6  | InsufficientFunds |
 
 # Things of Note
 * all endpoints respond with **JSON** file type
@@ -32,6 +31,7 @@
 |      Name       | Path             | Method |   A   | Description                                                                           |
 | :-------------: | :--------------- | :----: | :---: | ------------------------------------------------------------------------------------- |
 |      Help       | /help            |  GET   | false | the page you're looking at right now!                                                 |
+|      Ping       | /ping            |  GET   | false | for pinging the server to see if its online                                           |
 |      Close      | /admin/close     |  POST  | true  | saves and then closes the program if the supplied password matches the admin password |
 |    Contains     | /contains/{name} |  GET   | false | returns `true` or `false` depending on if the supplied user `{name}` exists           |
 | AdminVerifyPass | /admin/verify    |  GET   | true  | returns `1` if the password supplied in the header matches the admin password         |
