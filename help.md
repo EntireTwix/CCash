@@ -25,10 +25,10 @@
 
 # Meta Usage
 
-|      Name      | Path                                   | Method |  A   | Description                                                                                                                                                                                            |
-| :------------: | :------------------------------------- | :----: | :--: | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|      Name      | Path                                   | Method |  A   | Description                                                                                                                              |
+| :------------: | :------------------------------------- | :----: | :--: | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | ChangePassword | BankF/{name}/pass/change               | PATCH  | true | if the password supplied in the header matches the user `{name}`'s password, the user's password is changed to the one given as the body |
-|     SetBal     | BankF/admin/{name}/bal/amount={amount} | PATCH  | true | sets the balance of a give user `{name}` if the supplied password matches the admin password                                                                                                           |
+|     SetBal     | BankF/admin/{name}/bal/amount={amount} | PATCH  | true | sets the balance of a give user `{name}` if the supplied password matches the admin password                                             |
 
 # System Usage
 
@@ -42,9 +42,9 @@
 
 # User Management
 
-|     Name     | Path                                        | Method |  A   | Description                                                                                                                                                                                                                              |
-| :----------: | :------------------------------------------ | :----: | :--: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-|   AddUser    | BankF/user/{name}                           |  POST  | true | registers a user with the name `{name}`, balance of 0 and a password of the password supplied in the header                                                                                                                              |
+|     Name     | Path                                        | Method |  A   | Description                                                                                                                                                                                          |
+| :----------: | :------------------------------------------ | :----: | :--: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|   AddUser    | BankF/user/{name}                           |  POST  | true | registers a user with the name `{name}`, balance of 0 and a password of the password supplied in the header                                                                                          |
 | AdminAddUser | BankF/admin/user/{name}?init_bal={init_bal} |  POST  | true | if the password supplied in the header matches the admin password, then it registers a user with the name `{name}`, balance of `init_bal` and a password that is supplied as the body of the request |
-|   DelUser    | BankF/user/{name}                           | DELETE | true | if the password supplied in the header matches the user `{name}`'s password, then the user is deleted                                                                                                                                    |
-| AdminDelUser | BankF/admin/user/{name}                     | DELETE | true | if the password supplied in the header matches the admin password, then the user is deleted                                                                                                                                              |
+|   DelUser    | BankF/user/{name}                           | DELETE | true | if the password supplied in the header matches the user `{name}`'s password, then the user is deleted                                                                                                |
+| AdminDelUser | BankF/admin/user/{name}                     | DELETE | true | if the password supplied in the header matches the admin password, then the user is deleted                                                                                                          |
