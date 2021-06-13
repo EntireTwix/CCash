@@ -13,6 +13,7 @@ class BankF : public HttpController<BankF, false>
 public:
     BankF(Bank *b);
     void Help(req_args) const;
+    void Ping(req_args) const;
     void Close(req_args) const;
     void AddUser(req_args, const std::string &name) const;
     void AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const;
@@ -41,6 +42,7 @@ public:
 
     //System Usage
     METHOD_ADD(BankF::Help, "/help", Get, Options);
+    METHOD_ADD(BankF::Ping, "/ping", Get, Options);
     METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
     METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
     METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Get, Options);
