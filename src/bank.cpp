@@ -90,6 +90,12 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
     {
         return ErrorResponse::InvalidRequest;
     }
+    //as first modify_if checks a_name and grabs unique lock
+    if (!Contains(b_name))
+    {
+        return ErrorResponse::UserNotFound;
+    }
+
     int_fast8_t state = false;
     {
         std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
