@@ -15,12 +15,12 @@
 * "**A**" denotes requiring Authentication in the form of a header titled "**Password**"
 
 # Usage
-|      Name      | Path                              | Method |   A   | Description                                                                                                                 |
-| :------------: | :-------------------------------- | :----: | :---: | --------------------------------------------------------------------------------------------------------------------------- |
-|     GetBal     | /{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                                                |
-|     GetLog     | /{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}`                          |
-|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                                          |
-| VerifyPassword | /{name}/pass/verify               |  GET   | true  | returns `true` or `false` depending on if the supplied user `{name}`'s password matches the password supplied in the header |
+|      Name      | Path                              | Method |   A   | Description                                                                                        |
+| :------------: | :-------------------------------- | :----: | :---: | -------------------------------------------------------------------------------------------------- |
+|     GetBal     | /{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                       |
+|     GetLog     | /{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}` |
+|   SendFunds    | /{name}/send/{to}/amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                 |
+| VerifyPassword | /{name}/pass/verify               |  GET   | true  | returns `1` if the supplied user `{name}`'s password matches the password supplied in the header   |
 
 # Meta Usage
 |      Name      | Path                              | Method |   A   | Description                                                                                                                              |
@@ -29,12 +29,12 @@
 |     SetBal     | /admin/{name}/bal/amount={amount} | PATCH  | true  | sets the balance of a give user `{name}` if the supplied password matches the admin password                                             |
 
 # System Usage
-|      Name       | Path             | Method |   A   | Description                                                                                              |
-| :-------------: | :--------------- | :----: | :---: | -------------------------------------------------------------------------------------------------------- |
-|      Help       | /help            |  GET   | false | the page you're looking at right now!                                                                    |
-|      Close      | /admin/close     |  POST  | true  | saves and then closes the program if the supplied password matches the admin password                    |
-|    Contains     | /contains/{name} |  GET   | false | returns `true` or `false` depending on if the supplied user `{name}` exists                              |
-| AdminVerifyPass | /admin/verify    |  GET   | true  | returns `true` or `false` depending on if the password supplied in the header matches the admin password |
+|      Name       | Path             | Method |   A   | Description                                                                           |
+| :-------------: | :--------------- | :----: | :---: | ------------------------------------------------------------------------------------- |
+|      Help       | /help            |  GET   | false | the page you're looking at right now!                                                 |
+|      Close      | /admin/close     |  POST  | true  | saves and then closes the program if the supplied password matches the admin password |
+|    Contains     | /contains/{name} |  GET   | false | returns `true` or `false` depending on if the supplied user `{name}` exists           |
+| AdminVerifyPass | /admin/verify    |  GET   | true  | returns `1` if the password supplied in the header matches the admin password         |
 
 # User Management
 |     Name     | Path                                   | Method |   A   | Description                                                                                                                                                                                  |

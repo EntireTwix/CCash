@@ -42,7 +42,7 @@ public:
     int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt);
 
     bool Contains(const std::string &name) const;
-    bool AdminVerifyPass(const std::string &attempt);
+    int_fast8_t AdminVerifyPass(const std::string &attempt);
 
     int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount);
     int_fast64_t GetBal(const std::string &name) const;
