@@ -18,10 +18,7 @@ drogon depedencies (varies by OS/distro)
 ```
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 ```
-xxhash depedency
-```
-sudo apt install xxhash
-```
+
 building the project
 
 ```
@@ -57,11 +54,11 @@ Go to [here](help.md) to see the API's endpoints. Using the Bank's API allows (y
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name                                        | Work                                      |
-| :------------------------------------------ | ----------------------------------------- |
-| [Expand](https://github.com/Expand-sys)     | Frontend                                  |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}            |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API |
+| Name                                        | Work                                                              |
+| :------------------------------------------ | ----------------------------------------------------------------- |
+| [Expand](https://github.com/Expand-sys)     | Frontend                                                          |
+| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                                    |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, Python API, convention suggestions |
 
 
 ## Features
@@ -85,7 +82,7 @@ Thank you to the contributors
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
-- **Logging** of all transactions, configurable in [log_consts.hpp](include/log_consts.hpp)
+- **Logging** of all transactions, configurable in [consts.hpp](include/consts.hpp)
 
 ## Dependencies
 

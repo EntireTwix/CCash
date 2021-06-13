@@ -12,15 +12,14 @@
   ![image](https://user-images.githubusercontent.com/31377881/120050367-09992180-bfd2-11eb-9a22-449d73c196cf.png)
 - [CC ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank) an ATM for economies allowing for an initial exchange to start up
   ![image](https://user-images.githubusercontent.com/31377881/121277361-4d6b1100-c885-11eb-87c8-cfebcf58da4f.png)
-- [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 
 ### In-Dev:
 
 - [a Market](https://github.com/STBoyden/market-api-2.0)
-- [Python API](https://github.com/fearlessdoggo21/ccashpythonclient)
 
 ### Ideas:
 
+- an API in your preferred language (if not found in [APIs.md](APIs.md))
 - Gambling
 - Shipping
 - High-level bank operations such as loans
