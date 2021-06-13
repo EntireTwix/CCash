@@ -5,7 +5,6 @@
 | -1  | UserNotFound       |
 | -2  | WrongPassword      |
 | -3  | InvalidRequest     |
-| -4  | WrongAdminPassword |
 | -5  | NameTooLong        |
 | -6  | UserAlreadyExists  |
 | -7  | InsufficientFunds  |
