@@ -33,12 +33,12 @@ public:
     //Usage
     METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
     METHOD_ADD(BankF::GetLog, "/{name}/log", Get, Options);
-    METHOD_ADD(BankF::SendFunds, "/{name}/send/{to}/amount={amount}", Post, Options);
+    METHOD_ADD(BankF::SendFunds, "/{name}/send/{to}?amount={amount}", Post, Options);
     METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Get, Options);
 
     //Meta Usage
     METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
-    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal/amount={amount}", Patch, Options);
+    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal?amount={amount}", Patch, Options);
 
     //System Usage
     METHOD_ADD(BankF::Help, "/help", Get, Options);

@@ -18,14 +18,14 @@
 | :------------: | :------------------------------------- | :----: | :---: | -------------------------------------------------------------------------------------------------- |
 |     GetBal     | BankF/{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                       |
 |     GetLog     | BankF/{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}` |
-|   SendFunds    | BankF/{name}/send/{to}/amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                 |
+|   SendFunds    | BankF/{name}/send/{to}?amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                 |
 | VerifyPassword | BankF/{name}/pass/verify               |  GET   | true  | returns `1` if the supplied user `{name}`'s password matches the password supplied in the header   |
 
 # Meta Usage
 |      Name      | Path                                   | Method |   A   | Description                                                                                                                              |
 | :------------: | :------------------------------------- | :----: | :---: | ---------------------------------------------------------------------------------------------------------------------------------------- |
 | ChangePassword | BankF/{name}/pass/change               | PATCH  | true  | if the password supplied in the header matches the user `{name}`'s password, the user's password is changed to the one given in the body |
-|     SetBal     | BankF/admin/{name}/bal/amount={amount} | PATCH  | true  | sets the balance of a give user `{name}` if the supplied password matches the admin password                                             |
+|     SetBal     | BankF/admin/{name}/bal?amount={amount} | PATCH  | true  | sets the balance of a give user `{name}` if the supplied password matches the admin password                                             |
 
 # System Usage
 |      Name       | Path                  | Method |   A   | Description                                                                           |
