@@ -85,6 +85,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
 
 int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
 {
+    std::cout << "recieved request\n";
     //cant send money to self, from self or amount is 0
     if (a_name == b_name || !amount)
     {
@@ -117,6 +118,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                         state = true;
                     }
                 }
+                std::cout << "a\n";
             }))
         {
             if (state)
@@ -126,6 +128,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                         b.balance += amount;
                     }))
                 {
+                    std::cout << "c\n";
                     if constexpr (max_log_size)
                     {
                         Transaction temp(a_name, b_name, amount);
@@ -141,6 +144,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                 }
                 else
                 {
+                    std::cout << "d\n";
                     //attempt to refund if A exist
                     users.modify_if(a_name, [amount](User &a) {
                         a.balance += amount;
