@@ -29,11 +29,11 @@ User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : ba
         log.data.reserve(std::min(pre_log_size * ((log_j.size() / pre_log_size) + 1), max_log_size));
         for (uint32_t i = (log_j.size() - max_log_size) * (log_j.size() > max_log_size); i < log_j.size(); i++)
         {
-            log.data.push_back(std::move(Transaction(
+            log.data.push_back(Transaction(
                 log_j[i]["from"].asCString(),
                 log_j[i]["to"].asCString(),
                 log_j[i]["amount"].asUInt(),
-                log_j[i]["time"].asUInt64())));
+                log_j[i]["time"].asUInt64()));
         }
     }
 }
@@ -43,7 +43,7 @@ Json::Value User::Serialize() const
     Json::Value res;
     res["balance"] = (Json::UInt)balance;
     res["password"] = (Json::UInt64)password;
-    if constexpr (max_log_size)
+    if constexpr (max_log_size > 0)
     {
         res["log"] = log.Serialize();
     }

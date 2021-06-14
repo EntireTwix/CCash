@@ -121,12 +121,12 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
         {
             if (state)
             {
-                //if B doesnt exist
+                //if B does exist
                 if (users.modify_if(b_name, [amount](User &b) {
                         b.balance += amount;
                     }))
                 {
-                    if constexpr (max_log_size)
+                    if constexpr (max_log_size > 0)
                     {
                         Transaction temp(a_name, b_name, amount);
                         Transaction temp2 = temp;
@@ -316,7 +316,7 @@ void Bank::Load()
         user_save.close();
         for (const auto &u : temp.getMemberNames())
         {
-            if constexpr (max_log_size)
+            if constexpr (max_log_size > 0)
             {
                 users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), temp[u]["log"]);
             }

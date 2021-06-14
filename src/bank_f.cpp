@@ -104,7 +104,7 @@ void BankF::AdminVerifyPass(req_args)
 }
 void BankF::GetLog(req_args, const std::string &name)
 {
-    if constexpr (max_log_size)
+    if constexpr (max_log_size > 0)
     {
         JSON(bank.GetLogs(name, PASS_HEADER));
     }
