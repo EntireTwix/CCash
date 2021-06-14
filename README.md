@@ -16,7 +16,11 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 
 drogon depedencies (varies by OS/distro)
 ```
+# Debian
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
+
+# macOS
+brew install jsoncpp ossp-uuid openssl zlib
 ```
 
 building the project
