@@ -16,7 +16,11 @@ CCash solves these issues and adds a level of abstraction, the main philosophy o
 
 drogon depedencies (varies by OS/distro)
 ```
+# Debian
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
+
+# macOS
+brew install jsoncpp ossp-uuid openssl zlib
 ```
 
 building the project
@@ -62,6 +66,7 @@ Thank you to the contributors
 | [Expand](https://github.com/Expand-sys)     | Frontend                                                   |
 | [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                             |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions |
+| [Luke](https://github.com/LukeeeeBennett)   | Slight Doc edits                                           |
 
 
 ## Features
@@ -73,6 +78,7 @@ Thank you to the contributors
 - **multi-threaded**
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
 - **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
+- **xxHash** for the hashing of passwords, [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
 - **Lightweight**, anecodotally I experienced 0.0% idle, <1% CPU usage on average, 7% at peak, 1000 requests in 0.85s
 
 ### Safety

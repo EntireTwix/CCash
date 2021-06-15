@@ -24,3 +24,6 @@
 - Shipping
 - High-level bank operations such as loans
 - Some trust based system for transactions similiar to Paypal
+
+- a better version of one of these existing ideas
+- something completely different
