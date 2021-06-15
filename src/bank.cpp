@@ -8,15 +8,10 @@ int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass)
     }
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        if (users.try_emplace_l(
-                name, [](User &) {}, init_pass))
-        {
-            return true;
-        }
-        else
-        {
-            return ErrorResponse::UserAlreadyExists;
-        }
+        return (users.try_emplace_l(
+                   name, [](User &) {}, init_pass))
+                   ? true
+                   : ErrorResponse::UserAlreadyExists;
     }
 }
 int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
@@ -31,55 +26,36 @@ int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, u
     }
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
-        if (users.try_emplace_l(
-                name, [](User &) {}, init_bal, std::move(init_pass)))
-        {
-            return true;
-        }
-        else
-        {
-            return ErrorResponse::UserAlreadyExists;
-        }
+        return (users.try_emplace_l(
+                   name, [](User &) {}, init_bal, std::move(init_pass)))
+                   ? true
+                   : ErrorResponse::UserAlreadyExists;
     }
 }
 int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (!users.erase_if(name, [&state, &attempt](User &u) { return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password); }))
+    if (users.erase_if(name, [&state, &attempt](User &u) { return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password); }))
     {
-        return ErrorResponse::UserNotFound;
+        return (state) ? true : ErrorResponse::WrongPassword;
     }
     else
     {
-        if (state)
-        {
-            return true;
-        }
-        else
-        {
-            return ErrorResponse::WrongPassword;
-        }
+        return ErrorResponse::UserNotFound;
     }
 }
 int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt)
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (!users.erase_if(name, [this, &state, &attempt](const User &) { return state = (admin_pass == attempt); }))
+    if (users.erase_if(name, [this, &state, &attempt](const User &) { return state = (admin_pass == attempt); }))
     {
-        return ErrorResponse::UserNotFound;
+        return (state) ? true : ErrorResponse::WrongPassword;
     }
     else
     {
-        if (state)
-        {
-            return true;
-        }
-        else
-        {
-            return ErrorResponse::WrongPassword;
-        }
+        return ErrorResponse::UserNotFound;
     }
 }
 
@@ -162,25 +138,11 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
 
 int_fast8_t Bank::Contains(const std::string &name) const
 {
-    if (users.contains(name))
-    {
-        return true;
-    }
-    else
-    {
-        return ErrorResponse::UserNotFound;
-    }
+    return (users.contains(name)) ? true : ErrorResponse::UserNotFound;
 }
 int_fast8_t Bank::AdminVerifyPass(const std::string &attempt)
 {
-    if (admin_pass == attempt)
-    {
-        return true;
-    }
-    else
-    {
-        return ErrorResponse::WrongPassword;
-    }
+    return (admin_pass == attempt) ? true : ErrorResponse::WrongPassword;
 }
 
 int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
@@ -189,16 +151,12 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
     {
         return ErrorResponse::WrongPassword;
     }
-    if (users.modify_if(name, [amount](User &u) {
-            u.balance = amount;
-        }))
-    {
-        return true;
-    }
-    else
-    {
-        return ErrorResponse::UserNotFound;
-    }
+
+    return (users.modify_if(name, [amount](User &u) {
+        u.balance = amount;
+    }))
+               ? true
+               : ErrorResponse::UserNotFound;
 }
 int_fast64_t Bank::GetBal(const std::string &name) const
 {
@@ -213,14 +171,7 @@ int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &att
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
     users.if_contains(name, [&res, &attempt](const User &u) {
-        if (u.password == XXH3_64bits(attempt.data(), attempt.size()))
-        {
-            res = true;
-        }
-        else
-        {
-            res = ErrorResponse::WrongPassword;
-        }
+        res = (u.password == XXH3_64bits(attempt.data(), attempt.size())) ? true : ErrorResponse::WrongPassword;
     });
     return res;
 }
@@ -234,6 +185,7 @@ int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &att
         }
         else
         {
+            res = true;
             u.password = XXH3_64bits(new_pass.data(), new_pass.size());
         }
     });
