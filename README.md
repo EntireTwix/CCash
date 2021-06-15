@@ -66,6 +66,7 @@ Thank you to the contributors
 | [Expand](https://github.com/Expand-sys)     | Frontend                                                   |
 | [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                             |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions |
+| [Luke](https://github.com/LukeeeeBennett)   | Docs                                                       |
 
 
 ## Features
