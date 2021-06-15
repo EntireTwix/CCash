@@ -23,6 +23,10 @@ INLINE Json::Value JsonReturn(T &&val)
     {
         res["value"] = (Json::Int64)val;
     }
+    else
+    {
+        res["value"] = val;
+    }
     return res;
 }
 
