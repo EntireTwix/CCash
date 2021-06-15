@@ -1,42 +1,8 @@
 {
-	"jolly" : 
+	"" : 
 	{
-		"balance" : 139,
-		"log" : 
-		[
-			{
-				"amount" : 100,
-				"from" : "twix",
-				"time" : 1623555387199,
-				"to" : "jolly"
-			},
-			{
-				"amount" : 39,
-				"from" : "twix",
-				"time" : 1623693328822,
-				"to" : "jolly"
-			}
-		],
-		"password" : 746744014776526199
+		"balance" : 0,
+		"log" : null,
+		"password" : 0
 	},
-	"twix" : 
-	{
-		"balance" : 9861,
-		"log" : 
-		[
-			{
-				"amount" : 100,
-				"from" : "twix",
-				"time" : 1623555387199,
-				"to" : "jolly"
-			},
-			{
-				"amount" : 39,
-				"from" : "twix",
-				"time" : 1623693328822,
-				"to" : "jolly"
-			}
-		],
-		"password" : 746744014776526199
-	}
 }
