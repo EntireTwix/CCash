@@ -119,7 +119,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                 }
             }))
         {
-            if (state)
+            if (state > 0)
             {
                 //if B does exist
                 if (users.modify_if(b_name, [amount](User &b) {
