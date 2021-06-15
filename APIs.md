@@ -2,7 +2,7 @@
 
 ## Complete
 * [JS API](https://github.com/LukeeeeBennett/ccash-client-js)
-* [CC API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
+* [ComputerCraft (Lua) API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
 
 ## In Dev
 * [Python API](https://github.com/fearlessdoggo21/ccashpythonclient)
