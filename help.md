@@ -14,12 +14,12 @@
 * "**A**" denotes requiring Authentication in the form of a header titled "**Password**"
 
 # Usage
-|      Name      | Path                                   | Method |   A   | Description                                                                                        |
-| :------------: | :------------------------------------- | :----: | :---: | -------------------------------------------------------------------------------------------------- |
-|     GetBal     | BankF/{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                       |
-|     GetLog     | BankF/{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount) of a given user `{name}` |
-|   SendFunds    | BankF/{name}/send/{to}?amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                 |
-| VerifyPassword | BankF/{name}/pass/verify               |  GET   | true  | returns `1` if the supplied user `{name}`'s password matches the password supplied in the header   |
+|      Name      | Path                                   | Method |   A   | Description                                                                                                                     |
+| :------------: | :------------------------------------- | :----: | :---: | ------------------------------------------------------------------------------------------------------------------------------- |
+|     GetBal     | BankF/{name}/bal                       |  GET   | false | returns the balance of a given user `{name}`                                                                                    |
+|     GetLog     | BankF/{name}/log                       |  GET   | true  | returns a list of last `n` number of transactions (a configurable amount when the program is compiled) of a given user `{name}` |
+|   SendFunds    | BankF/{name}/send/{to}?amount={amount} |  POST  | true  | sends `{amount}` from user `{name}` to user `{to}`                                                                              |
+| VerifyPassword | BankF/{name}/pass/verify               |  GET   | true  | returns `1` if the supplied user `{name}`'s password matches the password supplied in the header                                |
 
 # Meta Usage
 |      Name      | Path                                   | Method |   A   | Description                                                                                                                              |
