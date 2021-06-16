@@ -19,6 +19,10 @@ INLINE Json::Value JsonReturn(T &&val)
     {
         res["value"] = (Json::Int64)val;
     }
+    else if constexpr (std::is_same_v<T, int64_t>)
+    {
+        res["value"] = (Json::Int64)val;
+    }
     else
     {
         res["value"] = val;
