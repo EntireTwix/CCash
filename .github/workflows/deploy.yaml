@@ -2,7 +2,7 @@ name: Publish Staging
 on:
   push:
     branches:
-      - cicd
+      - main
 jobs:
   release:
     name: Push Docker image to GitHub Packages
