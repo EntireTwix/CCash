@@ -13,4 +13,4 @@ WORKDIR /ccash/build
 RUN cmake ..
 RUN make -j$(nprov)
 
-CMD ["/ccash/build/bank", "AdminPassword", "10", "4"]
+CMD ["/ccash/build/bank", "$CCASH_ADMIN_PASSWORD", "$CCASH_SAVE_FREQUENCY", "$CCASH_THREAD_COUNT"]
