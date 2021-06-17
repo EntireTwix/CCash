@@ -4,3 +4,5 @@
 constexpr unsigned max_log_size = 100;
 constexpr unsigned pre_log_size = 10;
 constexpr unsigned max_name_size = 50;
+constexpr const char *users_location = "../users.json";
+constexpr const char *config_location = "../config.json";

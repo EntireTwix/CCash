@@ -238,7 +238,7 @@ void Bank::Save()
     }
     else
     {
-        std::ofstream user_save("../users.json");
+        std::ofstream user_save(users_location);
         Json::StreamWriterBuilder builder;
         const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
         writer->write(temp, &user_save);
@@ -252,7 +252,7 @@ void Bank::Load()
     Json::CharReaderBuilder builder;
 
     Json::Value temp;
-    std::ifstream user_save("../users.json");
+    std::ifstream user_save(users_location);
     builder["collectComments"] = true;
     JSONCPP_STRING errs;
     if (!parseFromStream(builder, user_save, &temp, &errs))
