@@ -61,13 +61,13 @@ Language specific APIs can be found [here](APIs.md).
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name                                        | Project Work                                               | Connected Service Work         |
-| :------------------------------------------ | ---------------------------------------------------------- | ------------------------------ |
-| [Expand](https://github.com/Expand-sys)     | `N/A`                                                      | Frontend                       |
-| [React](https://github.com/Reactified)      | Logo                                                       | CC {API, Shops, ATM}           |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | `N/A`                          |
-| [Luke](https://github.com/LukeeeeBennett)   | Docker, Slight Doc edits                                   | JS API                         |
-| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           | `N/A`                          |
+| Name                                        | Project Work                                               | Connected Service Work |
+| :------------------------------------------ | ---------------------------------------------------------- | ---------------------- |
+| [Expand](https://github.com/Expand-sys)     | `N/A`                                                      | Frontend               |
+| [React](https://github.com/Reactified)      | Logo                                                       | CC {API, Shops, ATM}   |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | `N/A`                  |
+| [Luke](https://github.com/LukeeeeBennett)   | Docker, Slight Doc edits                                   | JS API                 |
+| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           | `N/A`                  |
 
 ## Features
 
@@ -78,13 +78,14 @@ Thank you to the contributors
 - **multi-threaded**
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
 - **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
-- **xxHash** for the hashing of passwords, [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
+- **xxHash** for the hashing of passwords, it is very fast: [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
 - **Lightweight**, anecodotally I experienced 0.0% idle, <1% CPU usage on average, 7% at peak, 1000 requests in 0.85s
 
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
 - **Auto-Saving** and Saves on close
+- All passwords are **Hashed**
 - **HTTPS** (OpenSSL)
 
 ### Accessibility
