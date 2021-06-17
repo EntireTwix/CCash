@@ -61,13 +61,13 @@ Language specific APIs can be found [here](APIs.md).
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name                                        | Work                                                       |
-| :------------------------------------------ | ---------------------------------------------------------- |
-| [Expand](https://github.com/Expand-sys)     | Frontend                                                   |
-| [React](https://github.com/Reactified)      | CC {API, Shops, and ATM, Logo}                             |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions |
-| [Luke](https://github.com/LukeeeeBennett)   | JS API, Docker, Slight Doc edits                           |
-| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           |
+| Name                                        | Project Work                                               | Connected Service Work         |
+| :------------------------------------------ | ---------------------------------------------------------- | ------------------------------ |
+| [Expand](https://github.com/Expand-sys)     | `N/A`                                                      | Frontend                       |
+| [React](https://github.com/Reactified)      | `N/A`                                                      | CC {API, Shops, and ATM, Logo} |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | `N/A`                          |
+| [Luke](https://github.com/LukeeeeBennett)   | Docker, Slight Doc edits                                   | JS API                         |
+| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           | `N/A`                          |
 
 ## Features
 
