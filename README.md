@@ -63,10 +63,10 @@ Thank you to the contributors
 
 | Name                                        | Project Work                                               | Connected Service Work |
 | :------------------------------------------ | ---------------------------------------------------------- | ---------------------- |
-| [Expand](https://github.com/Expand-sys)     | `N/A`                                                      | Frontend               |
-| [React](https://github.com/Reactified)      | Logo                                                       | CC {API, Shops, ATM}   |
+| [Expand](https://github.com/Expand-sys)     | Slight docker changes                                      | Frontend               |
+| [React](https://github.com/Reactified)      | CC API, Logo                                               | CC Shop, CC ATM.       |
+| [Luke](https://github.com/LukeeeeBennett)   | JS API, Docker, Slight Doc edits                           | `N/A`                  |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | `N/A`                  |
-| [Luke](https://github.com/LukeeeeBennett)   | Docker, Slight Doc edits                                   | JS API                 |
 | [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           | `N/A`                  |
 
 ## Features
