@@ -1,8 +1,28 @@
 #include "bank_f.h"
 
-#define JSON(V) callback(HttpResponse::newHttpJsonResponse(V));
-#define INLINE __attribute__((always_inline)) inline
+#define JSON(V) callback(HttpResponse::newHttpJsonResponse(JsonCast(V)));
 #define PASS_HEADER req->getHeader("Password")
+
+template <typename T>
+constexpr Json::Value JsonCast(T &&val)
+{
+    if constexpr (std::is_same_v<T, int_fast8_t>)
+    {
+        return (int)val; //becuase of json lib interpreting 67 as 'A' for example
+    }
+    else if constexpr (std::is_same_v<T, uint64_t>)
+    {
+        return (Json::Int64)val;
+    }
+    else if constexpr (std::is_same_v<T, int64_t>)
+    {
+        return (Json::Int64)val;
+    }
+    else
+    {
+        return val;
+    }
+}
 
 BankF::BankF(Bank *b) : bank(*b) {}
 
