@@ -2,9 +2,6 @@
 
 #define JSON(V) callback(HttpResponse::newHttpJsonResponse(V));
 #define INLINE __attribute__((always_inline)) inline
-#define GEN_BODY                                \
-    const auto temp_req = req->getJsonObject(); \
-    const auto body = temp_req ? *temp_req : Json::Value();
 #define PASS_HEADER req->getHeader("Password")
 
 BankF::BankF(Bank *b) : bank(*b) {}
