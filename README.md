@@ -65,8 +65,8 @@ Thank you to the contributors
 | :------------------------------------------ | ---------------------------------------------------------- | ---------------------- |
 | [Expand](https://github.com/Expand-sys)     | Slight docker changes                                      | Frontend               |
 | [React](https://github.com/Reactified)      | CC API, Logo                                               | CC Shop, CC ATM.       |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | Python API             |
 | [Luke](https://github.com/LukeeeeBennett)   | JS API, Docker, Slight Doc edits                           | `N/A`                  |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions | `N/A`                  |
 | [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                           | `N/A`                  |
 
 ## Features
@@ -79,8 +79,12 @@ Thank you to the contributors
 - **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
 - **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
 - **xxHash** for the hashing of passwords, it is very fast: [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
-- **Lightweight**, anecodotally I experienced 0.0% idle, <1% CPU usage on average, 7% at peak, 1000 requests in 0.85s
-
+- **Lightweight**, anecodotally I experienced (on my laptop's i7 6700K, 8 threads):
+  - memory usage of 8.6 MB
+  - 0.0% CPU usage idle 
+  - <1% CPU on average 
+  - 1000 requests in parallel completed in 0.85s which spiked CPU usage to 7%
+  
 ### Safety
 
 - **Tamper Proof** relative to an in-game implementation
