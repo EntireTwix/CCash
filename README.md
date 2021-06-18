@@ -80,7 +80,7 @@ Thank you to the contributors
 - **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
 - **xxHash** for the hashing of passwords, it is very fast: [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
 - **Lightweight**, anecodotally I experienced (on my laptop's i7 6700K, 8 threads):
-  - memory usage of 8.6 MB
+  - memory usage of 8.5 MB (with 0 users)
   - 0.0% CPU usage idle 
   - <1% CPU on average 
   - 1000 requests in parallel completed in 0.85s which spiked CPU usage to 7%
