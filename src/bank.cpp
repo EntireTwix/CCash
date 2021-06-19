@@ -1,6 +1,6 @@
 #include "bank.h"
 
-int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass)
+int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
 {
     if (name.size() > max_name_size)
     {
@@ -22,7 +22,7 @@ int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass)
                    : ErrorResponse::UserAlreadyExists;
     }
 }
-int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass)
+int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
     if (name.size() > max_name_size)
     {
@@ -40,7 +40,7 @@ int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, u
                    : ErrorResponse::UserAlreadyExists;
     }
 }
-int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
+int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) noexcept
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
@@ -53,7 +53,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt)
         return ErrorResponse::UserNotFound;
     }
 }
-int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt)
+int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt) noexcept
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
@@ -67,7 +67,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     }
 }
 
-int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt)
+int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt) noexcept
 {
     //cant send money to self, from self or amount is 0
     if (a_name == b_name || !amount)
@@ -83,7 +83,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
     int_fast8_t state = false;
     {
         std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
-        if (users.modify_if(a_name, [&state, amount, &attempt](User &a) {
+        if (!users.modify_if(a_name, [&state, amount, &attempt](User &a) {
                 //if A exists, A can afford it, and A's password matches
                 if (a.balance < amount)
                 {
@@ -103,57 +103,68 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                 }
             }))
         {
-            if (state > 0)
-            {
-                //if B does exist
-                if (users.modify_if(b_name, [amount](User &b) {
-                        b.balance += amount;
-                    }))
-                {
-                    if constexpr (max_log_size > 0)
-                    {
-                        Transaction temp(a_name, b_name, amount);
-                        Transaction temp2 = temp;
-                        users.modify_if(a_name, [&temp](User &a) {
-                            a.log.AddTrans(std::move(temp));
-                        });
-                        users.modify_if(b_name, [&temp2](User &b) {
-                            b.log.AddTrans(std::move(temp2));
-                        });
-                    }
-                    return true;
-                }
-                else
-                {
-                    //attempt to refund if A exist
-                    users.modify_if(a_name, [amount](User &a) {
-                        a.balance += amount;
-                    });
-                    return ErrorResponse::UserNotFound; //because had to refund transaction
-                }
-            }
-            else
-            {
-                return state;
-            }
+            return ErrorResponse::UserNotFound;
         }
         else
         {
-            return ErrorResponse::UserNotFound;
+            if (!state > 0)
+            {
+                return state;
+            }
+            else
+            {
+                if constexpr (max_log_size > 0)
+                {
+                    Transaction temp;
+                    //if B does exist
+                    if (users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+                            temp = Transaction(a_name, b_name, amount);
+                            b.balance += amount;
+                            b.log.AddTrans(std::forward<Transaction>(temp));
+                        }))
+                    {
+                        users.modify_if(a_name, [&temp](User &a) {
+                            a.log.AddTrans(std::move(temp));
+                        });
+                        return true;
+                    }
+                    else
+                    {
+                        //attempt to refund if A exist
+                        users.modify_if(a_name, [amount](User &a) {
+                            a.balance += amount;
+                        });
+                        return ErrorResponse::UserNotFound; //because had to refund transaction
+                    }
+                }
+                else
+                {
+                    if (!users.modify_if(b_name, [amount](User &b) {
+                            b.balance += amount;
+                        }))
+                    {
+                        //attempt to refund if A exist
+                        users.modify_if(a_name, [amount](User &a) {
+                            a.balance += amount;
+                        });
+                        return ErrorResponse::UserNotFound; //because had to refund transaction
+                    }
+                }
+            }
         }
     }
 }
 
-int_fast8_t Bank::Contains(const std::string &name) const
+int_fast8_t Bank::Contains(const std::string &name) const noexcept
 {
     return (users.contains(name)) ? true : ErrorResponse::UserNotFound;
 }
-int_fast8_t Bank::AdminVerifyPass(const std::string &attempt)
+int_fast8_t Bank::AdminVerifyPass(const std::string &attempt) noexcept
 {
     return (admin_pass == attempt) ? true : ErrorResponse::WrongPassword;
 }
 
-int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount)
+int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept
 {
     if (admin_pass != attempt)
     {
@@ -166,7 +177,7 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
                ? true
                : ErrorResponse::UserNotFound;
 }
-int_fast64_t Bank::GetBal(const std::string &name) const
+int_fast64_t Bank::GetBal(const std::string &name) const noexcept
 {
     int_fast64_t res = ErrorResponse::UserNotFound;
     users.if_contains(name, [&res](const User &u) {
@@ -175,7 +186,7 @@ int_fast64_t Bank::GetBal(const std::string &name) const
     return res;
 }
 
-int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &attempt) const
+int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &attempt) const noexcept
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
     users.if_contains(name, [&res, &attempt](const User &u) {
@@ -183,7 +194,7 @@ int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &att
     });
     return res;
 }
-int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass)
+int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass) noexcept
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
     users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
@@ -200,7 +211,7 @@ int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &att
     return res;
 }
 
-Json::Value Bank::GetLogs(const std::string &name, const std::string &attempt)
+Json::Value Bank::GetLogs(const std::string &name, const std::string &attempt) noexcept
 {
     Json::Value res;
     if (!users.if_contains(name, [&res, &attempt](const User &u) {
