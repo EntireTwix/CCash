@@ -1,4 +1,8 @@
 /build
 /config.json
 /users.json
-/*.md
+/help.md
+/services.md
+/APIs.md
+/README.md
+/benchmarking.cpp
