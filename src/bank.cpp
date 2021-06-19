@@ -117,24 +117,24 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
                 {
                     Transaction temp;
                     //if B does exist
-                    if (users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+                    if (!users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
                             temp = Transaction(a_name, b_name, amount);
                             b.balance += amount;
                             b.log.AddTrans(std::forward<Transaction>(temp));
                         }))
-                    {
-                        users.modify_if(a_name, [&temp](User &a) {
-                            a.log.AddTrans(std::move(temp));
-                        });
-                        return true;
-                    }
-                    else
                     {
                         //attempt to refund if A exist
                         users.modify_if(a_name, [amount](User &a) {
                             a.balance += amount;
                         });
                         return ErrorResponse::UserNotFound; //because had to refund transaction
+                    }
+                    else
+                    {
+                        users.modify_if(a_name, [&temp](User &a) {
+                            a.log.AddTrans(std::move(temp));
+                        });
+                        return true;
                     }
                 }
                 else
