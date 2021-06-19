@@ -6,6 +6,14 @@ int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass)
     {
         return ErrorResponse::NameTooLong;
     }
+    for (char c : name)
+    {
+        if (c == ' ')
+        {
+            return ErrorResponse::InvalidRequest;
+        }
+    }
+
     {
         std::shared_lock<std::shared_mutex> lock{size_l};
         return (users.try_emplace_l(
