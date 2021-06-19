@@ -62,7 +62,8 @@ static Bank bank;
 
 int main(int argc, char **argv)
 {
-    bank.Load();
+    bank.AddUser("twix", "root");
+    bank.AddUser("jolly", "root");
     bank.admin_pass = "root";
     Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser("", ""));
     Op_a(bank.AdminAddUser("root", "", 0, ""), "admin add user: ", 1000000, bank.DelUser("", ""));
