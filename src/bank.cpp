@@ -75,81 +75,78 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
         return ErrorResponse::InvalidRequest;
     }
     //as first modify_if checks a_name and grabs unique lock
-    if (!Contains(b_name))
+    if (!Contains(b_name) || !Contains(a_name))
     {
         return ErrorResponse::UserNotFound;
     }
 
     int_fast8_t state = false;
     {
-        std::shared_lock<std::shared_mutex> lock{send_funds_l}; //because SendFunds requires 3 locking operations
-        if (!users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-                //if A exists, A can afford it, and A's password matches
+        if constexpr (max_log_size > 0)
+        {
+            Transaction temp(a_name, b_name, amount);
+            std::shared_lock<std::shared_mutex> lock{send_funds_l};
+            users.modify_if(a_name, [&temp, &state, amount, &attempt](User &a) {
+                //if A can afford it and A's password matches attempt
                 if (a.balance < amount)
                 {
                     state = ErrorResponse::InsufficientFunds;
                 }
+                else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
+                {
+
+                    state = ErrorResponse::WrongPassword;
+                }
                 else
                 {
-                    if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
-                    {
-                        state = ErrorResponse::WrongPassword;
-                    }
-                    else
-                    {
-                        a.balance -= amount;
-                        state = true;
-                    }
+                    a.balance -= amount;
+                    a.log.AddTrans(std::forward<Transaction>(temp));
+                    state = true;
                 }
-            }))
-        {
-            return ErrorResponse::UserNotFound;
-        }
-        else
-        {
-            if (!state > 0)
+            });
+            if (state > 0)
             {
-                return state;
+                users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+                    b.balance += amount;
+                    b.log.AddTrans(std::move(temp));
+                });
+                return true;
             }
             else
             {
-                if constexpr (max_log_size > 0)
+                return state;
+            }
+        }
+        else
+        {
+            std::shared_lock<std::shared_mutex> lock{send_funds_l};
+            users.modify_if(a_name, [&state, amount, &attempt](User &a) {
+                //if A can afford it and A's password matches attempt
+                if (a.balance < amount)
                 {
-                    Transaction temp;
-                    //if B does exist
-                    if (!users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
-                            temp = Transaction(a_name, b_name, amount);
-                            b.balance += amount;
-                            b.log.AddTrans(std::forward<Transaction>(temp));
-                        }))
-                    {
-                        //attempt to refund if A exist
-                        users.modify_if(a_name, [amount](User &a) {
-                            a.balance += amount;
-                        });
-                        return ErrorResponse::UserNotFound; //because had to refund transaction
-                    }
-                    else
-                    {
-                        users.modify_if(a_name, [&temp](User &a) {
-                            a.log.AddTrans(std::move(temp));
-                        });
-                        return true;
-                    }
+                    state = ErrorResponse::InsufficientFunds;
+                }
+                else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
+                {
+
+                    state = ErrorResponse::WrongPassword;
                 }
                 else
                 {
-                    if (!users.modify_if(b_name, [amount](User &b) {
-                            b.balance += amount;
-                        }))
-                    {
-                        //attempt to refund if A exist
-                        users.modify_if(a_name, [amount](User &a) {
-                            a.balance += amount;
-                        });
-                        return ErrorResponse::UserNotFound; //because had to refund transaction
-                    }
+                    a.balance -= amount;
+                    state = true;
                 }
+            });
+            if (state > 0)
+            {
+                users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
+                    b.balance += amount;
+                });
+                return true;
+            }
+            else
+            {
+                return state;
             }
         }
     }
