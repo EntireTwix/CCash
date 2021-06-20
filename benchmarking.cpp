@@ -69,16 +69,19 @@ int main(int argc, char **argv)
     Op_a(bank.AdminAddUser("root", "", 0, ""), "admin add user: ", 1000000, bank.DelUser("", ""));
     Op(bank.SetBal("twix", "root", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1, "root"), "send funds: ", 1000000);
+
     bank.AddUser("", "");
     Op_a(bank.DelUser("", ""), "del user: ", 1000000, bank.AddUser("", ""));
-    bank.AddUser("", "");
     Op_a(bank.AdminDelUser("", "root"), "admin del user: ", 1000000, bank.AddUser("", ""));
+    bank.DelUser("", "");
+
     Op(bank.Contains("twix"), "contains: ", 1000000);
     Op(bank.AdminVerifyPass("root"), "admin verify pass: ", 1000000);
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(bank.ChangePassword("twix", "root", "root"), "change pass: ", 1000000);
-    Op(bank.GetLogs("twix", "root"), "get logs: ", 1000);
+    Op(bank.GetLogs("twix", "root"), "get logs: ", 10000);
+    Op(bank.Save(), "saving: ", 1);
 
     return 0;
 }
