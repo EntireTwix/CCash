@@ -32,13 +32,12 @@ int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, u
     {
         return ErrorResponse::WrongPassword;
     }
-    {
-        std::shared_lock<std::shared_mutex> lock{size_l};
-        return (users.try_emplace_l(
-                   name, [](User &) {}, init_bal, std::move(init_pass)))
-                   ? true
-                   : ErrorResponse::UserAlreadyExists;
-    }
+
+    std::shared_lock<std::shared_mutex> lock{size_l};
+    return (users.try_emplace_l(
+               name, [](User &) {}, init_bal, std::move(init_pass)))
+               ? true
+               : ErrorResponse::UserAlreadyExists;
 }
 int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) noexcept
 {
@@ -75,80 +74,70 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
         return ErrorResponse::InvalidRequest;
     }
     //as first modify_if checks a_name and grabs unique lock
-    if (!Contains(b_name) || !Contains(a_name))
+    if (!Contains(b_name))
     {
         return ErrorResponse::UserNotFound;
     }
 
     int_fast8_t state = false;
+    if constexpr (max_log_size > 0)
     {
-        if constexpr (max_log_size > 0)
-        {
-            Transaction temp(a_name, b_name, amount);
-            std::shared_lock<std::shared_mutex> lock{send_funds_l};
-            users.modify_if(a_name, [&temp, &state, amount, &attempt](User &a) {
-                //if A can afford it and A's password matches attempt
-                if (a.balance < amount)
-                {
-                    state = ErrorResponse::InsufficientFunds;
-                }
-                else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
-                {
-
-                    state = ErrorResponse::WrongPassword;
-                }
-                else
-                {
-                    a.balance -= amount;
-                    a.log.AddTrans(std::forward<Transaction>(temp));
-                    state = true;
-                }
-            });
-            if (state > 0)
+        Transaction temp(a_name, b_name, amount);
+        std::shared_lock<std::shared_mutex> lock{send_funds_l};
+        users.modify_if(a_name, [&temp, &state, amount, &attempt](User &a) {
+            //if A can afford it and A's password matches attempt
+            if (a.balance < amount)
             {
-                users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
-                    b.balance += amount;
-                    b.log.AddTrans(std::move(temp));
-                });
-                return true;
+                state = ErrorResponse::InsufficientFunds;
+            }
+            else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
+            {
+
+                state = ErrorResponse::WrongPassword;
             }
             else
             {
-                return state;
+                a.balance -= amount;
+                a.log.AddTrans(std::forward<Transaction>(temp));
+                state = true;
             }
-        }
-        else
+        });
+        if (state > 0)
         {
-            std::shared_lock<std::shared_mutex> lock{send_funds_l};
-            users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-                //if A can afford it and A's password matches attempt
-                if (a.balance < amount)
-                {
-                    state = ErrorResponse::InsufficientFunds;
-                }
-                else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
-                {
-
-                    state = ErrorResponse::WrongPassword;
-                }
-                else
-                {
-                    a.balance -= amount;
-                    state = true;
-                }
+            users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+                b.balance += amount;
+                b.log.AddTrans(std::move(temp));
             });
-            if (state > 0)
+        }
+        return state;
+    }
+    else
+    {
+        std::shared_lock<std::shared_mutex> lock{send_funds_l};
+        users.modify_if(a_name, [&state, amount, &attempt](User &a) {
+            //if A can afford it and A's password matches attempt
+            if (a.balance < amount)
             {
-                users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
-                    b.balance += amount;
-                });
-                return true;
+                state = ErrorResponse::InsufficientFunds;
+            }
+            else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
+            {
+
+                state = ErrorResponse::WrongPassword;
             }
             else
             {
-                return state;
+                a.balance -= amount;
+                state = true;
             }
+        });
+        if (state > 0)
+        {
+            users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
+                b.balance += amount;
+            });
         }
+        return state;
     }
 }
 
