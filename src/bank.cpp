@@ -43,7 +43,16 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (users.erase_if(name, [&state, &attempt](User &u) { return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password); }))
+    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
+            if constexpr (return_on_del)
+            {
+                if (SendFunds(name, return_account, u.balance, attempt) == 1)
+                {
+                    return true;
+                }
+            }
+            return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
+        }))
     {
         return (state) ? true : ErrorResponse::WrongPassword;
     }
@@ -56,7 +65,16 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (users.erase_if(name, [this, &state, &attempt](const User &) { return state = (admin_pass == attempt); }))
+    if (users.erase_if(name, [this, &name, &state, &attempt](const User &u) {
+            if constexpr (return_on_del)
+            {
+                if (SendFunds(name, return_account, u.balance, attempt) == 1)
+                {
+                    return true;
+                }
+            }
+            return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
+        }))
     {
         return (state) ? true : ErrorResponse::WrongPassword;
     }
