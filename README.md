@@ -98,6 +98,9 @@ Thank you to the contributors
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
 - **Logging** of all transactions, configurable in [consts.hpp](include/consts.hpp)
 
+### Other
+- **return balance on deletion**, configurable in [consts.hpp](include/consts.hpp)
+
 ## Dependencies
 
 - [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
