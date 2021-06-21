@@ -98,7 +98,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
             else
             {
                 a.balance -= amount;
-                a.log.AddTrans(std::forward<Transaction>(temp));
+                a.log.AddTrans(Transaction(temp));
                 state = true;
             }
         });
