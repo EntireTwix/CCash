@@ -6,12 +6,12 @@ using namespace drogon;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 
-class BankF : public HttpController<BankF, false>
+class api : public HttpController<api, false>
 {
     Bank &bank;
 
 public:
-    BankF(Bank *b);
+    api(Bank *b);
     void Help(req_args) const;
     void Ping(req_args) const;
     void Close(req_args) const;
@@ -27,31 +27,31 @@ public:
     void SetBal(req_args, const std::string &name, uint32_t amount) const;
     void AdminVerifyPass(req_args);
     void GetLog(req_args, const std::string &name);
-
+    
     METHOD_LIST_BEGIN
 
     //Usage
-    METHOD_ADD(BankF::GetBal, "/{name}/bal", Get, Options);
-    METHOD_ADD(BankF::GetLog, "/{name}/log", Get, Options);
-    METHOD_ADD(BankF::SendFunds, "/{name}/send/{to}?amount={amount}", Post, Options);
-    METHOD_ADD(BankF::VerifyPassword, "/{name}/pass/verify", Get, Options);
+    METHOD_ADD(api::GetBal, "/{name}/bal", Get, Options);
+    METHOD_ADD(api::GetLog, "/{name}/log", Get, Options);
+    METHOD_ADD(api::SendFunds, "/{name}/send/{to}?amount={amount}", Post, Options);
+    METHOD_ADD(api::VerifyPassword, "/{name}/pass/verify", Get, Options);
 
     //Meta Usage
-    METHOD_ADD(BankF::ChangePassword, "/{name}/pass/change", Patch, Options);
-    METHOD_ADD(BankF::SetBal, "/admin/{name}/bal?amount={amount}", Patch, Options);
+    METHOD_ADD(api::ChangePassword, "/{name}/pass/change", Patch, Options);
+    METHOD_ADD(api::SetBal, "/admin/{name}/bal?amount={amount}", Patch, Options);
 
     //System Usage
-    METHOD_ADD(BankF::Help, "/help", Get, Options);
-    METHOD_ADD(BankF::Ping, "/ping", Get, Options);
-    METHOD_ADD(BankF::Close, "/admin/close", Post, Options);
-    METHOD_ADD(BankF::Contains, "/contains/{name}", Get, Options);
-    METHOD_ADD(BankF::AdminVerifyPass, "/admin/verify", Get, Options);
+    METHOD_ADD(api::Help, "/help", Get, Options);
+    METHOD_ADD(api::Ping, "/ping", Get, Options);
+    METHOD_ADD(api::Close, "/admin/close", Post, Options);
+    METHOD_ADD(api::Contains, "/contains/{name}", Get, Options);
+    METHOD_ADD(api::AdminVerifyPass, "/admin/verify", Get, Options);
 
     //User Managment
-    METHOD_ADD(BankF::AddUser, "/user/{name}", Post, Options);
-    METHOD_ADD(BankF::AdminAddUser, "/admin/user/{name}?init_bal={init_bal}", Post, Options);
-    METHOD_ADD(BankF::DelUser, "/user/{name}", Delete, Options);
-    METHOD_ADD(BankF::AdminDelUser, "/admin/user/{name}", Delete, Options);
+    METHOD_ADD(api::AddUser, "/user/{name}", Post, Options);
+    METHOD_ADD(api::AdminAddUser, "/admin/user/{name}?init_bal={init_bal}", Post, Options);
+    METHOD_ADD(api::DelUser, "/user/{name}", Delete, Options);
+    METHOD_ADD(api::AdminDelUser, "/admin/user/{name}", Delete, Options);
 
     METHOD_LIST_END
 };
