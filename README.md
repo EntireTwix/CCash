@@ -52,19 +52,8 @@ Using the Bank's API allows (you/others) to (make/use) connected services that u
 
 ## Developing for this project
 
-As a developer, check these out:
+Find [Language APIs](https://github.com/EntireTwix/CCash/blob/main/APIs.md) here
 
-### Language APIs
-* [JavaScript API](https://github.com/LukeeeeBennett/ccash-client-js)
-* [ComputerCraft (Lua) API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
-* [Python API](https://github.com/fearlessdoggo21/ccashpythonclient)
-
-#### In Dev
-* [C API]()
-* [C# API](https://github.com/Soverclysm/CCash-dotnet-api)
-* [Rust API](https://git.stboyden.com/STBoyden/ccash-rs)
-
-### HTTP Endpoints
 Find [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md) here
 
 ## FAQ
