@@ -16,7 +16,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/bank_f.cpp
     src/bank.cpp
     src/log.cpp
-    src/simdjson.cpp
     src/transaction.cpp
     src/user.cpp
     src/xxhash.c
