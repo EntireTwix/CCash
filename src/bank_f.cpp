@@ -24,7 +24,7 @@ constexpr Json::Value JsonCast(T &&val)
     }
 }
 
-api::api(Bank *b) : bank(*b) {}
+api::api(Bank &b) : bank(b) {}
 
 void api::Help(req_args) const
 {

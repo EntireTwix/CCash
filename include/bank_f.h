@@ -11,7 +11,7 @@ class api : public HttpController<api, false>
     Bank &bank;
 
 public:
-    api(Bank *b);
+    api(Bank &b);
     void Help(req_args) const;
     void Ping(req_args) const;
     void Close(req_args) const;
@@ -27,7 +27,7 @@ public:
     void SetBal(req_args, const std::string &name, uint32_t amount) const;
     void AdminVerifyPass(req_args);
     void GetLog(req_args, const std::string &name);
-    
+
     METHOD_LIST_BEGIN
 
     //Usage
