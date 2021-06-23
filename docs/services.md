@@ -10,7 +10,7 @@
 - [CC Shop](https://github.com/Reactified/rpm/tree/main/packages/ccash-shop)
   ![image](https://user-images.githubusercontent.com/31377881/120050327-de163700-bfd1-11eb-9d5a-f75c003e867c.png)
   ![image](https://user-images.githubusercontent.com/31377881/120050367-09992180-bfd2-11eb-9a22-449d73c196cf.png)
-- [CC ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank) an ATM for economies allowing for an initial exchange to start up
+- [CC Reverse ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank) an ATM for economies allowing for an initial exchange to start up
   ![image](https://user-images.githubusercontent.com/31377881/121277361-4d6b1100-c885-11eb-87c8-cfebcf58da4f.png)
 
 ### In-Dev:
@@ -24,3 +24,6 @@
 - Shipping
 - High-level bank operations such as loans
 - Some trust based system for transactions similiar to Paypal
+
+- a better version of one of these existing ideas
+- something completely different

@@ -55,7 +55,7 @@ int main(int argc, char **argv)
     bank.admin_pass = argv[1];
 
     //Auto Saving
-    const unsigned long saving_freq = std::stoul(argv[2]);
+    const unsigned long saving_freq = std::stoul(std::string(argv[2]));
     if (saving_freq) //if saving frequency is 0 then auto saving is turned off
     {
         std::thread([saving_freq]() {
@@ -73,7 +73,7 @@ int main(int argc, char **argv)
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");
         });
-    app().loadConfigFile("../config.json").registerController(API).setThreadNum(std::stoul(argv[3])).run();
+    app().loadConfigFile(config_location).registerController(API).setThreadNum(std::stoul(std::string(argv[3]))).run();
 
     return 0;
 }
