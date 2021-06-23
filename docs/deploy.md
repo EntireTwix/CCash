@@ -24,14 +24,24 @@ Similarly, the CCash repo also provides a GitHub Workflow to deploy the latest d
 
 ### Configure the machine
 
-* Create a machine using your chosen cloud provider.
-* Configure DNS to point your chosen domain name to the machines IP address. _(Without this, TLS/SSL will not work)_.
-* Create an SSH key-pair by running `ssh-keygen` locally. Make sure you **don't** set a password.
-* Add the `*.pub` public key to the servers `~/.ssh/authorized_keys` file.
-* Install Docker Engine following [official docs](https://docs.docker.com/engine/install/).
-* Add the private key _(not `*.pub`)_ to a [GitHub secret](https://docs.github.com/en/actions/reference/encrypted-secrets) named `CCASH_SSH_KEY` in your CCash repo.
-* Add the domain name pointing to the remote machine to a GitHub secret named `CCASH_DOMAIN`.
+1. Create a machine using your chosen cloud provider
+1. Configure DNS to point your chosen domain name to the machines IP address. _(Without this, TLS/SSL will not work)_
+1. Create an SSH key-pair by running `ssh-keygen` locally. Make sure you **don't** set a password
+1. Add the `*.pub` public key to the servers `~/.ssh/authorized_keys` file
+1. Install Docker Engine on the remote machine following [official docs](https://docs.docker.com/engine/install/)
+1. Generate SSL/TLS certificate (Using [certbot](https://certbot.eff.org/lets-encrypt/debianbuster-other) is recommended)
+1. Configure [GitHub secrets](https://docs.github.com/en/actions/reference/encrypted-secrets) for the repo
+  * `CCASH_SSH_KEY` - The private key _(not `*.pub`)_ created earlier
+  * `CCASH_DOMAIN` - The domain name pointing to the remote machine
+  * `CCASH_CONFIG_JSON` - A config.json file that will be written every deploy _(https config cert path should be `/ccash/cert` and key path should be `/ccash/key`)_
+  * `CCASH_USERS_JSON` - A users.json file that will be written only on first deploy
+  * `CCASH_ADMIN_PASSWORD` - A CCash server admin account password
+  * `CCASH_SAVE_FREQUENCY` - A number representing the frequency to save to users.json (in minutes)
+  * `CCASH_THREAD_COUNT` - A number representing the number of threads to use
+  * `CCASH_TLS_CERT_PATH` - The path to the TLS/SSL certificate on the host machine
+  * `CCASH_TLS_KEY_PATH` - The path to the TLS/SSL key on the host machine
+  * `CCASH_DEPLOY_TOKEN` - A [GitHub personal access token](https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token), used to trigger the deploy workflow automatically when the build workflow is successful. _(Leave empty to disable automatic deploys.)_
 
-You are now ready to run the "Deploy" workflow mentioned above. This workflow will SSH in to the `CCASH_DOMAIN` machine, using the `CCASH_SSH_KEY` and `docker run` the latest `entiretwix/ccash` image, binding to port 80 and 443. It will also handle the creation of a TLS/SSL certificate for you.
+You are now ready to run the "Deploy" workflow mentioned above. This workflow will SSH in to the `CCASH_DOMAIN` machine, using the `CCASH_SSH_KEY` and `docker run` the latest `entiretwix/ccash` image, binding to port 80 and 443, setting the appropriate volumes and environment variables.
 
-Visiting `https://$SSH_TARGET/BankF/ping` in your browser should verify that it has been deployed correctly.
+Run `curl https://$CCASH_DOMAIN/BankF/ping` to verify that the server has been deployed correctly.

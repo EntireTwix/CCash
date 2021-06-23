@@ -11,6 +11,6 @@ RUN mkdir build
 WORKDIR /ccash/build
 
 RUN cmake ..
-RUN make -j$(nprov)
+RUN make -j$(nproc)
 
-CMD ["/ccash/build/bank", "$CCASH_ADMIN_PASSWORD", "$CCASH_SAVE_FREQUENCY", "$CCASH_THREAD_COUNT"]
+ENTRYPOINT ["/ccash/build/bank"]
