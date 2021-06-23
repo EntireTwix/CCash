@@ -12,3 +12,6 @@ constexpr const char *config_location = "../config.json";
 //returns money to an account on deletion
 constexpr bool return_on_del = false;
 constexpr const char *return_account = "";
+
+//if true, when frequency is hit after changes have happened
+#define CONSERVATIVE_DISK_SAVE true
