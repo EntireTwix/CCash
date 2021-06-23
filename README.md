@@ -2,19 +2,19 @@
 
 A webserver hosting a bank system for Minecraft, able to be used from web browser or from CC/OC if you're playing modded.
 
-the currency model most Minecraft Servers adopt if any, is resource based, usually diamonds, this model is fraught with issues however:
+The currency model usually employed is diamond-based, however, this is fraught with issues:
 
-- the primary issue is minecraft worlds are infinite leading to hyper inflation as everyone accrues more diamonds
-- there is no central authority minting the currency, any consumer can introduce more diamonds to the system
-- some resources are passively reapable, making the generation of currency a larger focus then of products
-- locality is required for transaction
-- theft is possible, ownership is possession based
+- The primary issue is minecraft worlds are infinite leading to hyper inflation as everyone accrues more diamonds
+- There is no central authority minting the currency, any consumer can introduce more diamonds to the system
+- Some resources are passively reapable, making the generation of currency a larger focus then of products
+- Locality is required for transaction
+- Theft is possible, ownership is possession based
 
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
 ## Build
 
-drogon depedencies (varies by OS/distro)
+Drogon depedencies (varies by OS/distro)
 ```
 # Debian
 sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
@@ -23,7 +23,7 @@ sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
 brew install jsoncpp ossp-uuid openssl zlib
 ```
 
-building the project
+Building the project
 
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
@@ -34,13 +34,13 @@ cmake ..
 make -j<threads>
 ```
 
-then edit config.json to include the paths to your certs for HTTPS (I use certbot), or just remove the listener for port 443.
+Then edit config.json to include the paths to your certs for HTTPS (I use certbot), or just remove the listener for port 443.
 
 ```
 vim ../config.json
 ```
 
-finally, run the program
+Finally, run the program
 
 ```
 sudo ./bank <admin password> <saving frequency in minutes> <threads>
@@ -50,10 +50,22 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
 
-## Developing for
-as a dev check out 
-* [APIs](https://github.com/EntireTwix/CCash/blob/main/APIs.md)
-* [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md)
+## Developing for this project
+
+As a developer, check these out:
+
+### Language APIs
+* [JavaScript API](https://github.com/LukeeeeBennett/ccash-client-js)
+* [ComputerCraft (Lua) API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
+* [Python API](https://github.com/fearlessdoggo21/ccashpythonclient)
+
+#### In Dev
+* [C API]()
+* [C# API](https://github.com/Soverclysm/CCash-dotnet-api)
+* [Rust API](https://git.stboyden.com/STBoyden/ccash-rs)
+
+### HTTP Endpoints
+Find [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md) here
 
 ## FAQ
 **Q:** how is money initially injected into the economy
@@ -76,13 +88,13 @@ Thank you to the contributors
 ### Performance
 - In memory database instead of on disk
 - **NOT** written in Lua, like a OC/CC implementation
-- written in **C++**, arguably the fastest language
-- **multi-threaded**
-- **parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
+- Written in **C++**, arguably the fastest language
+- **Multi-threaded**
+- **Parallel hashmaps** a far [superior](https://greg7mdp.github.io/parallel-hashmap/) HashMap implementation to the STD, that also benefits from multi-threaded
 - **Drogon** is a very fast [web framework](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite)
 - **xxHash** for the hashing of passwords, it is very fast: [graph](https://user-images.githubusercontent.com/750081/61976089-aedeab00-af9f-11e9-9239-e5375d6c080f.png)
 - **Lightweight**, anecodotally I experienced (on my laptop's i7 6700K, 8 threads):
-  - memory usage of 8.5 MB (with 0 users)
+  - Memory usage of 8.5 MB (with 0 users)
   - 0.0% CPU usage idle 
   - <1% CPU on average 
   - 1000 requests in parallel completed in 0.85s which spiked CPU usage to 7%
@@ -97,26 +109,14 @@ Thank you to the contributors
 ### Accessibility
 
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
-- able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
+- Able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
 - **Logging** of all transactions, configurable in [consts.hpp](include/consts.hpp)
 
 ### Other
-- **return balance on deletion**, configurable in [consts.hpp](include/consts.hpp)
+- **Return balance on deletion**, configurable in [consts.hpp](include/consts.hpp)
 
 ## Dependencies
 
 - [Parallel HashMap](https://github.com/greg7mdp/parallel-hashmap/tree/master)
 - [Drogon](https://github.com/an-tao/drogon/tree/master)
 - [XXHASH](https://github.com/Cyan4973/xxHash)
-
-## Language Specific APIs
-
-* [JavaScript API](https://github.com/LukeeeeBennett/ccash-client-js)
-* [ComputerCraft (Lua) API](https://github.com/Reactified/rpm/blob/main/packages/ccash-api/api.lua)
-* [Python API](https://github.com/fearlessdoggo21/ccashpythonclient)
-
-### In Dev
-* [C API]()
-* [C# API](https://github.com/Soverclysm/CCash-dotnet-api)
-* [Rust API](https://git.stboyden.com/STBoyden/ccash-rs)
-
