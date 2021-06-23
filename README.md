@@ -68,9 +68,10 @@ As a developer, check these out:
 Find [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md) here
 
 ## FAQ
-**Q:** how is money initially injected into the economy
 
-**A:** you can take any approach you want, one that I recommend is using a one way exchange via the CC ATM above to have players mine the initial currency, this rewards early adopters and has a sunk cost effect in that the resource is promptly burned
+> How is money initially injected into the economy?
+
+You can choose whichever approach you would like, but I would personally recommend a one-way exchange via the CC ATM for a minable currency. A good resource for this is **coal**, as it is not farmable - but also not so useful that there is nothing you want more (diamonds). This rewards early adopters, and creates a sunk cost effect (the resource is promptly burnt).
 
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
