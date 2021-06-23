@@ -13,6 +13,17 @@ constexpr const char *config_location = "../config.json";
 constexpr bool return_on_del = false;
 constexpr const char *return_account = "";
 
-//if true, when frequency is hit after changes have happened then save
-//if false, when frequency is hit save
-#define CONSERVATIVE_DISK_SAVE true
+/*
+if true, when frequency is hit after changes have happened then save 
+    pros
+        LOW disk usage
+    cons
+        overhead to all mutating functions
+if false, when frequency is hit save
+    pros
+        safer
+        no atomic overhead
+    cons
+        CONSTANT disk usage
+*/
+#define CONSERVATIVE_DISK_SAVE false
