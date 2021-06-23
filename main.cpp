@@ -68,7 +68,7 @@ int main(int argc, char **argv)
         }).detach();
     }
 
-    auto API = std::make_shared<BankF>(&bank);
+    auto API = std::make_shared<api>(&bank);
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*");
