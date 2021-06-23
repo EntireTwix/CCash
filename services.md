@@ -19,7 +19,7 @@
 
 ### Ideas:
 
-- an API in your preferred language (if not found in [APIs.md](APIs.md))
+- an API in your preferred language (if not found in [README.md](README.md) under *Language Specific APIs*)
 - Gambling
 - Shipping
 - High-level bank operations such as loans
