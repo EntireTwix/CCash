@@ -33,7 +33,11 @@ User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : ba
                 log_j[i]["from"].asCString(),
                 log_j[i]["to"].asCString(),
                 log_j[i]["amount"].asUInt(),
+#ifdef _USE_32BIT_TIME_T
+                log_j[i]["time"].asUInt()));
+#else
                 log_j[i]["time"].asUInt64()));
+#endif
         }
     }
 }
