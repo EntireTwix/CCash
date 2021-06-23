@@ -50,8 +50,10 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
 
-Go to [here](help.md) to see the API's endpoints. 
-Language specific APIs can be found [here](APIs.md).
+## Developing for
+as a dev check out 
+* [APIs](https://github.com/EntireTwix/CCash/blob/main/APIs.md)
+* [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md)
 
 ## FAQ
 **Q:** how is money initially injected into the economy
@@ -61,13 +63,13 @@ Language specific APIs can be found [here](APIs.md).
 ## [Contributions](https://github.com/EntireTwix/CCash/graphs/contributors)
 Thank you to the contributors
 
-| Name                                        | Project Work                                                            | Connected Service Work |
-| :------------------------------------------ | ----------------------------------------------------------------------- | ---------------------- |
-| [Expand](https://github.com/Expand-sys)     | Slight docker changes                                                   | Frontend               |
-| [React](https://github.com/Reactified)      | CC API, Logo                                                            | CC Shop, CC ATM.       |
-| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions, Python API  | `N/A`                  |
-| [Luke](https://github.com/LukeeeeBennett)   | JS API, Docker, Slight Doc edits                                        | `N/A`                  |
-| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                                        | `N/A`                  |
+| Name                                        | Project Work                                                           | Connected Service Work |
+| :------------------------------------------ | ---------------------------------------------------------------------- | ---------------------- |
+| [Expand](https://github.com/Expand-sys)     | Slight docker changes                                                  | Frontend               |
+| [React](https://github.com/Reactified)      | CC API, Logo                                                           | CC Shop, CC ATM.       |
+| [Doggo](https://github.com/FearlessDoggo21) | Logs loading/adding Optimized, HTTP convention suggestions, Python API | `N/A`                  |
+| [Luke](https://github.com/LukeeeeBennett)   | JS API, Docker, Slight Doc edits                                       | `N/A`                  |
+| [Jolly](https://github.com/STBoyden)        | Slight Doc edits                                                       | `N/A`                  |
 
 ## Features
 
@@ -97,6 +99,9 @@ Thank you to the contributors
 - **RESTful** API for connected services like a market, gambling, or anything else you can think of
 - able to be used millions of blocks away, across dimensions, servers, **vanilla or modded**.
 - **Logging** of all transactions, configurable in [consts.hpp](include/consts.hpp)
+
+### Other
+- **return balance on deletion**, configurable in [consts.hpp](include/consts.hpp)
 
 ## Dependencies
 
