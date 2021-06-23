@@ -11,5 +11,5 @@ Transaction::Transaction(std::string from_str, std::string to_str, uint32_t amou
     using namespace std::chrono;
     from = std::move(from_str);
     to = std::move(to_str);
-    time = duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count();
+    time = std::time(NULL);
 }
