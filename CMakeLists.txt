@@ -13,12 +13,13 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 find_package(Threads REQUIRED)
 add_executable(${PROJECT_NAME} main.cpp )
 target_sources(${PROJECT_NAME} PRIVATE
-    src/xxhash.c
     src/bank_f.cpp
     src/bank.cpp
     src/log.cpp
+    src/simdjson.cpp
     src/transaction.cpp
     src/user.cpp
+    src/xxhash.c
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
