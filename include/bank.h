@@ -24,9 +24,12 @@ private:
 
     void ChangesMade() noexcept;  //called after making changes
     void ChangesSaved() noexcept; //called after saving
-#elif
-#define ChangesMade() ;
-#define ChangesSaved() ;
+
+#define CHANGES_MADE ChangesMade();
+#define CHANGES_SAVED ChangesSaved();
+#else
+#define CHANGES_MADE
+#define CHANGES_SAVED
 #endif
 
     /**
