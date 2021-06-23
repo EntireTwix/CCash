@@ -1,11 +1,27 @@
 #include "bank.h"
 
+#if CONSERVATIVE_DISK_SAVE
+void Bank::ChangesMade() noexcept
+{
+    while (change_flag.exchange(true, std::memory_order_relaxed))
+        ;
+    std::atomic_thread_fence(std::memory_order_acquire);
+}
+
+void Bank::ChangesSaved() noexcept
+{
+    std::atomic_thread_fence(std::memory_order_release);
+    change_flag.store(false, std::memory_order_relaxed);
+}
+#endif
+
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
 {
     if (name.size() > max_name_size)
     {
         return ErrorResponse::NameTooLong;
     }
+    //replace with string find
     for (char c : name)
     {
         if (c == ' ')

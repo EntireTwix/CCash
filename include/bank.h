@@ -1,7 +1,8 @@
 #pragma once
+#include <iostream> //temporary
 #include <fstream>
-#include <iostream>
 #include <shared_mutex>
+#include <atomic>
 #include "error_responses.hpp"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.h"
@@ -17,6 +18,16 @@ private:
         4UL,
         std::mutex>
         users;
+
+#if CONSERVATIVE_DISK_SAVE
+    std::atomic<bool> change_flag = false; //if true changes have been made
+
+    void ChangesMade() noexcept;  //called after making changes
+    void ChangesSaved() noexcept; //called after saving
+#elif
+#define ChangesMade() ;
+#define ChangesSaved() ;
+#endif
 
     /**
      * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
