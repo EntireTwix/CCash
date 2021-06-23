@@ -30,8 +30,8 @@
 # System Usage
 |      Name       | Path                  | Method |   A   | Description                                                                           |
 | :-------------: | :-------------------- | :----: | :---: | ------------------------------------------------------------------------------------- |
-|      Help       | BankF/help            |  GET   | false | the page you're looking at right now!                                                 |
-|      Ping       | BankF/ping            |  GET   | false | for pinging the server to see if its online                                           |
+|      Help       | BankF/help            |  GET   | false | returns the page you're looking at right now as raw HTML                              |
+|      Ping       | BankF/ping            |  GET   | false | for pinging the server to see if its online, returns "pong" if it is                  |
 |      Close      | BankF/admin/close     |  POST  | true  | saves and then closes the program if the supplied password matches the admin password |
 |    Contains     | BankF/contains/{name} |  GET   | false | returns `1` if the supplied user `{name}` exists                                      |
 | AdminVerifyPass | BankF/admin/verify    |  GET   | true  | returns `1` if the password supplied in the header matches the admin password         |
