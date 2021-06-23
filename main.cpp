@@ -3,7 +3,7 @@
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
-#include "bank_f.h"
+#include "bank_api.h"
 
 #include <signal.h>
 #include <stdlib.h>
@@ -63,17 +63,19 @@ int main(int argc, char **argv)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
                 bank.Save();
-                std::cout << "Saving " << duration_cast<milliseconds>(system_clock::now().time_since_epoch()).count() << '\n';
+                std::cout << "Saving " << std::time(0) << '\n';
             }
         }).detach();
     }
 
-    auto API = std::make_shared<api>(bank);
+    //endpoints
+    auto APIv1 = std::make_shared<v1::api>(bank); //v1
+
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
-            resp->addHeader("Access-Control-Allow-Origin", "*");
+            resp->addHeader("Access-Control-Allow-Origin", "*"); //CORS
         });
-    app().loadConfigFile(config_location).registerController(API).setThreadNum(std::stoul(std::string(argv[3]))).run();
+    app().loadConfigFile(config_location).registerController(APIv1).setThreadNum(std::stoul(std::string(argv[3]))).run();
 
     return 0;
 }
