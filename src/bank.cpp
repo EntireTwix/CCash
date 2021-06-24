@@ -3,33 +3,27 @@
 #if CONSERVATIVE_DISK_SAVE
 void Bank::ChangesMade() noexcept
 {
-    return change_flag.test_and_set();
+    return change_flag.store(1, std::memory_order_release);
 }
-
 void Bank::ChangesSaved() noexcept
 {
-    return change_flag.clear();
+    return change_flag.store(1, std::memory_order_release);
 }
-
 bool Bank::GetChangeState() noexcept
 {
-    return change_flag.test();
+    return change_flag.load(std::memory_order_acquire);
 }
 #endif
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
 {
-    if (name.size() > max_name _size)
+    if (name.size() > max_name_size)
     {
         return ErrorResponse::NameTooLong;
     }
-    //replace with string find
-    for (char c : name)
+    if (name.find(' ') != std::string::npos)
     {
-        if (c == ' ')
-        {
-            return ErrorResponse::InvalidRequest;
-        }
+        return ErrorResponse::InvalidRequest;
     }
 
     {
