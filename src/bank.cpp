@@ -1,14 +1,30 @@
 #include "bank.h"
 
-#if CONSERVATIVE_DISK_SAVE
-void Bank::ChangesMade() noexcept { return change_flag.store(1, std::memory_order_release); }
-void Bank::ChangesSaved() noexcept { return change_flag.store(1, std::memory_order_release); }
-bool Bank::GetChangeState() noexcept { return change_flag.load(std::memory_order_acquire); }
-#else
-void Bank::ChangesMade() noexcept { return change_flag.store(1, std::memory_order_release); }
-void Bank::ChangesSaved() noexcept { return change_flag.store(1, std::memory_order_release); }
-bool Bank::GetChangeState() noexcept { return 1; }
-#endif
+void Bank::ChangesMade() noexcept
+{
+    if constexpr (conservative_disk_save)
+    {
+        return change_flag.store(1, std::memory_order_release);
+    }
+}
+void Bank::ChangesSaved() noexcept
+{
+    if constexpr (conservative_disk_save)
+    {
+        return change_flag.store(1, std::memory_order_release);
+    }
+}
+bool Bank::GetChangeState() noexcept
+{
+    if constexpr (conservative_disk_save)
+    {
+        return change_flag.load(std::memory_order_acquire);
+    }
+    else
+    {
+        return true;
+    }
+}
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
 {
@@ -48,18 +64,36 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
+    uint32_t bal; //with return_on_del set to false this will give warning
+    if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
             if constexpr (return_on_del)
             {
-                if (SendFunds(name, return_account, u.balance, attempt) == 1)
-                {
-                    return true;
-                }
+                bal = u.balance;
             }
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
-        return (state) ? true : ErrorResponse::WrongPassword;
+        if constexpr (return_on_del)
+        {
+            return (state) ? true : ErrorResponse::WrongPassword;
+        }
+        else
+        {
+            if (state)
+            {
+                if constexpr (return_on_del)
+                {
+                    users.modify_if(return_account, [&bal](User &u) {
+                        u.balance += bal;
+                    });
+                }
+                return true;
+            }
+            else
+            {
+                return ErrorResponse::WrongPassword;
+            }
+        }
     }
     else
     {
@@ -70,18 +104,29 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    if (users.erase_if(name, [this, &name, &state, &attempt](const User &u) {
+    uint32_t bal; //with return_on_del set to false this will give warning
+    if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
             if constexpr (return_on_del)
             {
-                if (SendFunds(name, return_account, u.balance, attempt) == 1)
-                {
-                    return true;
-                }
+                bal = u.balance;
             }
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
-        return (state) ? true : ErrorResponse::WrongPassword;
+        if (state)
+        {
+            if constexpr (return_on_del)
+            {
+                users.modify_if(return_account, [&bal](User &u) {
+                    u.balance += bal;
+                });
+            }
+            return true;
+        }
+        else
+        {
+            return ErrorResponse::WrongPassword;
+        }
     }
     else
     {
