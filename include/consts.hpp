@@ -26,4 +26,4 @@ if false, when frequency is hit save
     cons
         CONSTANT disk usage
 */
-#define CONSERVATIVE_DISK_SAVE true //TURN THIS OFF IF YOU THINK WITHIN YOUR SAVE FREQUENCY OF X MINUTES ITS GUARANTEED A CHANGE WILL OCCUR (typically massive servers)
+constexpr bool conservative_disk_save = true; //TURN THIS OFF IF YOU THINK WITHIN YOUR SAVE FREQUENCY OF X MINUTES ITS GUARANTEED A CHANGE WILL OCCUR (typically massive servers)
