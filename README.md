@@ -48,12 +48,12 @@ sudo ./bank <admin password> <saving frequency in minutes> <threads>
 
 ## Connected Services
 
-Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](services.md)
+Using the Bank's API allows (you/others) to (make/use) connected services that utilize the bank, a couple ideas can be found [here](docs/services.md)
 
 ## Developing for
 as a dev check out 
-* [APIs](https://github.com/EntireTwix/CCash/blob/main/APIs.md)
-* [endpoints](https://github.com/EntireTwix/CCash/blob/main/help.md)
+* [APIs](https://github.com/EntireTwix/CCash/blob/main/docs/APIs.md)
+* [endpoints](https://github.com/EntireTwix/CCash/blob/main/docs/help.md)
 
 ## FAQ
 **Q:** how is money initially injected into the economy

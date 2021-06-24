@@ -1,31 +1,59 @@
-name: Publish Staging
-on:
-  push:
-    branches:
-      - main
+name: Deploy
+on: workflow_dispatch
 jobs:
   release:
-    name: Push Docker image to GitHub Packages
+    name: Deploy Docker image to remote machine
     runs-on: ubuntu-latest
-    permissions:
-      packages: write
-      contents: read
     steps:
-      - name: Checkout the repo
-        uses: actions/checkout@v2
-      - name: Login to GitHub Docker Registry
-        uses: docker/login-action@v1
+      - name: Write CCASH_CONFIG_JSON to remote filesystem
+        uses: appleboy/ssh-action@master
         with:
-          registry: docker.pkg.github.com
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "echo '${{ secrets.CCASH_CONFIG_JSON }}' > $(pwd)/config.json"
+      - name: Write CCASH_USERS_JSON to remote filesystem if it doesn't already exist
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "[[ -f $(pwd)/users.json ]] && echo 'users.json already exists' || echo '${{ secrets.CCASH_USERS_JSON }}' > $(pwd)/users.json"
+      - name: Authenticate Docker Engine with GitHub Packages container registry
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "docker login -u '${{ github.actor }}' -p '${{ secrets.GITHUB_TOKEN }}' docker.pkg.github.com"
+      - name: Prune docker system
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "docker system prune -af"
       - name: Format repository
         run: |
           echo IMAGE_REPOSITORY=$(echo ${{ github.repository }} | tr '[:upper:]' '[:lower:]') >> $GITHUB_ENV
-      - name: Build container image
-        uses: docker/build-push-action@v2
+      - name: Pull latest image
+        uses: appleboy/ssh-action@master
         with:
-          push: true
-          tags: |
-            docker.pkg.github.com/${{ env.IMAGE_REPOSITORY }}/ccash:${{ github.sha }}
-            docker.pkg.github.com/${{ env.IMAGE_REPOSITORY }}/ccash:latest
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "docker pull docker.pkg.github.com/${{ env.IMAGE_REPOSITORY }}/ccash:latest"
+      - name: Stop previous container
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "curl -X POST -H 'Password: ${{ secrets.CCASH_ADMIN_PASSWORD }}' https://${{ secrets.CCASH_DOMAIN }}/BankF/close && docker kill $(docker ps -q)"
+      - name: Run CCash Docker image
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.CCASH_DOMAIN }}
+          username: root
+          key: ${{ secrets.CCASH_SSH_KEY }}
+          script: "docker run -d -p 80:80 -p 443:443 -v $(pwd)/config.json:/ccash/config.json -v $(pwd)/users.json:/ccash/users.json -v ${{ secrets.CCASH_TLS_CERT_PATH }}:/ccash/cert -v ${{ secrets.CCASH_TLS_KEY_PATH }}:/ccash/key docker.pkg.github.com/${{ env.IMAGE_REPOSITORY }}/ccash:latest ${{ secrets.CCASH_ADMIN_PASSWORD }} ${{ secrets.CCASH_SAVE_FREQUENCY }} ${{ secrets.CCASH_THREAD_COUNT }}"
