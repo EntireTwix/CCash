@@ -19,22 +19,9 @@ private:
         std::mutex>
         users;
 
-#if CONSERVATIVE_DISK_SAVE
     std::atomic<bool> change_flag = false; //if true changes have been made
 
-    void ChangesMade() noexcept;  //called after making changes
-    void ChangesSaved() noexcept; //called after saving
-    bool GetChangeState() noexcept;
-
-#define CHANGES_MADE ChangesMade();
-#define CHANGES_SAVED ChangesSaved();
-#define GET_CHANGE_STATE
-#else
-#define CHANGES_MADE
-#define CHANGES_SAVED
-#define GET_CHANGE_STATE
-#endif
-
+private:
     /**
      * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
      * 
@@ -49,6 +36,10 @@ private:
 
 public:
     std::string admin_pass;
+
+    void ChangesMade() noexcept;  //called after making changes
+    void ChangesSaved() noexcept; //called after saving
+    bool GetChangeState() noexcept;
 
     int_fast8_t AddUser(const std::string &name, const std::string &init_pass) noexcept;
     int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
