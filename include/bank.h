@@ -20,7 +20,7 @@ private:
         users;
 
 #if CONSERVATIVE_DISK_SAVE
-    std::atomic_flag change_flag = ATOMIC_FLAG_INIT; //if true changes have been made
+    std::atomic<bool> change_flag = false; //if true changes have been made
 
     void ChangesMade() noexcept;  //called after making changes
     void ChangesSaved() noexcept; //called after saving
@@ -28,7 +28,7 @@ private:
 
 #define CHANGES_MADE ChangesMade();
 #define CHANGES_SAVED ChangesSaved();
-#define GET_CHANGE_STATE GetChangeState();
+#define GET_CHANGE_STATE
 #else
 #define CHANGES_MADE
 #define CHANGES_SAVED
