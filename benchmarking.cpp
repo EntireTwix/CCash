@@ -3,7 +3,7 @@
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
-#include "bank_f.h"
+#include "bank.h"
 
 #include <signal.h>
 #include <stdlib.h>
@@ -11,7 +11,6 @@
 #include <unistd.h>
 
 using namespace std::chrono;
-using namespace drogon;
 
 static Bank bank;
 
