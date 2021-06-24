@@ -9,7 +9,7 @@ constexpr unsigned max_name_size = 50;
 constexpr const char *users_location = "../users.json";
 constexpr const char *config_location = "../config.json";
 
-//returns money to an account on deletion (useful if you dont want any money to leave the economy)
+// Returns money to an account on deletion (useful if you dont want any money to leave the economy)
 constexpr bool return_on_del = false;
 constexpr const char *return_account = "";
 
@@ -18,12 +18,13 @@ if true, when frequency is hit after changes have happened then save
     pros
         LOW disk usage
     cons
-        overhead to all mutating functions
+        LOW atomic overhead
 if false, when frequency is hit save
     pros
-        safer
-        no atomic overhead
+        ZERO atomic overhead
     cons
-        CONSTANT disk usage
+        HIGH disk usage
 */
-constexpr bool conservative_disk_save = true; //TURN THIS OFF IF YOU THINK WITHIN YOUR SAVE FREQUENCY OF X MINUTES ITS GUARANTEED A CHANGE WILL OCCUR (typically massive servers)
+constexpr bool conservative_disk_save = true;
+
+//constexpr unsigned max_users = 1000;
