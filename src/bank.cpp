@@ -64,12 +64,13 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    uint32_t bal; //with return_on_del set to false this will give warning
+#if return_on_del
+    uint32_t bal;
     if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
-            if constexpr (return_on_del)
-            {
-                bal = u.balance;
-            }
+            bal = u.balance;
+#else
+    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
+#endif
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
@@ -81,12 +82,11 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
         {
             if (state)
             {
-                if constexpr (return_on_del)
-                {
-                    users.modify_if(return_account, [&bal](User &u) {
-                        u.balance += bal;
-                    });
-                }
+#if return_on_del
+                users.modify_if(return_account, [&bal](User &u) {
+                    u.balance += bal;
+                });
+#endif
                 return true;
             }
             else
@@ -104,23 +104,23 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-    uint32_t bal; //with return_on_del set to false this will give warning
+#if return_on_del
+    uint32_t bal;
     if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
-            if constexpr (return_on_del)
-            {
-                bal = u.balance;
-            }
+            bal = u.balance;
+#else
+    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
+#endif
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
         if (state)
         {
-            if constexpr (return_on_del)
-            {
-                users.modify_if(return_account, [&bal](User &u) {
-                    u.balance += bal;
-                });
-            }
+#if return_on_del
+            users.modify_if(return_account, [&bal](User &u) {
+                u.balance += bal;
+            });
+#endif
             return true;
         }
         else
@@ -294,6 +294,7 @@ void Bank::Save()
 {
     if (GetChangeState())
     {
+        //std::cout << "    Saving to disk...\n";
         Json::Value temp;
 
         //loading info into json temp
