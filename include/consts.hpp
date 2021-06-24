@@ -14,7 +14,7 @@ constexpr bool return_on_del = false;
 constexpr const char *return_account = "";
 
 /*
-if true, when frequency is hit after changes have happened then save 
+if true, when frequency is hit AND changes have happened then save 
     pros
         LOW disk usage
     cons
