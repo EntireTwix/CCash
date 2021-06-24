@@ -62,7 +62,10 @@ int main(int argc, char **argv)
             while (1)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                bank.Save();
+                if (bank.GetChangeState())
+                {
+                    bank.Save();
+                }
                 std::cout << "Saving " << std::time(0) << '\n';
             }
         }).detach();

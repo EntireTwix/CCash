@@ -1,18 +1,13 @@
 #include "bank.h"
 
 #if CONSERVATIVE_DISK_SAVE
-void Bank::ChangesMade() noexcept
-{
-    return change_flag.store(1, std::memory_order_release);
-}
-void Bank::ChangesSaved() noexcept
-{
-    return change_flag.store(1, std::memory_order_release);
-}
-bool Bank::GetChangeState() noexcept
-{
-    return change_flag.load(std::memory_order_acquire);
-}
+void Bank::ChangesMade() noexcept { return change_flag.store(1, std::memory_order_release); }
+void Bank::ChangesSaved() noexcept { return change_flag.store(1, std::memory_order_release); }
+bool Bank::GetChangeState() noexcept { return change_flag.load(std::memory_order_acquire); }
+#else
+void Bank::ChangesMade() noexcept { return change_flag.store(1, std::memory_order_release); }
+void Bank::ChangesSaved() noexcept { return change_flag.store(1, std::memory_order_release); }
+bool Bank::GetChangeState() noexcept { return 1; }
 #endif
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
@@ -26,13 +21,11 @@ int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass)
         return ErrorResponse::InvalidRequest;
     }
 
-    {
-        std::shared_lock<std::shared_mutex> lock{size_l};
-        return (users.try_emplace_l(
-                   name, [](User &) {}, init_pass))
-                   ? true
-                   : ErrorResponse::UserAlreadyExists;
-    }
+    std::shared_lock<std::shared_mutex> lock{size_l};
+    return (users.try_emplace_l(
+               name, [](User &) {}, init_pass))
+               ? true
+               : ErrorResponse::UserAlreadyExists;
 }
 int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
@@ -254,30 +247,33 @@ Json::Value Bank::GetLogs(const std::string &name, const std::string &attempt) n
 
 void Bank::Save()
 {
-    Json::Value temp;
+    if (GetChangeState())
+    {
+        Json::Value temp;
 
-    //loading info into json temp
-    {
-        std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_l, send_funds_l};
-        for (const auto &u : users)
+        //loading info into json temp
         {
-            //we know it contains this key but we call this func to grab mutex
-            users.if_contains(u.first, [&temp, &u](const User &u_val) {
-                temp[u.first] = u_val.Serialize();
-            });
+            std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_l, send_funds_l};
+            for (const auto &u : users)
+            {
+                //we know it contains this key but we call this func to grab mutex
+                users.if_contains(u.first, [&temp, &u](const User &u_val) {
+                    temp[u.first] = u_val.Serialize();
+                });
+            }
         }
-    }
-    if (temp.isNull())
-    {
-        throw std::invalid_argument("Saving Failed\n");
-    }
-    else
-    {
-        std::ofstream user_save(users_location);
-        Json::StreamWriterBuilder builder;
-        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-        writer->write(temp, &user_save);
-        user_save.close();
+        if (temp.isNull())
+        {
+            throw std::invalid_argument("Saving Failed\n");
+        }
+        else
+        {
+            std::ofstream user_save(users_location);
+            Json::StreamWriterBuilder builder;
+            const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(temp, &user_save);
+            user_save.close();
+        }
     }
 }
 
