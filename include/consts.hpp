@@ -26,4 +26,4 @@ if false, when frequency is hit save
     cons
         CONSTANT disk usage
 */
-#define CONSERVATIVE_DISK_SAVE false
+#define CONSERVATIVE_DISK_SAVE true
