@@ -3,21 +3,23 @@
 #if CONSERVATIVE_DISK_SAVE
 void Bank::ChangesMade() noexcept
 {
-    while (change_flag.exchange(true, std::memory_order_relaxed))
-        ;
-    std::atomic_thread_fence(std::memory_order_acquire);
+    return change_flag.test_and_set();
 }
 
 void Bank::ChangesSaved() noexcept
 {
-    std::atomic_thread_fence(std::memory_order_release);
-    change_flag.store(false, std::memory_order_relaxed);
+    return change_flag.clear();
+}
+
+bool Bank::GetChangeState() noexcept
+{
+    return change_flag.test();
 }
 #endif
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
 {
-    if (name.size() > max_name_size)
+    if (name.size() > max_name _size)
     {
         return ErrorResponse::NameTooLong;
     }
