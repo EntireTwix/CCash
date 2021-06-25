@@ -7,8 +7,15 @@ A pre-built docker image is supplied in the repos [GitHub Packages](https://gith
 It can be run with docker like so:
 
 ```
-docker pull docker.pkg.github.com/entiretwix/ccash/ccash:latest
+docker run -d -p 80:80 -p 443:443 \
+-v $(pwd)/config.json:/ccash/config.json \
+-v $(pwd)/users.json:/ccash/users.json \
+-v $CCASH_TLS_CERT_PATH:/ccash/cert \
+-v $CCASH_TLS_KEY_PATH:/ccash/key \
+docker.pkg.github.com/entiretwix/ccash:latest $CCASH_ADMIN_PASSWORD $CCASH_SAVE_FREQUENCY $CCASH_THREAD_COUNT
 ```
+
+_(First you may need authenticate using `docker login -u [github_username] -p [github_access_token] docker.pkg.github.com`)_
 
 ## Build
 
