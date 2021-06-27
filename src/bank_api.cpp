@@ -12,9 +12,15 @@
     resp->setStatusCode(R.first);                                                 \
     callback(resp);
 
+#define RESPOND_TRUE                                               \
+    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(true)); \
+    resp->setStatusCode(k200OK);                                   \
+    resp->setExpiredTime(0);                                       \
+    callback(resp);
+
 #define NAME_PARAM req->getBody()
 
-#define NAME_CHECK(suc) BankResponse b = (name == NAME_PARAM ? suc : BankResponse(k400BadRequest, "Requests name must match Auth's name"));
+//#define NAME_CHECK(suc) BankResponse b = (name == NAME_PARAM ? suc : BankResponse(k400BadRequest, "Requests name must match Auth's name"));
 
 namespace v1
 {
@@ -45,12 +51,11 @@ namespace v1
     {
         RESPONSE_PARSE(bank.GetBal(name));
     }
-    void api::GetLog(req_args, const std::string &name)
+    void api::GetLog(req_args)
     {
         if constexpr (max_log_size > 0)
         {
-            NAME_CHECK(bank.GetLogs(name));
-            RESPONSE_PARSE(b);
+            RESPONSE_PARSE(bank.GetLogs(NAME_PARAM.data()));
         }
         else
         {
@@ -60,30 +65,27 @@ namespace v1
             callback(resp);
         }
     }
-    void api::SendFunds(req_args, const std::string &name) const
+    void api::SendFunds(req_args) const
     {
         GEN_BODY
-        NAME_CHECK(bank.SendFunds(name, body["to"].asCString(), body["amount"].asUInt()));
-        RESPONSE_PARSE(b);
+        RESPONSE_PARSE(bank.SendFunds(NAME_PARAM.data(), body["to"].asCString(), body["amount"].asUInt()));
     }
-    void api::VerifyPassword(req_args, const std::string &name) const
+    void api::VerifyPassword(req_args) const
     {
-        NAME_CHECK(BankResponse(k200OK, true));
-        RESPONSE_PARSE(b);
+        RESPOND_TRUE
     }
 
-    void api::ChangePassword(req_args, const std::string &name) const
+    void api::ChangePassword(req_args) const
     {
         GEN_BODY
-        bank.ChangePassword(name, std::move(body["new_pass"].asCString())); //may make asString()
-        NAME_CHECK(BankResponse(k200OK, true));
-        RESPONSE_PARSE(b);
+        bank.ChangePassword(NAME_PARAM.data(), std::move(body["new_pass"].asCString())); //may make asString()
+        RESPOND_TRUE
     }
 
     void api::Help(req_args) const
     {
         auto resp = HttpResponse::newHttpResponse();
-        resp->setBody("");
+        resp->setBody(""); //will be filled in with docs
         resp->setExpiredTime(0);
         callback(resp);
     }
