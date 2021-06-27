@@ -29,7 +29,6 @@ void SaveSig(int s)
 int main(int argc, char **argv)
 {
     std::cout << "\nSSE3    : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
-              << "\nCores   : " << get_nprocs() / 2
               << "\nThreads : " << get_nprocs() + 1
               << std::endl; //flushing before EventLoop
 
@@ -71,11 +70,16 @@ int main(int argc, char **argv)
             while (1)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                std::cout << "Saving " << std::time(0) << '\n';
                 if (bank.GetChangeState())
                 {
+                    std::cout << "    to disk...\n";
                     bank.Save();
                 }
-                std::cout << "Saving " << std::time(0) << '\n';
+                else
+                {
+                    std::cout << "    no changes...\n";
+                }
             }
         }).detach();
     }
