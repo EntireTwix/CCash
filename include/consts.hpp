@@ -10,7 +10,7 @@ constexpr const char *users_location = "../users.json";
 constexpr const char *config_location = "../config.json";
 
 // Returns money to an account on deletion (useful if you dont want any money to leave the economy)
-constexpr bool return_on_del = false;
+#define RETURN_ON_DEL false
 constexpr const char *return_account = "";
 
 /*
@@ -25,6 +25,4 @@ if false, when frequency is hit save
     cons
         HIGH disk usage
 */
-constexpr bool conservative_disk_save = true;
-
-//constexpr unsigned max_users = 1000;
+#define CONSERVATIVE_DISK_SAVE true
