@@ -78,7 +78,7 @@ int main(int argc, char **argv)
     Op(bank.AdminVerifyPass("root"), "admin verify pass: ", 1000000);
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
-    Op(bank.ChangePassword("twix", "root", "root"), "change pass: ", 1000000);
+    Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
     Op(bank.GetLogs("twix"), "get logs: ", 10000);
     Op(bank.GetChangeState(), "change flag: ", 10000);
     Op(bank.Save(), "saving: ", 1);
