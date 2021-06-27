@@ -1,22 +1,24 @@
 #include "bank.h"
 
+using namespace drogon;
+
 void Bank::ChangesMade() noexcept
 {
-    if constexpr (conservative_disk_save)
+    if constexpr (CONSERVATIVE_DISK_SAVE)
     {
         return change_flag.store(1, std::memory_order_release);
     }
 }
 void Bank::ChangesSaved() noexcept
 {
-    if constexpr (conservative_disk_save)
+    if constexpr (CONSERVATIVE_DISK_SAVE)
     {
-        return change_flag.store(1, std::memory_order_release);
+        return change_flag.store(0, std::memory_order_release);
     }
 }
 bool Bank::GetChangeState() noexcept
 {
-    if constexpr (conservative_disk_save)
+    if constexpr (CONSERVATIVE_DISK_SAVE)
     {
         return change_flag.load(std::memory_order_acquire);
     }
@@ -24,6 +26,112 @@ bool Bank::GetChangeState() noexcept
     {
         return true;
     }
+}
+
+BankResponse Bank::GetBal(const std::string &name) const noexcept
+{
+    BankResponse res = {k404NotFound, "User not found"};
+    users.if_contains(name, [&res](const User &u) {
+        res = {k200OK, u.balance};
+    });
+    return res;
+}
+BankResponse Bank::GetLogs(const std::string &name) noexcept
+{
+    BankResponse res{k404NotFound, "User not found"};
+    users.if_contains(name, [&res](const User &u) {
+        Json::Value temp;
+        for (uint32_t i = u.log.data.size(); i > 0; --i)
+        {
+            temp[i - 1]["to"] = u.log.data[u.log.data.size() - i].to;
+            temp[i - 1]["from"] = u.log.data[u.log.data.size() - i].from;
+            temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
+            temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
+        }
+        res = {HttpStatusCode::k200OK, std::move(temp)};
+    });
+    return res;
+}
+BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
+{
+    //cant send money to self, from self or amount is 0
+    if (a_name == b_name)
+    {
+        return {k400BadRequest, "Sender and Reciever names cannot match"};
+    }
+
+    //cant send 0
+    if (!amount)
+    {
+        return {k400BadRequest, "Amount being sent cannot be 0"};
+    }
+
+    //as first modify_if checks a_name and grabs unique lock
+    if (!Contains(b_name))
+    {
+        return {k404NotFound, "Reciever does not exist"};
+    }
+
+    BankResponse state = {k404NotFound, "Sender does not exist"};
+    if constexpr (max_log_size > 0)
+    {
+        Transaction temp(a_name, b_name, amount);
+        std::shared_lock<std::shared_mutex> lock{send_funds_l};
+        users.modify_if(a_name, [this, &temp, &state, amount](User &a) {
+            //if A can afford it and A's password matches attempt
+            if (a.balance < amount)
+            {
+                state = {ErrorResponse::InsufficientFunds, "Sender has insufficient funds"};
+            }
+            else
+            {
+                a.balance -= amount;
+                a.log.AddTrans(Transaction(temp));
+                state = {HttpStatusCode::k200OK, "Transfer successful!"};
+            }
+        });
+        if (state.first == HttpStatusCode::k200OK)
+        {
+            users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+                b.balance += amount;
+                b.log.AddTrans(std::move(temp));
+            });
+            ChangesMade();
+        }
+        return state;
+    }
+    else
+    {
+        std::shared_lock<std::shared_mutex> lock{send_funds_l};
+        users.modify_if(a_name, [this, &state, amount](User &a) {
+            //if A can afford it and A's password matches attempt
+            if (a.balance < amount)
+            {
+                state = {ErrorResponse::InsufficientFunds, "Sender has insufficient funds"};
+            }
+            else
+            {
+                a.balance -= amount;
+                state = {k200OK, "Transfer successful!"};
+            }
+        });
+        if (state.first == k200OK)
+        {
+            users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
+                b.balance += amount;
+            });
+            ChangesMade();
+        }
+        return state;
+    }
+}
+bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) const noexcept
+{
+    bool res = false;
+    users.if_contains(name, [&res, &attempt](const User &u) {
+        res = (u.password == XXH3_64bits(attempt.data(), attempt.size()));
+    });
+    return res;
 }
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
@@ -64,7 +172,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-#if return_on_del
+#if RETURN_ON_DEL
     uint32_t bal;
     if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
             bal = u.balance;
@@ -74,7 +182,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
-        if constexpr (return_on_del)
+        if constexpr (RETURN_ON_DEL)
         {
             return (state) ? true : ErrorResponse::WrongPassword;
         }
@@ -82,7 +190,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
         {
             if (state)
             {
-#if return_on_del
+#if RETURN_ON_DEL
                 users.modify_if(return_account, [&bal](User &u) {
                     u.balance += bal;
                 });
@@ -104,7 +212,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
 {
     std::shared_lock<std::shared_mutex> lock{size_l};
     bool state = false;
-#if return_on_del
+#if RETURN_ON_DEL
     uint32_t bal;
     if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
             bal = u.balance;
@@ -116,7 +224,7 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     {
         if (state)
         {
-#if return_on_del
+#if RETURN_ON_DEL
             users.modify_if(return_account, [&bal](User &u) {
                 u.balance += bal;
             });
@@ -134,84 +242,9 @@ int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attem
     }
 }
 
-int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt) noexcept
+bool Bank::Contains(const std::string &name) const noexcept
 {
-    //cant send money to self, from self or amount is 0
-    if (a_name == b_name || !amount)
-    {
-        return ErrorResponse::InvalidRequest;
-    }
-    //as first modify_if checks a_name and grabs unique lock
-    if (!Contains(b_name))
-    {
-        return ErrorResponse::UserNotFound;
-    }
-
-    int_fast8_t state = false;
-    if constexpr (max_log_size > 0)
-    {
-        Transaction temp(a_name, b_name, amount);
-        std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [&temp, &state, amount, &attempt](User &a) {
-            //if A can afford it and A's password matches attempt
-            if (a.balance < amount)
-            {
-                state = ErrorResponse::InsufficientFunds;
-            }
-            else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
-            {
-
-                state = ErrorResponse::WrongPassword;
-            }
-            else
-            {
-                a.balance -= amount;
-                a.log.AddTrans(Transaction(temp));
-                state = true;
-            }
-        });
-        if (state > 0)
-        {
-            users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
-                b.balance += amount;
-                b.log.AddTrans(std::move(temp));
-            });
-        }
-        return state;
-    }
-    else
-    {
-        std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [&state, amount, &attempt](User &a) {
-            //if A can afford it and A's password matches attempt
-            if (a.balance < amount)
-            {
-                state = ErrorResponse::InsufficientFunds;
-            }
-            else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
-            {
-
-                state = ErrorResponse::WrongPassword;
-            }
-            else
-            {
-                a.balance -= amount;
-                state = true;
-            }
-        });
-        if (state > 0)
-        {
-            users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
-                b.balance += amount;
-            });
-        }
-        return state;
-    }
-}
-
-int_fast8_t Bank::Contains(const std::string &name) const noexcept
-{
-    return (users.contains(name)) ? true : ErrorResponse::UserNotFound;
+    return users.contains(name);
 }
 int_fast8_t Bank::AdminVerifyPass(const std::string &attempt) noexcept
 {
@@ -231,23 +264,7 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
                ? true
                : ErrorResponse::UserNotFound;
 }
-int_fast64_t Bank::GetBal(const std::string &name) const noexcept
-{
-    int_fast64_t res = ErrorResponse::UserNotFound;
-    users.if_contains(name, [&res](const User &u) {
-        res = u.balance;
-    });
-    return res;
-}
 
-int_fast8_t Bank::VerifyPassword(const std::string &name, const std::string &attempt) const noexcept
-{
-    int_fast8_t res = ErrorResponse::UserNotFound;
-    users.if_contains(name, [&res, &attempt](const User &u) {
-        res = (u.password == XXH3_64bits(attempt.data(), attempt.size())) ? true : ErrorResponse::WrongPassword;
-    });
-    return res;
-}
 int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass) noexcept
 {
     int_fast8_t res = ErrorResponse::UserNotFound;
@@ -265,36 +282,10 @@ int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &att
     return res;
 }
 
-Json::Value Bank::GetLogs(const std::string &name, const std::string &attempt) noexcept
-{
-    Json::Value res;
-    if (!users.if_contains(name, [&res, &attempt](const User &u) {
-            if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
-            {
-                res = ErrorResponse::WrongPassword;
-            }
-            else
-            {
-                for (uint32_t i = u.log.data.size(); i > 0; --i)
-                {
-                    res[i - 1]["to"] = u.log.data[u.log.data.size() - i].to;
-                    res[i - 1]["from"] = u.log.data[u.log.data.size() - i].from;
-                    res[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
-                    res[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
-                }
-            }
-        }))
-    {
-        return ErrorResponse::UserNotFound;
-    }
-    return res;
-}
-
 void Bank::Save()
 {
     if (GetChangeState())
     {
-        //std::cout << "    Saving to disk...\n";
         Json::Value temp;
 
         //loading info into json temp
@@ -320,6 +311,7 @@ void Bank::Save()
             writer->write(temp, &user_save);
             user_save.close();
         }
+        ChangesSaved();
     }
 }
 

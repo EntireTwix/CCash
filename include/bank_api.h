@@ -1,15 +1,10 @@
 #pragma once
 #include <drogon/HttpController.h>
-#include "bank.h"
+#include "user_filter.h"
 
 using namespace drogon;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
-#define JSON(V) callback(HttpResponse::newHttpJsonResponse(JsonCast(V)));
-#define PASS_HEADER req->getHeader("Password") //temporary
-#define GEN_BODY                                \
-    const auto temp_req = req->getJsonObject(); \
-    const auto body = temp_req ? *temp_req : Json::Value();
 
 namespace v1
 {
@@ -19,6 +14,11 @@ namespace v1
 
     public:
         api(Bank &b);
+        void GetBal(req_args) const;
+        void GetLog(req_args, const std::string &name);
+        void SendFunds(req_args, const std::string name) const;
+        void VerifyPassword(req_args) const;
+
         void Help(req_args) const;
         void Ping(req_args) const;
         void Close(req_args) const;
@@ -26,22 +26,18 @@ namespace v1
         void AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const;
         void DelUser(req_args, const std::string &name) const;
         void AdminDelUser(req_args, const std::string &name) const;
-        void SendFunds(req_args, const std::string name, const std::string to, uint32_t amount) const;
         void ChangePassword(req_args, const std::string &name) const;
         void Contains(req_args, const std::string &name) const;
-        void GetBal(req_args, const std::string &name) const;
-        void VerifyPassword(req_args, const std::string &name) const;
         void SetBal(req_args, const std::string &name, uint32_t amount) const;
         void AdminVerifyPass(req_args);
-        void GetLog(req_args, const std::string &name);
 
         METHOD_LIST_BEGIN
 
         //Usage
-        METHOD_ADD(api::GetBal, "/{name}/bal", Get, Options);
-        METHOD_ADD(api::GetLog, "/{name}/log", Get, Options);
-        METHOD_ADD(api::SendFunds, "/{name}/send/{to}?amount={amount}", Post, Options);
-        METHOD_ADD(api::VerifyPassword, "/{name}/pass/verify", Get, Options);
+        METHOD_ADD(api::GetBal, "/user/bal", Get, Options);                        //done
+        METHOD_ADD(api::GetLog, "/user/log", Get, Options, "UserFilter");          //snapshot not implemented
+        METHOD_ADD(api::SendFunds, "/user/transfer", Post, Options, "UserFilter"); //responses incomplete
+        METHOD_ADD(api::VerifyPassword, "/{name}/pass/verify", Get, Options);      //done
 
         //Meta Usage
         METHOD_ADD(api::ChangePassword, "/{name}/pass/change", Patch, Options);

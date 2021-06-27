@@ -3,9 +3,12 @@
 #include <fstream>
 #include <shared_mutex>
 #include <atomic>
+#include <drogon/HttpTypes.h>
 #include "error_responses.hpp"
 #include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.h"
+
+using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {
@@ -34,12 +37,17 @@ private:
      */
     std::shared_mutex send_funds_l;
 
+    void ChangesMade() noexcept;  //called after making changes
+    void ChangesSaved() noexcept; //called after saving
 public:
     std::string admin_pass;
 
-    void ChangesMade() noexcept;  //called after making changes
-    void ChangesSaved() noexcept; //called after saving
     bool GetChangeState() noexcept;
+
+    BankResponse GetBal(const std::string &name) const noexcept;
+    BankResponse GetLogs(const std::string &name) noexcept;
+    BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
+    bool VerifyPassword(const std::string &name, const std::string &attempt) const noexcept; //internally used
 
     int_fast8_t AddUser(const std::string &name, const std::string &init_pass) noexcept;
     int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
@@ -47,22 +55,14 @@ public:
     int_fast8_t DelUser(const std::string &name, const std::string &attempt) noexcept;
     int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt) noexcept;
 
-    int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt) noexcept;
-
-    int_fast8_t Contains(const std::string &name) const noexcept;
+    bool Contains(const std::string &name) const noexcept; //done
     int_fast8_t AdminVerifyPass(const std::string &attempt) noexcept;
 
     int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept;
-    int_fast64_t GetBal(const std::string &name) const noexcept;
 
-    int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const noexcept;
     int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass) noexcept;
 
-    Json::Value GetLogs(const std::string &name, const std::string &attempt) noexcept;
-
     void Save();
-
-    //NOT THREAD SAFE
     void Load();
 };
 

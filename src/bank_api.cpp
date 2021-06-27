@@ -1,5 +1,19 @@
 #include "bank_api.h"
 
+#define JSON(V) callback(HttpResponse::newHttpJsonResponse(JsonCast(V))); //temporary
+#define PASS_HEADER req->getHeader("Password")                            //temporary
+
+#define GEN_BODY                                \
+    const auto temp_req = req->getJsonObject(); \
+    const auto body = temp_req ? *temp_req : Json::Value();
+
+#define RESPONSE_PARSE(R)                                              \
+    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(R.second)); \
+    resp->setStatusCode(R.first);                                      \
+    callback(resp);
+
+#define NAME_PARAM req->getParameter("name")
+
 namespace v1
 {
     template <typename T>
@@ -71,9 +85,10 @@ namespace v1
     {
         JSON(bank.AdminDelUser(name, PASS_HEADER));
     }
-    void api::SendFunds(req_args, const std::string name, const std::string to, uint32_t amount) const
+    void api::SendFunds(req_args, const std::string name) const
     {
-        JSON(bank.SendFunds(name, to, amount, PASS_HEADER));
+        GEN_BODY
+        RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["to"].asCString(), body["amount"].asUInt()));
     }
     void api::ChangePassword(req_args, const std::string &name) const
     {
@@ -83,13 +98,13 @@ namespace v1
     {
         JSON(bank.Contains(name));
     }
-    void api::GetBal(req_args, const std::string &name) const
+    void api::GetBal(req_args) const
     {
-        JSON(bank.GetBal(name));
+        RESPONSE_PARSE(bank.GetBal(NAME_PARAM));
     }
-    void api::VerifyPassword(req_args, const std::string &name) const
+    void api::VerifyPassword(req_args) const
     {
-        JSON(bank.VerifyPassword(name, PASS_HEADER));
+        RESPONSE_PARSE(BankResponse(k200OK, true));
     }
     void api::SetBal(req_args, const std::string &name, uint32_t amount) const
     {
@@ -103,11 +118,12 @@ namespace v1
     {
         if constexpr (max_log_size > 0)
         {
-            JSON(bank.GetLogs(name, PASS_HEADER));
+            RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
         }
         else
         {
             auto resp = HttpResponse::newHttpJsonResponse("Logs are Disabled");
+            resp->setStatusCode(k404NotFound);
             resp->setExpiredTime(0); //cached forever
             callback(resp);
         }
