@@ -58,12 +58,10 @@ public:
     int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt) noexcept;
 
     bool Contains(const std::string &name) const noexcept;
-    int_fast8_t AdminVerifyPass(const std::string &attempt) noexcept;
+    bool AdminVerifyPass(const std::string &attempt) noexcept; //interall used
 
     int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept;
 
     void Save();
     void Load();
 };
-
-//TODO make branchless

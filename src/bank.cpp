@@ -76,8 +76,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if constexpr (max_log_size > 0)
     {
         Transaction temp(a_name, b_name, amount);
+        Transaction temp_copy(temp);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [&temp, &state, amount](User &a) {
+        users.modify_if(a_name, [&temp_copy, &state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -86,7 +87,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             else
             {
                 a.balance -= amount;
-                a.log.AddTrans(Transaction(temp));
+                a.log.AddTrans(std::move(temp_copy));
                 state = {k200OK, "Transfer successful!"};
             }
         });
@@ -253,9 +254,9 @@ bool Bank::Contains(const std::string &name) const noexcept
 {
     return users.contains(name);
 }
-int_fast8_t Bank::AdminVerifyPass(const std::string &attempt) noexcept
+bool Bank::AdminVerifyPass(const std::string &attempt) noexcept
 {
-    return (admin_pass == attempt) ? true : ErrorResponse::WrongPassword;
+    return (admin_pass == attempt);
 }
 
 int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept
