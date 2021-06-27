@@ -77,7 +77,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     {
         Transaction temp(a_name, b_name, amount);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [this, &temp, &state, amount](User &a) {
+        users.modify_if(a_name, [&temp, &state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -92,7 +92,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         });
         if (state.first == k200OK)
         {
-            users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
+            users.modify_if(b_name, [&temp, amount](User &b) {
                 b.balance += amount;
                 b.log.AddTrans(std::move(temp));
             });
