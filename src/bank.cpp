@@ -48,7 +48,7 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
             temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
             temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
         }
-        res = {HttpStatusCode::k200OK, std::move(temp)};
+        res = {k200OK, std::move(temp)};
     });
     return res;
 }
@@ -78,19 +78,19 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         Transaction temp(a_name, b_name, amount);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
         users.modify_if(a_name, [this, &temp, &state, amount](User &a) {
-            //if A can afford it and A's password matches attempt
+            //if A can afford it
             if (a.balance < amount)
             {
-                state = {k200OK, "Sender has insufficient funds"};
+                state = {k204NoContent, "Sender has insufficient funds"};
             }
             else
             {
                 a.balance -= amount;
                 a.log.AddTrans(Transaction(temp));
-                state = {HttpStatusCode::k200OK, "Transfer successful!"};
+                state = {k200OK, "Transfer successful!"};
             }
         });
-        if (state.first == HttpStatusCode::k200OK)
+        if (state.first == k200OK)
         {
             users.modify_if(b_name, [&a_name, &b_name, &temp, amount](User &b) {
                 b.balance += amount;
@@ -107,7 +107,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it and A's password matches attempt
             if (a.balance < amount)
             {
-                state = {k200OK, "Sender has insufficient funds"};
+                state = {k204NoContent, "Sender has insufficient funds"};
             }
             else
             {
