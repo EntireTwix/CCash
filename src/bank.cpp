@@ -81,7 +81,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it
             if (a.balance < amount)
             {
-                state = {k204NoContent, "Sender has insufficient funds"};
+                state = {k402PaymentRequired, "Sender has insufficient funds"};
             }
             else
             {
@@ -104,10 +104,10 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     {
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
         users.modify_if(a_name, [this, &state, amount](User &a) {
-            //if A can afford it and A's password matches attempt
+            //if A can afford it
             if (a.balance < amount)
             {
-                state = {k204NoContent, "Sender has insufficient funds"};
+                state = {k402PaymentRequired, "Sender has insufficient funds"};
             }
             else
             {
