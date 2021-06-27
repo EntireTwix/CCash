@@ -81,7 +81,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it and A's password matches attempt
             if (a.balance < amount)
             {
-                state = {ErrorResponse::InsufficientFunds, "Sender has insufficient funds"};
+                state = {k200OK, "Sender has insufficient funds"};
             }
             else
             {
@@ -107,7 +107,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it and A's password matches attempt
             if (a.balance < amount)
             {
-                state = {ErrorResponse::InsufficientFunds, "Sender has insufficient funds"};
+                state = {k200OK, "Sender has insufficient funds"};
             }
             else
             {
@@ -132,6 +132,13 @@ bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) c
         res = (u.password == XXH3_64bits(attempt.data(), attempt.size()));
     });
     return res;
+}
+
+void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
+{
+    users.modify_if(name, [&new_pass](User &u) {
+        u.password = XXH3_64bits(new_pass.data(), new_pass.size());
+    });
 }
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
@@ -263,23 +270,6 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
     }))
                ? true
                : ErrorResponse::UserNotFound;
-}
-
-int_fast8_t Bank::ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass) noexcept
-{
-    int_fast8_t res = ErrorResponse::UserNotFound;
-    users.modify_if(name, [&res, &attempt, &new_pass](User &u) {
-        if (u.password != XXH3_64bits(attempt.data(), attempt.size()))
-        {
-            res = ErrorResponse::WrongPassword;
-        }
-        else
-        {
-            res = true;
-            u.password = XXH3_64bits(new_pass.data(), new_pass.size());
-        }
-    });
-    return res;
 }
 
 void Bank::Save()
