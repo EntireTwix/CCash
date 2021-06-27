@@ -83,7 +83,7 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
             std::getline(ss, password);
             if (bank.VerifyPassword(username, password))
             {
-                req->setParameter("name", username);
+                req->setBody(username);
                 fccb();
                 return;
             }
