@@ -7,7 +7,7 @@
 #include "error_responses.hpp" //temporary
 #include "user.h"
 
-#if CONSERVATIVE_DISK_SAVE
+#if CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0
 #include "change_flag.h"
 #endif
 
