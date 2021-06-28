@@ -52,9 +52,10 @@ public:
     BankResponse GetBal(const std::string &name) const noexcept;
     BankResponse GetLogs(const std::string &name) noexcept;
     BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
-    bool VerifyPassword(const std::string &name, const std::string &attempt) const noexcept; //internally used
+    bool VerifyPassword(const std::string &name, const std::string &attempt) const noexcept;
 
     void ChangePassword(const std::string &name, std::string &&new_pass) noexcept;
+    BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
 
     int_fast8_t AddUser(const std::string &name, const std::string &init_pass) noexcept;
     int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
@@ -63,9 +64,7 @@ public:
     int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt) noexcept;
 
     bool Contains(const std::string &name) const noexcept;
-    bool AdminVerifyPass(const std::string &attempt) noexcept; //interall used
-
-    BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
+    bool AdminVerifyPass(const std::string &attempt) noexcept;
 
     void Save();
     void Load();
