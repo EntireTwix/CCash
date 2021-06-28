@@ -19,26 +19,29 @@ bool Bank::GetChangeState() noexcept
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    BankResponse res = {k404NotFound, "User not found"};
+    int_fast64_t res = -1;
     users.if_contains(name, [&res](const User &u) {
-        res = {k200OK, u.balance};
+        res = u.balance;
     });
-    return res;
+    return res < 0 ? BankResponse(k404NotFound, "User not found") : BankResponse(k200OK, res);
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
-    BankResponse res{k404NotFound, "User not found"};
-    users.if_contains(name, [&res](const User &u) {
-        Json::Value temp;
-        for (uint32_t i = u.log.data.size(); i > 0; --i)
-        {
-            temp[i - 1]["to"] = u.log.data[u.log.data.size() - i].to;
-            temp[i - 1]["from"] = u.log.data[u.log.data.size() - i].from;
-            temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
-            temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
-        }
-        res = {k200OK, std::move(temp)};
-    });
+    BankResponse res;
+    if (!users.if_contains(name, [&res](const User &u) {
+            Json::Value temp;
+            for (uint32_t i = u.log.data.size(); i > 0; --i)
+            {
+                temp[i - 1]["to"] = u.log.data[u.log.data.size() - i].to;
+                temp[i - 1]["from"] = u.log.data[u.log.data.size() - i].from;
+                temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
+                temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
+            }
+            res = {k200OK, std::move(temp)};
+        }))
+    {
+        return BankResponse(k404NotFound, "User not found");
+    }
     return res;
 }
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
@@ -61,24 +64,27 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         return {k404NotFound, "Reciever does not exist"};
     }
 
-    BankResponse state = {k404NotFound, "Sender does not exist"};
+    BankResponse state;
     if constexpr (max_log_size > 0)
     {
         Transaction temp(a_name, b_name, amount);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [&temp, &state, amount](User &a) {
-            //if A can afford it
-            if (a.balance < amount)
-            {
-                state = {k402PaymentRequired, "Sender has insufficient funds"};
-            }
-            else
-            {
-                a.balance -= amount;
-                a.log.AddTrans(Transaction(temp));
-                state = {k200OK, "Transfer successful!"};
-            }
-        });
+        if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
+                //if A can afford it
+                if (a.balance < amount)
+                {
+                    state = {k402PaymentRequired, "Sender has insufficient funds"};
+                }
+                else
+                {
+                    a.balance -= amount;
+                    a.log.AddTrans(Transaction(temp));
+                    state = {k200OK, "Transfer successful!"};
+                }
+            }))
+        {
+            return {k404NotFound, "Sender does not exist"};
+        }
         if (state.first == k200OK)
         {
             users.modify_if(b_name, [&temp, amount](User &b) {
