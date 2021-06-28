@@ -20,6 +20,7 @@ public:
     void VerifyPassword(req_args) const;
 
     void ChangePassword(req_args) const;
+    void SetBal(req_args) const;
 
     void Help(req_args) const;
     void Ping(req_args) const;
@@ -29,7 +30,6 @@ public:
     void DelUser(req_args, const std::string &name) const;
     void AdminDelUser(req_args, const std::string &name) const;
     void Contains(req_args, const std::string &name) const;
-    void SetBal(req_args, const std::string &name, uint32_t amount) const;
     void AdminVerifyPass(req_args);
 
     METHOD_LIST_BEGIN
@@ -42,7 +42,7 @@ public:
 
     //Meta Usage
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "UserFilter"); //done
-    METHOD_ADD(api::SetBal, "/admin/{name}/bal?amount={amount}", Patch, Options);
+    METHOD_ADD(api::SetBal, "/v1/admin/bal", Patch, Options, "AdminFilter");                   //done
 
     //System Usage
     METHOD_ADD(api::Help, "/help", Get, Options);

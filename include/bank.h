@@ -65,7 +65,7 @@ public:
     bool Contains(const std::string &name) const noexcept;
     bool AdminVerifyPass(const std::string &attempt) noexcept; //interall used
 
-    int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept;
+    BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
 
     void Save();
     void Load();

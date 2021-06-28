@@ -66,7 +66,7 @@ int main(int argc, char **argv)
     bank.admin_pass = "root";
     Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser("", ""));
     Op_a(bank.AdminAddUser("root", "", 0, ""), "admin add user: ", 1000000, bank.DelUser("", ""));
-    Op(bank.SetBal("twix", "root", 1000000), "set bal: ", 1000000);
+    Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
 
     bank.AddUser("", "");

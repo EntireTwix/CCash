@@ -247,18 +247,14 @@ bool Bank::AdminVerifyPass(const std::string &attempt) noexcept
     return (admin_pass == attempt);
 }
 
-int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept
+BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (admin_pass != attempt)
-    {
-        return ErrorResponse::WrongPassword;
-    }
-
-    return (users.modify_if(name, [amount](User &u) {
+    BankResponse res = {k404NotFound, "User not found"};
+    users.modify_if(name, [&res, amount](User &u) {
         u.balance = amount;
-    }))
-               ? true
-               : ErrorResponse::UserNotFound;
+        res = {k200OK, "Balance set!"};
+    });
+    return res;
 }
 
 void Bank::Save()

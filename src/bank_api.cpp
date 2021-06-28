@@ -19,7 +19,7 @@
     resp->setExpiredTime(0);                                       \
     callback(resp);
 
-#define NAME_PARAM req->getBody()
+#define NAME_PARAM req->getBody().data()
 
 template <typename T>
 constexpr Json::Value JsonCast(T &&val)
@@ -56,7 +56,7 @@ void api::GetLog(req_args)
 {
     if constexpr (max_log_size > 0)
     {
-        RESPONSE_PARSE(bank.GetLogs(NAME_PARAM.data()));
+        RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
     }
     else
     {
@@ -69,18 +69,23 @@ void api::GetLog(req_args)
 void api::SendFunds(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.SendFunds(NAME_PARAM.data(), body["to"].asCString(), body["amount"].asUInt()));
+    RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["to"].asCString(), body["amount"].asUInt()));
 }
 void api::VerifyPassword(req_args) const
 {
-    RESPOND_TRUE
+    RESPOND_TRUE //as we know the user exists and is verified
 }
 
 void api::ChangePassword(req_args) const
 {
     GEN_BODY
-    bank.ChangePassword(NAME_PARAM.data(), std::move(body["new_pass"].asCString())); //may make asString()
-    RESPOND_TRUE
+    bank.ChangePassword(NAME_PARAM, std::move(body["new_pass"].asCString())); //may make asString()
+    RESPOND_TRUE                                                              //as we know the user exists and is verified
+}
+void api::SetBal(req_args) const
+{
+    GEN_BODY
+    RESPONSE_PARSE(bank.SetBal(NAME_PARAM, body["amount"].asUInt()));
 }
 
 void api::Help(req_args) const
@@ -132,10 +137,6 @@ void api::AdminDelUser(req_args, const std::string &name) const
 void api::Contains(req_args, const std::string &name) const
 {
     JSON(bank.Contains(name));
-}
-void api::SetBal(req_args, const std::string &name, uint32_t amount) const
-{
-    JSON(bank.SetBal(name, PASS_HEADER, amount));
 }
 void api::AdminVerifyPass(req_args)
 {
