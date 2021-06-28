@@ -115,7 +115,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
                 b.balance += amount;
             });
+#if CONSERVATIVE_DISK_SAVE
             ChangesMade();
+#endif
         }
         return state;
     }
@@ -131,18 +133,22 @@ bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) c
 
 void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
 {
-    users.modify_if(name, [this, &new_pass](User &u) {
+    users.modify_if(name, [&new_pass](User &u) {
         u.password = XXH3_64bits(new_pass.data(), new_pass.size());
     });
+#if CONSERVATIVE_DISK_SAVE
     ChangesMade();
+#endif
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (users.modify_if(name, [this, amount](User &u) {
+    if (users.modify_if(name, [amount](User &u) {
             u.balance = amount;
         }))
     {
+#if CONSERVATIVE_DISK_SAVE
         ChangesMade();
+#endif
         return BankResponse(k200OK, "Balance set!");
     }
     else
