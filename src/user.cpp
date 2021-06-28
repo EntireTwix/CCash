@@ -22,6 +22,7 @@ User::User(uint32_t init_bal, const std::string &init_pass) : balance(init_bal),
      * @param init_pass 
      */
 User::User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
+#if MAX_LOG_SIZE > 0
 User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : balance(init_bal), password(init_pass)
 {
     if (log_j.size())
@@ -41,15 +42,15 @@ User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : ba
         }
     }
 }
+#endif
 
 Json::Value User::Serialize() const
 {
     Json::Value res;
     res["balance"] = (Json::UInt)balance;
     res["password"] = (Json::UInt64)password;
-    if constexpr (MAX_LOG_SIZE > 0)
-    {
-        res["log"] = log.Serialize();
-    }
+#if MAX_LOG_SIZE > 0
+    res["log"] = log.Serialize();
+#endif
     return res;
 }

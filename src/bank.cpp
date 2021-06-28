@@ -15,12 +15,14 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
+#if MAX_LOG_SIZE > 0
     if (!users.modify_if(name, [&res](User &u) {
             res = {k200OK, u.log.GetLog()};
         }))
     {
         return BankResponse(k404NotFound, "User not found");
     }
+#endif
     return res;
 }
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
@@ -44,42 +46,13 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse state;
-    if constexpr (MAX_LOG_SIZE > 0)
-    {
-        Transaction temp(a_name, b_name, amount);
-        std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
-                //if A can afford it
-                if (a.balance < amount)
-                {
-                    state = {k402PaymentRequired, "Sender has insufficient funds"};
-                }
-                else
-                {
-                    a.balance -= amount;
-                    a.log.AddTrans(Transaction(temp));
-                    state = {k200OK, "Transfer successful!"};
-                }
-            }))
-        {
-            return {k404NotFound, "Sender does not exist"};
-        }
-        if (state.first == k200OK)
-        {
-            users.modify_if(b_name, [&temp, amount](User &b) {
-                b.balance += amount;
-                b.log.AddTrans(std::move(temp));
-            });
-#if CONSERVATIVE_DISK_SAVE
-            save_flag.SetChangesOn();
+    std::shared_lock<std::shared_mutex> lock{send_funds_l};
+#if MAX_LOG_SIZE > 0
+    Transaction temp(a_name, b_name, amount);
+    if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
+#else
+    if (!users.modify_if(a_name, [&state, amount](User &a) {
 #endif
-        }
-        return state;
-    }
-    else
-    {
-        std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [this, &state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -88,20 +61,30 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             else
             {
                 a.balance -= amount;
+#if MAX_LOG_SIZE > 0
+                a.log.AddTrans(Transaction(temp));
+#endif
                 state = {k200OK, "Transfer successful!"};
             }
-        });
-        if (state.first == k200OK)
-        {
-            users.modify_if(b_name, [&a_name, &b_name, amount](User &b) {
-                b.balance += amount;
-            });
-#if CONSERVATIVE_DISK_SAVE
-            save_flag.SetChangesOn();
-#endif
-        }
-        return state;
+        }))
+    {
+        return {k404NotFound, "Sender does not exist"};
     }
+    if (state.first == k200OK)
+    {
+#if MAX_LOG_SIZE > 0
+        users.modify_if(b_name, [&temp, amount](User &b) {
+            b.balance += amount;
+            b.log.AddTrans(std::move(temp)); });
+#else
+        users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
+#endif
+
+#if CONSERVATIVE_DISK_SAVE
+        save_flag.SetChangesOn();
+#endif
+    }
+    return state;
 }
 bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) const noexcept
 {
