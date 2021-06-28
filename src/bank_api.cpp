@@ -43,7 +43,7 @@ constexpr Json::Value JsonCast(T &&val)
     }
 }
 
-#if V1_API
+#if API_VERSION == 1
 api::api(Bank &b) : bank(b)
 {
 }

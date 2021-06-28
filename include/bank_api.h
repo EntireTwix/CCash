@@ -7,7 +7,7 @@ using namespace drogon;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 
-#if V1_API
+#if API_VERSION == 1
 class api : public HttpController<api, false>
 {
     Bank &bank;

@@ -27,4 +27,4 @@ if false, when frequency is hit save
 */
 #define CONSERVATIVE_DISK_SAVE true
 
-#define V1_API true
+#define API_VERSION 1
