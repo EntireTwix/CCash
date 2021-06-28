@@ -84,8 +84,9 @@ int main(int argc, char **argv)
         }).detach();
     }
 
-    //endpoints
+#if V1_API
     auto APIv1 = std::make_shared<v1::api>(bank); //v1
+#endif
     auto user_filter = std::make_shared<UserFilter>(bank);
     auto admin_filter = std::make_shared<AdminFilter>(bank);
 
@@ -97,7 +98,9 @@ int main(int argc, char **argv)
         .loadConfigFile(config_location)
         .registerFilter(user_filter)
         .registerFilter(admin_filter)
+#if V1_API
         .registerController(APIv1)
+#endif
         .setThreadNum(get_nprocs())
         .run();
 
