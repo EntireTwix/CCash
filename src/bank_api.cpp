@@ -8,8 +8,7 @@
     const auto body = temp_req ? *temp_req : Json::Value();
 
 #define RESPONSE_PARSE(R)                                                         \
-    \    
-    auto r = R;                                                                   \
+    const auto r = R;                                                             \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(std::move(r.second))); \
     resp->setStatusCode(r.first);                                                 \
     callback(resp);
