@@ -91,7 +91,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
                 b.balance += amount;
                 b.log.AddTrans(std::move(temp));
             });
+#if CONSERVATIVE_DISK_SAVE
             ChangesMade();
+#endif
         }
         return state;
     }
