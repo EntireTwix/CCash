@@ -1,5 +1,6 @@
 #pragma once
 #include <drogon/HttpController.h>
+#include "admin_filter.h"
 #include "user_filter.h"
 
 using namespace drogon;

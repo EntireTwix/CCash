@@ -87,6 +87,7 @@ int main(int argc, char **argv)
     //endpoints
     auto APIv1 = std::make_shared<v1::api>(bank); //v1
     auto user_filter = std::make_shared<UserFilter>(bank);
+    auto admin_filter = std::make_shared<AdminFilter>(bank);
 
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
@@ -95,6 +96,7 @@ int main(int argc, char **argv)
     app()
         .loadConfigFile(config_location)
         .registerFilter(user_filter)
+        .registerFilter(admin_filter)
         .registerController(APIv1)
         .setThreadNum(get_nprocs())
         .run();

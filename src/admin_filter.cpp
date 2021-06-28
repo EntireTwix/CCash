@@ -1,6 +1,6 @@
-#include "user_filter.h"
+#include "admin_filter.h"
 
-static char DecodeChar(const char ch)
+static char DecodeChar2(const char ch)
 {
     if (ch >= 'A' && ch <= 'Z')
     {
@@ -17,7 +17,7 @@ static char DecodeChar(const char ch)
     return 63 - (ch == '-');
 }
 
-char *DecodeBase64(const char *string)
+char *DecodeBase642(const char *string)
 {
     char *output;
     size_t length = strlen(string);
@@ -30,10 +30,10 @@ char *DecodeBase64(const char *string)
     uint32_t storage = 0;
     while (string[4])
     {
-        storage |= DecodeChar(*string++) << 18;
-        storage |= DecodeChar(*string++) << 12;
-        storage |= DecodeChar(*string++) << 6;
-        storage |= DecodeChar(*string++);
+        storage |= DecodeChar2(*string++) << 18;
+        storage |= DecodeChar2(*string++) << 12;
+        storage |= DecodeChar2(*string++) << 6;
+        storage |= DecodeChar2(*string++);
 
         output[index++] = storage >> 16;
         output[index++] = (char)(storage >> 8);
@@ -42,8 +42,8 @@ char *DecodeBase64(const char *string)
         storage = 0;
     }
 
-    storage |= DecodeChar(*string++) << 18;
-    storage |= DecodeChar(*string++) << 12;
+    storage |= DecodeChar2(*string++) << 18;
+    storage |= DecodeChar2(*string++) << 12;
     output[index++] = storage >> 16;
 
     if (*string == '=')
@@ -51,7 +51,7 @@ char *DecodeBase64(const char *string)
         output[index] = '\0';
         return output;
     }
-    storage |= DecodeChar(*string++) << 6;
+    storage |= DecodeChar2(*string++) << 6;
     output[index++] = (char)(storage >> 8);
 
     if (*string == '=')
@@ -59,25 +59,25 @@ char *DecodeBase64(const char *string)
         output[index] = '\0';
         return output;
     }
-    storage |= DecodeChar(*string);
+    storage |= DecodeChar2(*string);
     output[index++] = (char)storage;
 
     output[index] = '\0';
     return output;
 }
 
-UserFilter::UserFilter(Bank &b) : bank(b) {}
+AdminFilter::AdminFilter(Bank &b) : bank(b) {}
 
-void UserFilter::doFilter(const HttpRequestPtr &req,
-                          FilterCallback &&fcb,
-                          FilterChainCallback &&fccb)
+void AdminFilter::doFilter(const HttpRequestPtr &req,
+                           FilterCallback &&fcb,
+                           FilterChainCallback &&fccb)
 {
     const std::string &auth_header = req->getHeader("Authorization");
     if (auth_header.size() > 6)
     {
         if (auth_header.substr(0, 6) == "Basic ")
         {
-            std::stringstream ss(DecodeBase64(auth_header.substr(6).c_str()));
+            std::stringstream ss(DecodeBase642(auth_header.substr(6).c_str()));
             std::string username, password;
             std::getline(ss, username, ':');
             std::getline(ss, password);

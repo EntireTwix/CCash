@@ -13,6 +13,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 find_package(Threads REQUIRED)
 add_executable(${PROJECT_NAME} main.cpp )
 target_sources(${PROJECT_NAME} PRIVATE
+    src/admin_filter.cpp
     src/bank_api.cpp
     src/bank.cpp
     src/log.cpp
