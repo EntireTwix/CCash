@@ -209,11 +209,7 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
     {
         if constexpr (RETURN_ON_DEL)
         {
-            return (state) ? true : ErrorResponse::WrongPassword;
-        }
-        else
-        {
-            if (state)
+            if (state) //if the password matches
             {
 #if RETURN_ON_DEL
                 users.modify_if(return_account, [&bal](User &u) {
@@ -226,6 +222,10 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
             {
                 return ErrorResponse::WrongPassword;
             }
+        }
+        else
+        {
+            return (state) ? true : ErrorResponse::WrongPassword;
         }
     }
     else
