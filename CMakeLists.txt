@@ -16,12 +16,13 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/admin_filter.cpp
     src/bank_api.cpp
     src/bank.cpp
+    src/base64.c #temp
+    src/change_flag.cpp
     src/log.cpp
     src/transaction.cpp
     src/user_filter.cpp
     src/user.cpp
     src/xxhash.c
-    src/base64.c #temp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)

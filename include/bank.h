@@ -2,11 +2,14 @@
 #include <iostream> //temporary
 #include <fstream>
 #include <shared_mutex>
-#include <atomic>
 #include <drogon/HttpTypes.h>
+#include <parallel-hashmap/parallel_hashmap/phmap.h>
 #include "error_responses.hpp" //temporary
-#include "parallel-hashmap/parallel_hashmap/phmap.h"
 #include "user.h"
+
+#if CONSERVATIVE_DISK_SAVE
+#include "change_flag.h"
+#endif
 
 using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
@@ -22,9 +25,8 @@ private:
         std::mutex>
         users;
 
-    std::atomic<bool> change_flag = false; //if true changes have been made
+    ChangeFlag save_flag;
 
-private:
     /**
      * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
      * 
@@ -37,17 +39,10 @@ private:
      */
     std::shared_mutex send_funds_l;
 
-#if CONSERVATIVE_DISK_SAVE
-    void ChangesMade() noexcept;  //called after making changes
-    void ChangesSaved() noexcept; //called after saving
-#endif
-
 public:
     std::string admin_pass;
 
-#if CONSERVATIVE_DISK_SAVE
-    bool GetChangeState() noexcept;
-#endif
+    bool GetChangeState() const noexcept;
 
     BankResponse GetBal(const std::string &name) const noexcept;
     BankResponse GetLogs(const std::string &name) noexcept;

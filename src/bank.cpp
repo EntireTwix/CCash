@@ -2,20 +2,7 @@
 
 using namespace drogon;
 
-#if CONSERVATIVE_DISK_SAVE
-void Bank::ChangesMade() noexcept
-{
-    return change_flag.store(1, std::memory_order_release);
-}
-void Bank::ChangesSaved() noexcept
-{
-    return change_flag.store(0, std::memory_order_release);
-}
-bool Bank::GetChangeState() noexcept
-{
-    return change_flag.load(std::memory_order_acquire);
-}
-#endif
+bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); }
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
@@ -92,7 +79,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
                 b.log.AddTrans(std::move(temp));
             });
 #if CONSERVATIVE_DISK_SAVE
-            ChangesMade();
+            save_flag.SetChangesOn();
 #endif
         }
         return state;
@@ -118,7 +105,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
                 b.balance += amount;
             });
 #if CONSERVATIVE_DISK_SAVE
-            ChangesMade();
+            save_flag.SetChangesOn();
 #endif
         }
         return state;
@@ -139,7 +126,7 @@ void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexc
         u.password = XXH3_64bits(new_pass.data(), new_pass.size());
     });
 #if CONSERVATIVE_DISK_SAVE
-    ChangesMade();
+    save_flag.SetChangesOn();
 #endif
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
@@ -149,7 +136,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         }))
     {
 #if CONSERVATIVE_DISK_SAVE
-        ChangesMade();
+        save_flag.SetChangesOn();
 #endif
         return BankResponse(k200OK, "Balance set!");
     }
@@ -271,7 +258,7 @@ bool Bank::AdminVerifyPass(const std::string &attempt) noexcept
 void Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE
-    if (GetChangeState())
+    if (save_flag.GetChangeState())
     {
 #endif
         Json::Value temp;
@@ -300,7 +287,7 @@ void Bank::Save()
             user_save.close();
         }
 #if CONSERVATIVE_DISK_SAVE
-        ChangesSaved();
+        save_flag.SetChangesOff();
     }
 #endif
 }
