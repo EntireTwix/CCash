@@ -202,36 +202,28 @@ int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) n
     if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
             bal = u.balance;
 #else
-    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
+    if (!users.erase_if(name, [this, &name, &state, &attempt](User &u) {
 #endif
             return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
         }))
     {
-        if constexpr (RETURN_ON_DEL)
-        {
-            if (state) //if the password matches
-            {
+        return ErrorResponse::UserNotFound;
+    }
 #if RETURN_ON_DEL
-                users.modify_if(return_account, [&bal](User &u) {
-                    u.balance += bal;
-                });
-#endif
-                return true;
-            }
-            else
-            {
-                return ErrorResponse::WrongPassword;
-            }
-        }
-        else
-        {
-            return (state) ? true : ErrorResponse::WrongPassword;
-        }
+    if (state) //if the password matches
+    {
+        users.modify_if(return_account, [&bal](User &u) {
+            u.balance += bal;
+        });
+        return true;
     }
     else
     {
-        return ErrorResponse::UserNotFound;
+        return ErrorResponse::WrongPassword;
     }
+#else
+    return (state) ? true : ErrorResponse::WrongPassword;
+#endif
 }
 int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt) noexcept
 {
