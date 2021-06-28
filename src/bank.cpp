@@ -15,16 +15,8 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
-    if (!users.if_contains(name, [&res](const User &u) {
-            Json::Value temp;
-            for (uint32_t i = u.log.data.size(); i > 0; --i)
-            {
-                temp[i - 1]["to"] = u.log.data[u.log.data.size() - i].to;
-                temp[i - 1]["from"] = u.log.data[u.log.data.size() - i].from;
-                temp[i - 1]["amount"] = (Json::UInt)u.log.data[u.log.data.size() - i].amount;
-                temp[i - 1]["time"] = (Json::UInt64)u.log.data[u.log.data.size() - i].time;
-            }
-            res = {k200OK, std::move(temp)};
+    if (!users.modify_if(name, [&res](User &u) {
+            res = {k200OK, u.log.GetLog()};
         }))
     {
         return BankResponse(k404NotFound, "User not found");

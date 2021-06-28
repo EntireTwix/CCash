@@ -1,5 +1,5 @@
 #pragma once
-#include <json/json.h>
+#include <json/json.h> //to be removed later
 #include <string>
 #include <xxhash.h>
 #include "log.h"
@@ -15,5 +15,5 @@ struct User
     User(uint32_t init_bal, uint64_t init_pass);
     User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j);
 
-    Json::Value Serialize() const;
+    Json::Value Serialize() const; //to be removed later
 };

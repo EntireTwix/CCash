@@ -36,7 +36,7 @@ public:
 
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/bal?name={name}", Get, Options);                       //done
-    METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter");                     //snapshot not implemented
+    METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter");                     //done (could be optimized further)
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "UserFilter");            //responses incomplete
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Get, Options, "UserFilter"); //done
 
