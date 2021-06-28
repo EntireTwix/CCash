@@ -8,7 +8,9 @@ struct User
 {
     uint32_t balance = 0;
     uint64_t password;
+#if MAX_LOG_SIZE > 0
     Log log;
+#endif
 
     User(const std::string &init_pass);
     User(uint32_t init_bal, const std::string &init_pass);

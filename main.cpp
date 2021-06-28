@@ -32,9 +32,9 @@ int main(int argc, char **argv)
               << "\nThreads : " << get_nprocs() + 1
               << std::endl; //flushing before EventLoop
 
-    static_assert(bool(max_log_size) == bool(pre_log_size), "You must either utilize both or neither logging variables.\n");
-    static_assert(max_log_size >= pre_log_size, "The maximum log size must be larger than or equal to the amount preallocated.\n");
-    static_assert(!max_log_size || !(max_log_size % pre_log_size), "The maximum log size must be divisible by the preallocation size.\n");
+    static_assert(bool(MAX_LOG_SIZE) == bool(PRE_LOG_SIZE), "You must either utilize both or neither logging variables.\n");
+    static_assert(MAX_LOG_SIZE >= PRE_LOG_SIZE, "The maximum log size must be larger than or equal to the amount preallocated.\n");
+    static_assert(!MAX_LOG_SIZE || !(MAX_LOG_SIZE % PRE_LOG_SIZE), "The maximum log size must be divisible by the preallocation size.\n");
 
     if (argc != 3)
     {

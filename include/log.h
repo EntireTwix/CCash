@@ -2,8 +2,8 @@
 #include <json/json.h> // to be removed later
 #include <array>
 #include <algorithm>
-#include "change_flag.h"
 #include "consts.hpp"
+#include "change_flag.h"
 #include "transaction.h"
 
 struct Log

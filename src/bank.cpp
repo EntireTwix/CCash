@@ -44,7 +44,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse state;
-    if constexpr (max_log_size > 0)
+    if constexpr (MAX_LOG_SIZE > 0)
     {
         Transaction temp(a_name, b_name, amount);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
@@ -304,7 +304,7 @@ void Bank::Load()
         user_save.close();
         for (const auto &u : temp.getMemberNames())
         {
-            if constexpr (max_log_size > 0)
+            if constexpr (MAX_LOG_SIZE > 0)
             {
                 users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), temp[u]["log"]);
             }

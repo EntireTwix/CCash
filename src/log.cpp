@@ -2,7 +2,7 @@
 
 void Log::AddTrans(Transaction &&t)
 {
-    if (data.size() == max_log_size) // If we hit the max size
+    if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
         for (uint32_t i = 1; i < data.size(); i++) // Make room at the back
         {
@@ -13,7 +13,7 @@ void Log::AddTrans(Transaction &&t)
     }
     else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
     {
-        data.reserve(data.capacity() + pre_log_size); // Reserve more memory
+        data.reserve(data.capacity() + PRE_LOG_SIZE); // Reserve more memory
     }
     data.push_back(std::move(t)); // In either case we have space under max length, move to new spot
     log_flag.SetChangesOn();

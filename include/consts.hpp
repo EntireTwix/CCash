@@ -1,8 +1,8 @@
 #pragma once
 
 // Setting both values to 0 does not compile logging (useful for if disk/memory is very valuable)
-constexpr unsigned max_log_size = 100;
-constexpr unsigned pre_log_size = 10;
+#define MAX_LOG_SIZE 100
+#define PRE_LOG_SIZE 10
 
 constexpr unsigned max_name_size = 50;
 
