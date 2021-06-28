@@ -2,31 +2,20 @@
 
 using namespace drogon;
 
+#if CONSERVATIVE_DISK_SAVE
 void Bank::ChangesMade() noexcept
 {
-    if constexpr (CONSERVATIVE_DISK_SAVE)
-    {
-        return change_flag.store(1, std::memory_order_release);
-    }
+    return change_flag.store(1, std::memory_order_release);
 }
 void Bank::ChangesSaved() noexcept
 {
-    if constexpr (CONSERVATIVE_DISK_SAVE)
-    {
-        return change_flag.store(0, std::memory_order_release);
-    }
+    return change_flag.store(0, std::memory_order_release);
 }
 bool Bank::GetChangeState() noexcept
 {
-    if constexpr (CONSERVATIVE_DISK_SAVE)
-    {
-        return change_flag.load(std::memory_order_acquire);
-    }
-    else
-    {
-        return true;
-    }
+    return change_flag.load(std::memory_order_acquire);
 }
+#endif
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
@@ -76,9 +65,8 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if constexpr (max_log_size > 0)
     {
         Transaction temp(a_name, b_name, amount);
-        Transaction temp_copy(temp);
         std::shared_lock<std::shared_mutex> lock{send_funds_l};
-        users.modify_if(a_name, [&temp_copy, &state, amount](User &a) {
+        users.modify_if(a_name, [&temp, &state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -87,7 +75,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             else
             {
                 a.balance -= amount;
-                a.log.AddTrans(std::move(temp_copy));
+                a.log.AddTrans(Transaction(temp));
                 state = {k200OK, "Transfer successful!"};
             }
         });
@@ -275,8 +263,10 @@ int_fast8_t Bank::SetBal(const std::string &name, const std::string &attempt, ui
 
 void Bank::Save()
 {
+#if CONSERVATIVE_DISK_SAVE
     if (GetChangeState())
     {
+#endif
         Json::Value temp;
 
         //loading info into json temp
@@ -302,8 +292,10 @@ void Bank::Save()
             writer->write(temp, &user_save);
             user_save.close();
         }
+#if CONSERVATIVE_DISK_SAVE
         ChangesSaved();
     }
+#endif
 }
 
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS

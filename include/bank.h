@@ -37,12 +37,17 @@ private:
      */
     std::shared_mutex send_funds_l;
 
+#if CONSERVATIVE_DISK_SAVE
     void ChangesMade() noexcept;  //called after making changes
     void ChangesSaved() noexcept; //called after saving
+#endif
+
 public:
     std::string admin_pass;
 
+#if CONSERVATIVE_DISK_SAVE
     bool GetChangeState() noexcept;
+#endif
 
     BankResponse GetBal(const std::string &name) const noexcept;
     BankResponse GetLogs(const std::string &name) noexcept;
