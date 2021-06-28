@@ -42,10 +42,11 @@ constexpr Json::Value JsonCast(T &&val)
     }
 }
 
-#if API_VERSION == 1
 api::api(Bank &b) : bank(b)
 {
 }
+
+#if API_VERSION == 1
 
 void api::GetBal(req_args, const std::string &name) const
 {

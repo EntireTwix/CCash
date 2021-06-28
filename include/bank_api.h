@@ -7,13 +7,13 @@ using namespace drogon;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 
-#if API_VERSION == 1
 class api : public HttpController<api, false>
 {
     Bank &bank;
 
 public:
     api(Bank &b);
+#if API_VERSION == 1
     void GetBal(req_args, const std::string &name) const;
     void GetLog(req_args);
     void SendFunds(req_args) const;
@@ -58,5 +58,5 @@ public:
     METHOD_ADD(api::AdminDelUser, "/admin/user/{name}", Delete, Options);
 
     METHOD_LIST_END
-};
 #endif
+};
