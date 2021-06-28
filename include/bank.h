@@ -25,7 +25,9 @@ private:
         std::mutex>
         users;
 
+#if CONSERVATIVE_DISK_SAVE
     ChangeFlag save_flag;
+#endif
 
     /**
      * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
