@@ -131,17 +131,24 @@ bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) c
 
 void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
 {
-    users.modify_if(name, [&new_pass](User &u) {
+    users.modify_if(name, [this, &new_pass](User &u) {
         u.password = XXH3_64bits(new_pass.data(), new_pass.size());
     });
+    ChangesMade();
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    return users.modify_if(name, [amount](User &u) {
-        u.balance = amount;
-    })
-               ? BankResponse(k200OK, "Balance set!")
-               : BankResponse(k404NotFound, "User not found");
+    if (users.modify_if(name, [this, amount](User &u) {
+            u.balance = amount;
+        }))
+    {
+        ChangesMade();
+        return BankResponse(k200OK, "Balance set!");
+    }
+    else
+    {
+        return BankResponse(k404NotFound, "User not found");
+    }
 }
 
 int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
