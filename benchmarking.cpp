@@ -64,15 +64,14 @@ int main(int argc, char **argv)
     bank.AddUser("twix", "root");
     bank.AddUser("jolly", "root");
     bank.admin_pass = "root";
-    Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser("", ""));
-    Op_a(bank.AdminAddUser("root", "", 0, ""), "admin add user: ", 1000000, bank.DelUser("", ""));
+    Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser(""));
+    Op_a(bank.AdminAddUser("", 0, ""), "admin add user: ", 1000000, bank.DelUser(""));
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
 
     bank.AddUser("", "");
-    Op_a(bank.DelUser("", ""), "del user: ", 1000000, bank.AddUser("", ""));
-    Op_a(bank.AdminDelUser("", "root"), "admin del user: ", 1000000, bank.AddUser("", ""));
-    bank.DelUser("", "");
+    Op_a(bank.DelUser(""), "del user: ", 1000000, bank.AddUser("", ""));
+    bank.DelUser("");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
     Op(bank.AdminVerifyPass("root"), "admin verify pass: ", 1000000);
@@ -82,6 +81,20 @@ int main(int argc, char **argv)
     Op(bank.GetLogs("twix"), "get logs: ", 10000);
     Op(bank.GetChangeState(), "change flag: ", 10000);
     Op(bank.Save(), "saving: ", 1);
+
+    //GetBal scalining test
+    // std::default_random_engine generator;
+    // std::uniform_real_distribution<double> distribution(0.0, 1.0);
+
+    // for (size_t i = 0; i < 10000000; ++i)
+    // {
+    //     bank.AddUser(std::to_string(i), "root");
+    //     if (i % 10000 == 0)
+    //     {
+    //         auto u = std::to_string(distribution(generator) * i);
+    //         Op(bank.GetBal(u), std::to_string(i) + ", ", 100000);
+    //     }
+    // }
 
     return 0;
 }
