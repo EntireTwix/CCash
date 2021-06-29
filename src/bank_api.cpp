@@ -48,6 +48,7 @@ api::api(Bank &b) : bank(b)
 
 #if API_VERSION == 1
 
+//Usage
 void api::GetBal(req_args, const std::string &name) const
 {
     RESPONSE_PARSE(bank.GetBal(name));
@@ -76,6 +77,7 @@ void api::VerifyPassword(req_args) const
     RESPOND_TRUE //as we know the user exists and is verified
 }
 
+//Meta Usage
 void api::ChangePassword(req_args) const
 {
     GEN_BODY
@@ -88,6 +90,7 @@ void api::SetBal(req_args) const
     RESPONSE_PARSE(bank.SetBal(NAME_PARAM, body["amount"].asUInt()));
 }
 
+//System Usage
 void api::Help(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
@@ -104,42 +107,38 @@ void api::Ping(req_args) const
 }
 void api::Close(req_args) const
 {
-    bool res;
-    if (PASS_HEADER == bank.admin_pass)
-    {
-        bank.Save();
-
-        res = true;
-        app().quit();
-    }
-    else
-    {
-        res = false;
-    }
-    JSON(res);
-}
-void api::AddUser(req_args, const std::string &name) const
-{
-    JSON(bank.AddUser(std::move(name), PASS_HEADER));
-}
-void api::AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const
-{
-    JSON(bank.AdminAddUser(PASS_HEADER, std::move(name), init_bal, std::string(req->getBody())));
-}
-void api::DelUser(req_args, const std::string &name) const
-{
-    JSON(bank.DelUser(name, PASS_HEADER));
-}
-void api::AdminDelUser(req_args, const std::string &name) const
-{
-    JSON(bank.AdminDelUser(name, PASS_HEADER));
+    bank.Save();
+    app().quit();
+    RESPOND_TRUE //filter handles admin creds
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    JSON(bank.Contains(name));
+    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
+    resp->setStatusCode(k200OK);
+    callback(resp);
 }
 void api::AdminVerifyPass(req_args)
 {
-    JSON(bank.AdminVerifyPass(PASS_HEADER));
+    RESPOND_TRUE //filter handles admin creds
+}
+
+void api::AddUser(req_args) const
+{
+    GEN_BODY
+    RESPONSE_PARSE(bank.AddUser(body["name"].asCString(), body["pass"].asCString()))
+}
+void api::AdminAddUser(req_args) const
+{
+    GEN_BODY
+    RESPONSE_PARSE(bank.AdminAddUser(body["name"].asCString(), body["balance"].asUInt(), body["pass"].asCString()))
+}
+void api::DelUser(req_args) const
+{
+    RESPONSE_PARSE(bank.DelUser(NAME_PARAM))
+}
+void api::AdminDelUser(req_args) const
+{
+    GEN_BODY
+    RESPONSE_PARSE(bank.DelUser(body["name"].asCString()))
 }
 #endif

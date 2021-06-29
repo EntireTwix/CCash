@@ -15,7 +15,6 @@ using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {
-private:
     phmap::parallel_flat_hash_map<
         std::string, User,
         phmap::priv::hash_default_hash<std::string>,
@@ -25,6 +24,7 @@ private:
         std::mutex>
         users;
 
+private:
 #if CONSERVATIVE_DISK_SAVE
     ChangeFlag save_flag;
 #endif
@@ -53,15 +53,13 @@ public:
 
     void ChangePassword(const std::string &name, std::string &&new_pass) noexcept;
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
-
-    int_fast8_t AddUser(const std::string &name, const std::string &init_pass) noexcept;
-    int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
-
-    int_fast8_t DelUser(const std::string &name, const std::string &attempt) noexcept;
-    int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt) noexcept;
-
     bool Contains(const std::string &name) const noexcept;
     bool AdminVerifyPass(const std::string &attempt) noexcept;
+
+    BankResponse AddUser(const std::string &name, std::string &&init_pass) noexcept;
+    BankResponse AdminAddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
+
+    BankResponse DelUser(const std::string &name) noexcept;
 
     void Save();
     void Load();

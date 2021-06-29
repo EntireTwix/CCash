@@ -5,7 +5,7 @@
      * 
      * @param init_pass initial password
      */
-User::User(const std::string &init_pass) : password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+User::User(std::string &&init_pass) noexcept : password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
 
 /**
      * @brief User Constructor for admins
@@ -13,7 +13,7 @@ User::User(const std::string &init_pass) : password(XXH3_64bits(init_pass.data()
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-User::User(uint32_t init_bal, const std::string &init_pass) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+User::User(uint32_t init_bal, std::string &&init_pass) noexcept : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
 
 /**
      * @brief User Constructor for loading
@@ -21,9 +21,9 @@ User::User(uint32_t init_bal, const std::string &init_pass) : balance(init_bal),
      * @param init_bal 
      * @param init_pass 
      */
-User::User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
+User::User(uint32_t init_bal, uint64_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
 #if MAX_LOG_SIZE > 0
-User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : balance(init_bal), password(init_pass)
+User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) noexcept : balance(init_bal), password(init_pass)
 {
     if (log_j.size())
     {

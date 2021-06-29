@@ -1,5 +1,21 @@
 #include "bank.h"
 
+__attribute__((always_inline)) inline bool ValidUsrname(const std::string &name) noexcept
+{
+    if (name.size() < min_name_size || name.size() > max_name_size)
+    {
+        return false;
+    }
+    for (const char &c : name)
+    {
+        if (!(std::isalpha(c) || std::isdigit(c) || c == '_'))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 using namespace drogon;
 
 bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); }
@@ -46,7 +62,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse state;
-    std::shared_lock<std::shared_mutex> lock{send_funds_l};
+    std::shared_lock<std::shared_mutex> lock{send_funds_l}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
     Transaction temp(a_name, b_name, amount);
     if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
@@ -56,13 +72,13 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it
             if (a.balance < amount)
             {
-                state = {k402PaymentRequired, "Sender has insufficient funds"};
+                state = {k400BadRequest, "Sender has insufficient funds"};
             }
             else
             {
                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(Transaction(temp));
+                a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
 #endif
                 state = {k200OK, "Transfer successful!"};
             }
@@ -75,13 +91,13 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
         users.modify_if(b_name, [&temp, amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(std::move(temp)); });
+            b.log.AddTrans(std::move(temp)); }); //about 40% of this function's cost
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
 #endif
 
 #if CONSERVATIVE_DISK_SAVE
-        save_flag.SetChangesOn();
+        save_flag.SetChangesOn(); //about 5% of this function's cost
 #endif
     }
     return state;
@@ -120,107 +136,6 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         return BankResponse(k404NotFound, "User not found");
     }
 }
-
-int_fast8_t Bank::AddUser(const std::string &name, const std::string &init_pass) noexcept
-{
-    if (name.size() > max_name_size)
-    {
-        return ErrorResponse::NameTooLong;
-    }
-    if (name.find(' ') != std::string::npos)
-    {
-        return ErrorResponse::InvalidRequest;
-    }
-
-    std::shared_lock<std::shared_mutex> lock{size_l};
-    return (users.try_emplace_l(
-               name, [](User &) {}, init_pass))
-               ? true
-               : ErrorResponse::UserAlreadyExists;
-}
-int_fast8_t Bank::AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
-{
-    if (name.size() > max_name_size)
-    {
-        return ErrorResponse::NameTooLong;
-    }
-    if (admin_pass != attempt)
-    {
-        return ErrorResponse::WrongPassword;
-    }
-
-    std::shared_lock<std::shared_mutex> lock{size_l};
-    return (users.try_emplace_l(
-               name, [](User &) {}, init_bal, std::move(init_pass)))
-               ? true
-               : ErrorResponse::UserAlreadyExists;
-}
-int_fast8_t Bank::DelUser(const std::string &name, const std::string &attempt) noexcept
-{
-    std::shared_lock<std::shared_mutex> lock{size_l};
-    bool state = false;
-#if RETURN_ON_DEL
-    uint32_t bal;
-    if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
-            bal = u.balance;
-#else
-    if (!users.erase_if(name, [this, &name, &state, &attempt](User &u) {
-#endif
-            return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
-        }))
-    {
-        return ErrorResponse::UserNotFound;
-    }
-#if RETURN_ON_DEL
-    if (state) //if the password matches
-    {
-        users.modify_if(return_account, [&bal](User &u) {
-            u.balance += bal;
-        });
-        return true;
-    }
-    else
-    {
-        return ErrorResponse::WrongPassword;
-    }
-#else
-    return (state) ? true : ErrorResponse::WrongPassword;
-#endif
-}
-int_fast8_t Bank::AdminDelUser(const std::string &name, const std::string &attempt) noexcept
-{
-    std::shared_lock<std::shared_mutex> lock{size_l};
-    bool state = false;
-#if RETURN_ON_DEL
-    uint32_t bal;
-    if (users.erase_if(name, [this, &bal, &name, &state, &attempt](User &u) {
-            bal = u.balance;
-#else
-    if (users.erase_if(name, [this, &name, &state, &attempt](User &u) {
-#endif
-            return state = (XXH3_64bits(attempt.data(), attempt.size()) == u.password);
-        }))
-    {
-        if (state)
-        {
-#if RETURN_ON_DEL
-            users.modify_if(return_account, [&bal](User &u) {
-                u.balance += bal;
-            });
-#endif
-            return true;
-        }
-        else
-        {
-            return ErrorResponse::WrongPassword;
-        }
-    }
-    else
-    {
-        return ErrorResponse::UserNotFound;
-    }
-}
-
 bool Bank::Contains(const std::string &name) const noexcept
 {
     return users.contains(name);
@@ -230,6 +145,54 @@ bool Bank::AdminVerifyPass(const std::string &attempt) noexcept
     return (admin_pass == attempt);
 }
 
+BankResponse Bank::AddUser(const std::string &name, std::string &&init_pass) noexcept
+{
+    if (!ValidUsrname(name))
+    {
+        return BankResponse(k400BadRequest, "Invalid Name, breaks size and/or character restrictions");
+    }
+
+    std::shared_lock<std::shared_mutex> lock{size_l};
+    return (users.try_emplace_l(
+               name, [](User &) {}, std::move(init_pass)))
+               ? BankResponse(k200OK, "User added!")
+               : BankResponse(k409Conflict, "User already exists");
+}
+BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
+{
+    if (!ValidUsrname(name))
+    {
+        return BankResponse(k400BadRequest, "Invalid Name, breaks size and/or character restrictions");
+    }
+
+    std::shared_lock<std::shared_mutex> lock{size_l};
+    return (users.try_emplace_l(
+               name, [](User &) {}, init_bal, std::move(init_pass)))
+               ? BankResponse(k200OK, "User added!")
+               : BankResponse(k409Conflict, "User already exists");
+}
+BankResponse Bank::DelUser(const std::string &name) noexcept
+{
+    std::shared_lock<std::shared_mutex> lock{size_l};
+#if RETURN_ON_DEL
+    uint32_t bal;
+    if (users.erase_if(name, [this, &bal, &name](User &u) {
+            bal = u.balance;
+            return true;
+        }))
+#else
+    if (!users.erase(name))
+#endif
+    {
+        return BankResponse(k404NotFound, "User not found");
+    }
+#if RETURN_ON_DEL
+    users.modify_if(return_account, [&bal](User &u) {
+        u.balance += bal;
+    });
+#endif
+    return BankResponse(k200OK, "User deleted!");
+}
 void Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE

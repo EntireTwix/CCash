@@ -25,9 +25,9 @@ public:
     void Help(req_args) const;
     void Ping(req_args) const;
     void Close(req_args) const;
-    void AddUser(req_args, const std::string &name) const;
-    void AdminAddUser(req_args, std::string &&name, uint32_t init_bal) const;
-    void DelUser(req_args, const std::string &name) const;
+    void AddUser(req_args) const;
+    void AdminAddUser(req_args) const;
+    void DelUser(req_args) const;
     void AdminDelUser(req_args, const std::string &name) const;
     void Contains(req_args, const std::string &name) const;
     void AdminVerifyPass(req_args);
@@ -37,7 +37,7 @@ public:
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/bal?name={name}", Get, Options);                       //done
     METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter");                     //done (could be optimized further)
-    METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "UserFilter");            //responses incomplete
+    METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "UserFilter");            //done
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Get, Options, "UserFilter"); //done
 
     //Meta Usage
@@ -45,17 +45,17 @@ public:
     METHOD_ADD(api::SetBal, "/v1/admin/bal", Patch, Options, "AdminFilter");                   //done
 
     //System Usage
-    METHOD_ADD(api::Help, "/help", Get, Options);
-    METHOD_ADD(api::Ping, "/ping", Get, Options);
-    METHOD_ADD(api::Close, "/admin/close", Post, Options);
-    METHOD_ADD(api::Contains, "/contains/{name}", Get, Options);
-    METHOD_ADD(api::AdminVerifyPass, "/admin/verify", Get, Options);
+    METHOD_ADD(api::Help, "/v1/help", Get, Options);                                            //done
+    METHOD_ADD(api::Ping, "/v1/ping", Get, Options);                                            //done
+    METHOD_ADD(api::Close, "/v1/admin/shutdown", Post, Options, "AdminFilter");                 //done
+    METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options);                     //done
+    METHOD_ADD(api::AdminVerifyPass, "/v1/admin/verify_password", Get, Options, "AdminFilter"); //done
 
     //User Managment
-    METHOD_ADD(api::AddUser, "/user/{name}", Post, Options);
-    METHOD_ADD(api::AdminAddUser, "/admin/user/{name}?init_bal={init_bal}", Post, Options);
-    METHOD_ADD(api::DelUser, "/user/{name}", Delete, Options);
-    METHOD_ADD(api::AdminDelUser, "/admin/user/{name}", Delete, Options);
+    METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                           //done
+    METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "AdminFilter"); //done
+    METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter");                  //done
+    METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "AdminFilter");      //done
 
     METHOD_LIST_END
 #endif
