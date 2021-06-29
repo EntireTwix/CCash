@@ -43,7 +43,7 @@ api::api(Bank &b) : bank(b)
 {
 }
 
-#if API_VERSION == 1
+#if API_VERSION >= 1
 
 //Usage
 void api::GetBal(req_args, const std::string &name) const
