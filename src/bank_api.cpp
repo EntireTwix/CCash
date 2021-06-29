@@ -27,11 +27,11 @@ constexpr Json::Value JsonCast(T &&val)
     }
     else if constexpr (std::is_same_v<T, uint64_t>)
     {
-        return (Json::Int64)val;
+        return (Json::UInt64)val;
     }
-    else if constexpr (std::is_same_v<T, int64_t>)
+    else if constexpr (std::is_same_v<T, uint32_t>)
     {
-        return (Json::Int64)val;
+        return (Json::UInt)val;
     }
     else
     {
