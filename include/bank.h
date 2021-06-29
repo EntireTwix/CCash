@@ -4,6 +4,7 @@
 #include <shared_mutex>
 #include <drogon/HttpTypes.h>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
+#include "xxhash_strfunctor.hpp"
 #include "user.h"
 
 #if CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0
@@ -16,7 +17,7 @@ class Bank
 {
     phmap::parallel_flat_hash_map<
         std::string, User,
-        phmap::priv::hash_default_hash<std::string>,
+        xxHashStringGen,
         phmap::priv::hash_default_eq<std::string>,
         phmap::priv::Allocator<phmap::priv::Pair<const std::string, User>>,
         4UL,
