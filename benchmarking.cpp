@@ -3,6 +3,7 @@
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
+#include <random>
 #include "bank.h"
 
 #include <signal.h>
