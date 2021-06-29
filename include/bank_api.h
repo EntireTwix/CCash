@@ -31,9 +31,11 @@ public:
     void AdminDelUser(req_args) const;
     void Contains(req_args, const std::string &name) const;
     void AdminVerifyPass(req_args);
+#endif
 
     METHOD_LIST_BEGIN
 
+#if API_VERSION >= 1
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options);
     METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter");
@@ -56,7 +58,7 @@ public:
     METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "AdminFilter"); //expects ["name"](string) ["balance"](32 bits) ["pass"](string)
     METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "AdminFilter"); //expects ["name"](string)
+#endif
 
     METHOD_LIST_END
-#endif
 };
