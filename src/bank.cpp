@@ -22,11 +22,11 @@ bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); 
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    int_fast64_t res = -1;
+    uint32_t res = 0;
     users.if_contains(name, [&res](const User &u) {
-        res = u.balance;
+        res = u.balance + 1;
     });
-    return res < 0 ? BankResponse(k404NotFound, "User not found") : BankResponse(k200OK, res);
+    return res > 0 ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
@@ -154,7 +154,7 @@ BankResponse Bank::AddUser(const std::string &name, std::string &&init_pass) noe
 
     std::shared_lock<std::shared_mutex> lock{size_l};
     return (users.try_emplace_l(
-               name, [](User &) {}, std::move(init_pass)))
+               std::move(name), [](User &) {}, std::move(init_pass)))
                ? BankResponse(k200OK, "User added!")
                : BankResponse(k409Conflict, "User already exists");
 }
@@ -167,7 +167,7 @@ BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::stri
 
     std::shared_lock<std::shared_mutex> lock{size_l};
     return (users.try_emplace_l(
-               name, [](User &) {}, init_bal, std::move(init_pass)))
+               std::move(name), [](User &) {}, init_bal, std::move(init_pass)))
                ? BankResponse(k200OK, "User added!")
                : BankResponse(k409Conflict, "User already exists");
 }

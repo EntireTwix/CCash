@@ -4,7 +4,6 @@
 #include <shared_mutex>
 #include <drogon/HttpTypes.h>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
-#include "error_responses.hpp" //temporary
 #include "user.h"
 
 #if CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0

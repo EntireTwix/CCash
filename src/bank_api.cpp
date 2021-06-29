@@ -1,8 +1,5 @@
 #include "bank_api.h"
 
-#define JSON(V) callback(HttpResponse::newHttpJsonResponse(JsonCast(V))); //temporary
-#define PASS_HEADER req->getHeader("Password")                            //temporary
-
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
