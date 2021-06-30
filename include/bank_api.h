@@ -20,17 +20,19 @@ public:
     void VerifyPassword(req_args) const;
 
     void ChangePassword(req_args) const;
+    void AdminChangePassword(req_args) const;
     void SetBal(req_args) const;
 
     void Help(req_args) const;
     void Ping(req_args) const;
     void Close(req_args) const;
+    void Contains(req_args, const std::string &name) const;
+    void AdminVerifyPass(req_args);
+
     void AddUser(req_args) const;
     void AdminAddUser(req_args) const;
     void DelUser(req_args) const;
     void AdminDelUser(req_args) const;
-    void Contains(req_args, const std::string &name) const;
-    void AdminVerifyPass(req_args);
 #endif
 
     METHOD_LIST_BEGIN
@@ -43,8 +45,9 @@ public:
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Get, Options, "UserFilter");
 
     //Meta Usage
-    METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "UserFilter"); //expects ["new_pass"](string)
-    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "AdminFilter");           //expects ["amount"](32 bits)
+    METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "UserFilter");       //expects ["new_pass"](string)
+    METHOD_ADD(api::AdminChangePassword, "/v1/user/change_password", Patch, Options, "AdminFilter"); //expects ["name"](string) and ["new_pass"](string)
+    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "AdminFilter");                 //expects ["amount"](32 bits)
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);

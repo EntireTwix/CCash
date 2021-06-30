@@ -81,6 +81,12 @@ void api::ChangePassword(req_args) const
     bank.ChangePassword(NAME_PARAM, std::move(body["new_pass"].asCString())); //may make asString()
     RESPOND_TRUE                                                              //as we know the user exists and is verified
 }
+void api::AdminChangePassword(req_args) const
+{
+    GEN_BODY
+    bank.ChangePassword(body["name"].asCString(), std::move(body["new_pass"].asCString())); //may make asString()
+    RESPOND_TRUE
+}
 void api::SetBal(req_args) const
 {
     GEN_BODY
