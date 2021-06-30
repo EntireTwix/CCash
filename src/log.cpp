@@ -37,12 +37,9 @@ const Json::Value &Log::GetLog()
 #endif
         }
         log_flag.SetChangesOff();
-        return log_snapshot = res;
+        log_snapshot = res;
     }
-    else
-    {
-        return log_snapshot;
-    }
+    return log_snapshot;
 }
 
 Json::Value Log::Serialize() const
