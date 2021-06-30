@@ -14,7 +14,7 @@ find_package(Threads REQUIRED)
 
 add_executable(${PROJECT_NAME} main.cpp )
 
-add_subdirectory(third_party/xxHash/cmake_unofficial xxHash/build/ EXCLUDE_FROM_ALL)
+add_subdirectory(third_party/xxHash/cmake_unofficial third_party/xxHash/build EXCLUDE_FROM_ALL)
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/admin_filter.cpp
