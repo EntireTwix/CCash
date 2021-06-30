@@ -4,3 +4,6 @@
 [submodule "drogon"]
 	path = third_party/drogon
 	url = https://github.com/an-tao/drogon
+[submodule "third_party/xxHash"]
+	path = third_party/xxHash
+	url = https://github.com/Cyan4973/xxHash
