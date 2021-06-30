@@ -4,7 +4,6 @@
 #include <shared_mutex>
 #include <drogon/HttpTypes.h>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
-#include "xxhash_strfunctor.hpp"
 #include "user.h"
 
 #if CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0
@@ -15,6 +14,14 @@ using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {
+    struct xxHashStringGen
+    {
+        inline uint64_t operator()(const std::string &str) const
+        {
+            return XXH3_64bits(str.data(), str.size());
+        }
+    };
+
     phmap::parallel_flat_hash_map<
         std::string, User,
         xxHashStringGen,
@@ -58,7 +65,6 @@ public:
 
     BankResponse AddUser(const std::string &name, std::string &&init_pass) noexcept;
     BankResponse AdminAddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
-
     BankResponse DelUser(const std::string &name) noexcept;
 
     void Save();
