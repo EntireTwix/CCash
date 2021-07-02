@@ -26,6 +26,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/transaction.cpp
     src/user_filter.cpp
     src/user.cpp
+    src/xxhash_str.cpp
 )
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
