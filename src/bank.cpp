@@ -74,7 +74,7 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
         return ErrorResponse::InvalidRequest;
     }
     //as first modify_if checks a_name and grabs unique lock
-    if (!Contains(b_name))
+    if (Contains(b_name) != true)
     {
         return ErrorResponse::UserNotFound;
     }
@@ -92,7 +92,6 @@ int_fast8_t Bank::SendFunds(const std::string &a_name, const std::string &b_name
             }
             else if (a.password != XXH3_64bits(attempt.data(), attempt.size()))
             {
-
                 state = ErrorResponse::WrongPassword;
             }
             else
