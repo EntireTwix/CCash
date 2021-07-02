@@ -1,6 +1,6 @@
 #include "log.h"
 
-void Log::AddTrans(Transaction &&t)
+void Log::AddTrans(Transaction &&t) noexcept
 {
     if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
@@ -19,7 +19,7 @@ void Log::AddTrans(Transaction &&t)
     log_flag.SetChangesOn();
 }
 
-const Json::Value &Log::GetLog()
+const Json::Value &Log::GetLog() noexcept
 {
     if (log_flag.GetChangeState()) //if there are changes
     {

@@ -13,9 +13,9 @@ private:
     Json::Value log_snapshot;
 
 public:
-    const Json::Value &GetLog();
-
     std::vector<Transaction> data;
-    void AddTrans(Transaction &&t);
+
+    const Json::Value &GetLog() noexcept;
+    void AddTrans(Transaction &&t) noexcept;
     Json::Value Serialize() const; // to be removed later
 };
