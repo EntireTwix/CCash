@@ -21,9 +21,9 @@ User::User(uint32_t init_bal, std::string &&init_pass) noexcept : balance(init_b
      * @param init_bal 
      * @param init_pass 
      */
-User::User(uint32_t init_bal, uint64_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
+User::User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
 #if MAX_LOG_SIZE > 0
-User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) noexcept : balance(init_bal), password(init_pass)
+User::User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) noexcept : balance(init_bal), password(init_pass)
 {
     if (log_j.size())
     {

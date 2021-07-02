@@ -4,5 +4,5 @@
 
 struct xxHashStringGen
 {
-    uint64_t operator()(const std::string &str) const noexcept;
+    XXH64_hash_t operator()(const std::string &str) const noexcept;
 };
