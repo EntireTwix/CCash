@@ -1,7 +1,6 @@
 #pragma once
 #include <json/json.h> //to be removed later
-#include <string>
-#include <xxhash.h>
+#include "xxhash_str.h"
 #include "log.h"
 
 struct User

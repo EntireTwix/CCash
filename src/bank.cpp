@@ -106,7 +106,7 @@ bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) c
 {
     bool res = false;
     users.if_contains(name, [&res, &attempt](const User &u) {
-        res = (u.password == XXH3_64bits(attempt.data(), attempt.size()));
+        res = (u.password == xxHashStringGen{}(attempt));
     });
     return res;
 }
@@ -114,7 +114,7 @@ bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) c
 void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
 {
     users.modify_if(name, [&new_pass](User &u) {
-        u.password = XXH3_64bits(new_pass.data(), new_pass.size());
+        u.password = xxHashStringGen{}(new_pass);
     });
 #if CONSERVATIVE_DISK_SAVE
     save_flag.SetChangesOn();

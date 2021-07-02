@@ -14,14 +14,6 @@ using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {
-    struct xxHashStringGen
-    {
-        inline uint64_t operator()(const std::string &str) const
-        {
-            return XXH3_64bits(str.data(), str.size());
-        }
-    };
-
     phmap::parallel_flat_hash_map<
         std::string, User,
         xxHashStringGen,

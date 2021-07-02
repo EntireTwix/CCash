@@ -5,7 +5,7 @@
      * 
      * @param init_pass initial password
      */
-User::User(std::string &&init_pass) noexcept : password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+User::User(std::string &&init_pass) noexcept : password(xxHashStringGen{}(init_pass)) {}
 
 /**
      * @brief User Constructor for admins
@@ -13,7 +13,7 @@ User::User(std::string &&init_pass) noexcept : password(XXH3_64bits(init_pass.da
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-User::User(uint32_t init_bal, std::string &&init_pass) noexcept : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+User::User(uint32_t init_bal, std::string &&init_pass) noexcept : balance(init_bal), password(xxHashStringGen{}(init_pass)) {}
 
 /**
      * @brief User Constructor for loading
