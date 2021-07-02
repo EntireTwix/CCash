@@ -22,11 +22,11 @@ bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); 
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    uint32_t res = 0;
+    uint64_t res = 0;
     users.if_contains(name, [&res](const User &u) {
         res = u.balance + 1;
     });
-    return res > 0 ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
+    return res ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
