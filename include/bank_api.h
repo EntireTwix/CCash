@@ -40,7 +40,11 @@ public:
 #if API_VERSION >= 1
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options);
+#if MAX_LOG_SIZE > 0
     METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter");
+#else
+    METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options);
+#endif
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "UserFilter"); //expects ["to"](string) and ["amount"](32 bits)
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Get, Options, "UserFilter");
 
