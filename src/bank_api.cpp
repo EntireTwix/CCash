@@ -90,7 +90,7 @@ void api::AdminChangePassword(req_args) const
 void api::SetBal(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.SetBal(NAME_PARAM, body["amount"].asUInt()));
+    RESPONSE_PARSE(bank.SetBal(body["name"].asCString(), body["amount"].asUInt()));
 }
 
 //System Usage

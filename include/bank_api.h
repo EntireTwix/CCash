@@ -51,7 +51,7 @@ public:
     //Meta Usage
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "UserFilter");       //expects ["new_pass"](string)
     METHOD_ADD(api::AdminChangePassword, "/v1/user/change_password", Patch, Options, "AdminFilter"); //expects ["name"](string) and ["new_pass"](string)
-    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "AdminFilter");                 //expects ["amount"](32 bits)
+    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "AdminFilter");                 //expects ["name"](string) and ["amount"](32 bits)
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);
