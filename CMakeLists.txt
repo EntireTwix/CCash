@@ -22,7 +22,6 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/bank.cpp
     src/change_flag.cpp
     src/log.cpp
-    src/substr_view.cpp
     src/transaction.cpp
     src/user_filter.cpp
     src/user.cpp

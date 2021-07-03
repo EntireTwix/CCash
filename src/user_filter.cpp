@@ -6,22 +6,22 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
                           FilterCallback &&fcb,
                           FilterChainCallback &&fccb)
 {
-    const std::string &auth_header = req->getHeader("Authorization");
+    std::string_view auth_header = req->getHeader("Authorization");
     if (auth_header.size() > 6)
     {
-        if (substr_view(auth_header, 0, 6) == "Basic ")
+        if (auth_header.substr(0, 6) == "Basic ")
         {
-            //only one alloc for this entire thing!
-            char base64_result[((auth_header.size() - 6) * 3) / 4];
+            std::string_view base64_input = auth_header.substr(6);
+            char base64_result[(base64_input.size() * 3) / 4]; //only alloc
             size_t new_sz;
-            base64_decode(substr_view(auth_header, 6).data(), auth_header.size() - 6, base64_result, &new_sz, 0);
+            base64_decode(base64_input.data(), base64_input.size(), base64_result, &new_sz, 0);
 
-            std::size_t res = std::string_view(base64_result, new_sz).find(':');
-            if (res != std::string::npos)
+            std::string_view results_view(base64_result, new_sz);
+            std::size_t middle = results_view.find(':');
+            if (middle != std::string::npos)
             {
-                std::string_view username = substr_view(base64_result, 0, res).str_view();
-                std::string_view password = substr_view(base64_result, res + 1, new_sz).str_view();
-                //another alloc
+                std::string_view username = results_view.substr(0, middle);
+                std::string_view password = results_view.substr(middle + 1);
                 if (bank.VerifyPassword(username, password))
                 {
                     fccb();
