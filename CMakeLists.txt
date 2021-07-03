@@ -58,12 +58,6 @@ else()
 set(CONSERVATIVE_DISK_SAVE_VAL true)
 endif()
 
-if(API_VERSION)
-set(API_VERSION_VAL ${API_VERSION})
-else()
-set(API_VERSION_VAL 1)
-endif()
-
 if(MULTI_THREADED)
 set(MULTI_THREADED_VAL ${MULTI_THREADED})
 else()

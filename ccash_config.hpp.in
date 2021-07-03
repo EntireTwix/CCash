@@ -36,6 +36,6 @@ version 2 will work
 version 3 will work
 etc
 */
-#define API_VERSION @API_VERSION_VAL@
+#define API_VERSION 1
 
 #define MULTI_THREADED @MULTI_THREADED_VAL@
