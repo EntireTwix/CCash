@@ -60,7 +60,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     BankResponse state;
     std::shared_lock<std::shared_mutex> lock{send_funds_l}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    Transaction temp(a_name, b_name, amount);
+    Transaction temp(std::string(a_name), std::string(b_name), amount);
     if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
 #else
     if (!users.modify_if(a_name, [&state, amount](User &a) {
@@ -102,7 +102,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 bool Bank::VerifyPassword(std::string_view name, std::string_view attempt) const noexcept
 {
     bool res = false;
-    users.if_contains(std::string(name), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
+    users.if_contains(name.data(), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
 
@@ -136,7 +136,7 @@ bool Bank::AdminVerifyAccount(std::string_view name) noexcept
     return (name == admin_account);
 }
 
-BankResponse Bank::AddUser(const std::string &name, std::string &&init_pass) noexcept
+BankResponse Bank::AddUser(std::string &&name, std::string &&init_pass) noexcept
 {
     if (!ValidUsrname(name))
     {
