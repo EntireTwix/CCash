@@ -64,7 +64,7 @@ int main(int argc, char **argv)
 {
     bank.AddUser("twix", "root");
     bank.AddUser("jolly", "root");
-    bank.admin_pass = "root";
+    bank.admin_account = "twix";
     Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser(""));
     Op_a(bank.AdminAddUser("", 0, ""), "admin add user: ", 1000000, bank.DelUser(""));
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
@@ -75,7 +75,7 @@ int main(int argc, char **argv)
     bank.DelUser("");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
-    Op(bank.AdminVerifyPass("root"), "admin verify pass: ", 1000000);
+    Op(bank.AdminVerifyAccount("twix"), "admin verify pass: ", 1000000);
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
