@@ -110,7 +110,9 @@ int main(int argc, char **argv)
         .registerFilter(user_filter)
         .registerFilter(admin_filter)
         .registerController(API)
+#if MULTI_THREADED
         .setThreadNum(get_nprocs())
+#endif
         .run();
 
     return 0;
