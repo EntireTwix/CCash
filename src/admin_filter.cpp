@@ -21,9 +21,9 @@ void AdminFilter::doFilter(const HttpRequestPtr &req,
             if (middle != std::string::npos)
             {
                 std::string_view username = results_view.substr(0, middle);
-                std::string_view password = results_view.substr(middle + 1);
                 if (bank.AdminVerifyAccount(username))
                 {
+                    std::string_view password = results_view.substr(middle + 1);
                     if (bank.VerifyPassword(username, password))
                     {
                         fccb();
