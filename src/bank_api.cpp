@@ -120,7 +120,7 @@ void api::Contains(req_args, const std::string &name) const
     resp->setStatusCode(k200OK);
     callback(resp);
 }
-void api::AdminVerifyPass(req_args)
+void api::AdminVerifyAccount(req_args)
 {
     RESPOND_TRUE //filter handles admin creds
 }

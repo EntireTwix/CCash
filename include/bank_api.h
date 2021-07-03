@@ -27,7 +27,7 @@ public:
     void Ping(req_args) const;
     void Close(req_args) const;
     void Contains(req_args, const std::string &name) const;
-    void AdminVerifyPass(req_args);
+    void AdminVerifyAccount(req_args);
 
     void AddUser(req_args) const;
     void AdminAddUser(req_args) const;
@@ -54,7 +54,7 @@ public:
     METHOD_ADD(api::Ping, "/v1/ping", Get, Options);
     METHOD_ADD(api::Close, "/v1/admin/shutdown", Post, Options, "AdminFilter");
     METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options);
-    METHOD_ADD(api::AdminVerifyPass, "/v1/admin/verify_password", Get, Options, "AdminFilter");
+    METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Get, Options, "AdminFilter");
 
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                           //expects ["name"](string) ["pass"](string)

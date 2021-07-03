@@ -23,18 +23,14 @@ bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     uint64_t res = 0;
-    users.if_contains(name, [&res](const User &u) {
-        res = u.balance + 1;
-    });
+    users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });
     return res ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
 #if MAX_LOG_SIZE > 0
-    if (!users.modify_if(name, [&res](User &u) {
-            res = {k200OK, u.log.GetLog()};
-        }))
+    if (!users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLog()}; }))
     {
         return BankResponse(k404NotFound, "User not found");
     }
@@ -91,7 +87,8 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
         users.modify_if(b_name, [&temp, amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(std::move(temp)); }); //about 40% of this function's cost
+            b.log.AddTrans(std::move(temp));
+        }); //about 40% of this function's cost
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
 #endif
@@ -102,29 +99,23 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
     return state;
 }
-bool Bank::VerifyPassword(const std::string &name, const std::string &attempt) const noexcept
+bool Bank::VerifyPassword(std::string_view name, std::string_view attempt) const noexcept
 {
     bool res = false;
-    users.if_contains(name, [&res, &attempt](const User &u) {
-        res = (u.password == xxHashStringGen{}(attempt));
-    });
+    users.if_contains(std::string(name), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
 
 void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
 {
-    users.modify_if(name, [&new_pass](User &u) {
-        u.password = xxHashStringGen{}(new_pass);
-    });
+    users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 #if CONSERVATIVE_DISK_SAVE
     save_flag.SetChangesOn();
 #endif
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (users.modify_if(name, [amount](User &u) {
-            u.balance = amount;
-        }))
+    if (users.modify_if(name, [amount](User &u) { u.balance = amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
         save_flag.SetChangesOn();
@@ -140,9 +131,9 @@ bool Bank::Contains(const std::string &name) const noexcept
 {
     return users.contains(name);
 }
-bool Bank::AdminVerifyPass(const std::string &attempt) noexcept
+bool Bank::AdminVerifyAccount(std::string_view name) noexcept
 {
-    return (admin_pass == attempt);
+    return (name == admin_account);
 }
 
 BankResponse Bank::AddUser(const std::string &name, std::string &&init_pass) noexcept
@@ -187,9 +178,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         return BankResponse(k404NotFound, "User not found");
     }
 #if RETURN_ON_DEL
-    users.modify_if(return_account, [&bal](User &u) {
-        u.balance += bal;
-    });
+    users.modify_if(return_account, [&bal](User &u) { u.balance += bal; });
 #endif
     return BankResponse(k200OK, "User deleted!");
 }
@@ -207,9 +196,7 @@ void Bank::Save()
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&temp, &u](const User &u_val) {
-                    temp[u.first] = u_val.Serialize();
-                });
+                users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first.data()] = u_val.Serialize(); });
             }
         }
         if (temp.isNull())

@@ -44,7 +44,7 @@ int main(int argc, char **argv)
 
     if (argc != 3)
     {
-        std::cerr << "Usage: sudo ./bank <admin password> <saving frequency in minutes>\n";
+        std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes>\n";
         return 0;
     }
     if (geteuid() != 0)
@@ -65,30 +65,29 @@ int main(int argc, char **argv)
 
     sigaction(SIGINT, &sigIntHandler, NULL);
 
-    //Admin Password
-    bank.admin_pass = argv[1];
+    //Admin account
+    bank.admin_account = argv[1];
 
     //Auto Saving
     const unsigned long saving_freq = std::stoul(std::string(argv[2]));
     if (saving_freq) //if saving frequency is 0 then auto saving is turned off
     {
-        std::thread([saving_freq]()
-                    {
-                        while (1)
-                        {
-                            std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                            std::cout << "Saving " << std::time(0) << '\n';
-                            if (bank.GetChangeState())
-                            {
-                                std::cout << "    to disk...\n";
-                                bank.Save();
-                            }
-                            else
-                            {
-                                std::cout << "    no changes...\n";
-                            }
-                        }
-                    })
+        std::thread([saving_freq]() {
+            while (1)
+            {
+                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                std::cout << "Saving " << std::time(0) << '\n';
+                if (bank.GetChangeState())
+                {
+                    std::cout << "    to disk...\n";
+                    bank.Save();
+                }
+                else
+                {
+                    std::cout << "    no changes...\n";
+                }
+            }
+        })
             .detach();
     }
 
@@ -97,8 +96,7 @@ int main(int argc, char **argv)
     auto admin_filter = std::make_shared<AdminFilter>(bank);
 
     app().registerPostHandlingAdvice(
-        [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp)
-        {
+        [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
             resp->addHeader("Access-Control-Allow-Origin", "*"); //CORS
         });
     app()
