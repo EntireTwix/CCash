@@ -40,6 +40,36 @@ else()
 set(DROGON_CONFIG "\"../config.json\"")
 endif()
 
+if(MAX_LOG_SIZE)
+set(MAX_LOG_SIZE_VAL ${MAX_LOG_SIZE})
+else()
+set(MAX_LOG_SIZE_VAL 100)
+endif()
+
+if(PRE_LOG_SIZE)
+set(PRE_LOG_SIZE_VAL ${PRE_LOG_SIZE})
+else()
+set(PRE_LOG_SIZE_VAL 10)
+endif()
+
+if(CONSERVATIVE_DISK_SAVE)
+set(CONSERVATIVE_DISK_SAVE_VAL ${CONSERVATIVE_DISK_SAVE})
+else()
+set(CONSERVATIVE_DISK_SAVE_VAL true)
+endif()
+
+if(API_VERSION)
+set(API_VERSION_VAL ${API_VERSION})
+else()
+set(API_VERSION_VAL true)
+endif()
+
+if(MULTI_THREADED)
+set(MULTI_THREADED_VAL ${MULTI_THREADED})
+else()
+set(MULTI_THREADED_VAL true)
+endif()
+
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
