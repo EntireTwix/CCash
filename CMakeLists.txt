@@ -41,7 +41,7 @@ else()
 set(DROGON_CONFIG "\"config.json\"")
 endif()
 
-configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/ccash_config.hpp)
+configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party)
