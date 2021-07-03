@@ -60,7 +60,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     BankResponse state;
     std::shared_lock<std::shared_mutex> lock{send_funds_l}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    Transaction temp(std::string(a_name), std::string(b_name), amount);
+    Transaction temp(a_name, b_name, amount);
     if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
 #else
     if (!users.modify_if(a_name, [&state, amount](User &a) {
@@ -120,11 +120,11 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 #if CONSERVATIVE_DISK_SAVE
         save_flag.SetChangesOn();
 #endif
-        return BankResponse(k200OK, "Balance set!");
+        return {k200OK, "Balance set!"};
     }
     else
     {
-        return BankResponse(k404NotFound, "User not found");
+        return {k404NotFound, "User not found"};
     }
 }
 bool Bank::Contains(const std::string &name) const noexcept
@@ -140,7 +140,7 @@ BankResponse Bank::AddUser(std::string &&name, std::string &&init_pass) noexcept
 {
     if (!ValidUsrname(name))
     {
-        return BankResponse(k400BadRequest, "Invalid Name, breaks size and/or character restrictions");
+        return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
     }
 
     std::shared_lock<std::shared_mutex> lock{size_l};
@@ -153,7 +153,7 @@ BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::stri
 {
     if (!ValidUsrname(name))
     {
-        return BankResponse(k400BadRequest, "Invalid Name, breaks size and/or character restrictions");
+        return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
     }
 
     std::shared_lock<std::shared_mutex> lock{size_l};
