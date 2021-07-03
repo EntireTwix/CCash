@@ -124,6 +124,13 @@ void api::AdminVerifyAccount(req_args)
 {
     RESPOND_TRUE //filter handles admin creds
 }
+void api::ApiVersion(req_args) const
+{
+    auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
+    resp->setStatusCode(k200OK);
+    resp->setExpiredTime(0); //cached forever
+    callback(resp);
+}
 
 void api::AddUser(req_args) const
 {

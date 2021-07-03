@@ -28,6 +28,7 @@ public:
     void Close(req_args) const;
     void Contains(req_args, const std::string &name) const;
     void AdminVerifyAccount(req_args);
+    void ApiVersion(req_args) const;
 
     void AddUser(req_args) const;
     void AdminAddUser(req_args) const;
@@ -66,6 +67,7 @@ public:
     METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "AdminFilter"); //expects ["name"](string)
 #endif
+    METHOD_ADD(api::ApiVersion, "/version");
 
     METHOD_LIST_END
 };
