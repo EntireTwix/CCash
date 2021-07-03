@@ -2,7 +2,7 @@
 #include <json/json.h> // to be removed later
 #include <array>
 #include <algorithm>
-#include "consts.hpp"
+#include "ccash_config.hpp"
 #include "change_flag.h"
 #include "transaction.h"
 

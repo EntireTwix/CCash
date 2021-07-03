@@ -29,6 +29,20 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/xxhash_str.cpp
 )
 
+if(USER_SAVE_LOC)
+set(USER_SAVE ${USER_SAVE_LOC})
+else()
+set(USER_SAVE "\"../users.json\"")
+endif()
+
+if(DROGON_CONFIG_LOC)
+set(DROGON_CONFIG ${DROGON_CONFIG_LOC})
+else()
+set(DROGON_CONFIG "\"../config.json\"")
+endif()
+
+configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/ccash_config.hpp)
+
 target_include_directories(${PROJECT_NAME} PUBLIC include)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party/drogon/lib/inc)
