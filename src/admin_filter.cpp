@@ -6,7 +6,7 @@ void AdminFilter::doFilter(const HttpRequestPtr &req,
                            FilterCallback &&fcb,
                            FilterChainCallback &&fccb)
 {
-    const std::string_view &auth_header = req->getHeader("Authorization");
+    std::string_view auth_header = req->getHeader("Authorization");
     if (auth_header.size() > 6)
     {
         if (auth_header.substr(0, 6) == "Basic ")
