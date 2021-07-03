@@ -32,13 +32,13 @@ target_sources(${PROJECT_NAME} PRIVATE
 if(USER_SAVE_LOC)
 set(USER_SAVE ${USER_SAVE_LOC})
 else()
-set(USER_SAVE "\"../users.json\"")
+set(USER_SAVE "\"users.json\"")
 endif()
 
 if(DROGON_CONFIG_LOC)
 set(DROGON_CONFIG ${DROGON_CONFIG_LOC})
 else()
-set(DROGON_CONFIG "\"../config.json\"")
+set(DROGON_CONFIG "\"config.json\"")
 endif()
 
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/ccash_config.hpp)
