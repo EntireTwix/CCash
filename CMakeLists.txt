@@ -70,6 +70,14 @@ else()
 set(MULTI_THREADED_VAL true)
 endif()
 
+if(RETURN_ON_DEL_NAME)
+set(RETURN_ON_DEL_VAL true)
+set(RETURN_ON_DEL_NAME_VAL ${RETURN_ON_DEL_NAME})
+else()
+set(RETURN_ON_DEL_VAL false)
+set(RETURN_ON_DEL_NAME_VAL "\"\"")
+endif()
+
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
