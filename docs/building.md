@@ -18,7 +18,9 @@ Docker Package can be found [here](https://github.com/EntireTwix/CCash/packages/
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
 cd CCash
-AVX2_CFLAGS=-mavx2 SSSE3_CFLAGS=-mssse3 SSE41_CFLAGS=-msse4.1 SSE42_CFLAGS=-msse4.2 AVX_CFLAGS=-mavx make third_party/base64/lib/libbase64.o
+cd third_party/base64
+AVX2_CFLAGS=-mavx2 SSSE3_CFLAGS=-mssse3 SSE41_CFLAGS=-msse4.1 SSE42_CFLAGS=-msse4.2 AVX_CFLAGS=-mavx make lib/libbase64.o
+cd ..
 mkdir build
 cd build
 ```
@@ -35,17 +37,18 @@ there are multiple flags responsible configuring CCash:
 | API_VERSION            | ${CURRENT_VERSION} | indicates which API version is being used, often backwards compatible                                                                                   | `N/A`                                | `N/A`                                                         |
 | MULTI_THREADED         |       `true`       | when `true` the program is compiled to utilize `n` threads which corresponds to how many Cores your CPU has, plus 1 for saving                          | speed                                | memory lock overhead may be in vain on a single core machines |
 | RETURN_ON_DEL_NAME     |       `N/A`        | when defined, return on delete will be toggled and any accounts deleted will send their funds to the defined account, this prevent currency destruction | prevents destruction of currency     | deleting accounts is made slower                              |
-running simply 
+
+simply running 
 ```
 cmake ..
 ```
-
 sets these flags to their defaults, an example of setting a flag would be 
 ```
-cmake -DMULTI_THREADING=false
+cmake -DMULTI_THREADING=false ..
 ```
 
 ### Lastly
 ```
+cmake <flags of your choice or none> ..
 make -j<threads>
 ```
