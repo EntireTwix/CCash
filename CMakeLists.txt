@@ -61,7 +61,7 @@ endif()
 if(API_VERSION)
 set(API_VERSION_VAL ${API_VERSION})
 else()
-set(API_VERSION_VAL true)
+set(API_VERSION_VAL 1)
 endif()
 
 if(MULTI_THREADED)
