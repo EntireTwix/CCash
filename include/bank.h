@@ -6,7 +6,7 @@
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
 #include "user.h"
 
-#if CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0
+#if (CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0) && !MULTI_THREADED
 #include "change_flag.h"
 #endif
 
@@ -14,6 +14,7 @@ using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {
+#if MULTI_THREADED
     phmap::parallel_flat_hash_map<
         std::string, User,
         xxHashStringGen,
@@ -22,10 +23,17 @@ class Bank
         4UL,
         std::mutex>
         users;
+#else
+    phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> users;
+#endif
 
 private:
 #if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
     ChangeFlag save_flag;
+#else
+    bool save_flag = false;
+#endif
 #endif
 
     /**

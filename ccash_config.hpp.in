@@ -37,3 +37,5 @@ version 3 will work
 etc
 */
 #define API_VERSION 1
+
+#define MULTI_THREADED true

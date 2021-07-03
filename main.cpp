@@ -35,7 +35,13 @@ int main(int argc, char **argv)
         << "\nSSE 3    : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
         << "\nSSE 4.1  : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
         << "\nSSE 4.2  : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
+#if MULTI_THREADED
         << "\n\nThreads  : " << get_nprocs() + 1
+        << "\nMulti thread : disabled"
+#else
+        << "\n\nThreads  : " << 2
+        << "\nMulti thread : disabled"
+#endif
         << std::endl; //flushing before EventLoop
 
     static_assert(bool(MAX_LOG_SIZE) == bool(PRE_LOG_SIZE), "You must either utilize both or neither logging variables.\n");

@@ -18,9 +18,17 @@ __attribute__((always_inline)) inline bool ValidUsrname(const std::string &name)
 
 using namespace drogon;
 
-bool Bank::GetChangeState() const noexcept { return save_flag.GetChangeState(); }
+bool Bank::GetChangeState() const noexcept
+{
+#if MULTI_THREADED
+    return save_flag.GetChangeState();
+#else
+    return save_flag;
+#endif
+}
 
-BankResponse Bank::GetBal(const std::string &name) const noexcept
+BankResponse
+Bank::GetBal(const std::string &name) const noexcept
 {
     uint64_t res = 0;
     users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });
@@ -58,7 +66,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse state;
+#if MULTI_THREADED
     std::shared_lock<std::shared_mutex> lock{send_funds_l}; //about 10% of this function's cost
+#endif
 #if MAX_LOG_SIZE > 0
     Transaction temp(a_name, b_name, amount);
     if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
@@ -94,7 +104,11 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #endif
 
 #if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
         save_flag.SetChangesOn(); //about 5% of this function's cost
+#else
+        save_flag = true;
+#endif
 #endif
     }
     return state;
@@ -110,7 +124,11 @@ void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexc
 {
     users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 #if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
     save_flag.SetChangesOn();
+#else
+    save_flag = true;
+#endif
 #endif
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
@@ -118,7 +136,11 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
     if (users.modify_if(name, [amount](User &u) { u.balance = amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
         save_flag.SetChangesOn();
+#else
+        save_flag = true;
+#endif
 #endif
         return {k200OK, "Balance set!"};
     }
@@ -142,8 +164,9 @@ BankResponse Bank::AddUser(std::string &&name, std::string &&init_pass) noexcept
     {
         return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
     }
-
+#if MULTI_THREADED
     std::shared_lock<std::shared_mutex> lock{size_l};
+#endif
     return (users.try_emplace_l(
                std::move(name), [](User &) {}, std::move(init_pass)))
                ? BankResponse(k200OK, "User added!")
@@ -155,8 +178,9 @@ BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::stri
     {
         return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
     }
-
+#if MULTI_THREADED
     std::shared_lock<std::shared_mutex> lock{size_l};
+#endif
     return (users.try_emplace_l(
                std::move(name), [](User &) {}, init_bal, std::move(init_pass)))
                ? BankResponse(k200OK, "User added!")
@@ -164,7 +188,9 @@ BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::stri
 }
 BankResponse Bank::DelUser(const std::string &name) noexcept
 {
+#if MULTI_THREADED
     std::shared_lock<std::shared_mutex> lock{size_l};
+#endif
 #if RETURN_ON_DEL
     uint32_t bal;
     if (users.erase_if(name, [this, &bal, &name](User &u) {
@@ -185,14 +211,16 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 void Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE
-    if (save_flag.GetChangeState())
+    if (GetChangeState())
     {
 #endif
         Json::Value temp;
 
         //loading info into json temp
         {
+#if MULTI_THREADED
             std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_l, send_funds_l};
+#endif
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
@@ -212,7 +240,11 @@ void Bank::Save()
             user_save.close();
         }
 #if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
         save_flag.SetChangesOff();
+#else
+        save_flag = true;
+#endif
     }
 #endif
 }
