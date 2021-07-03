@@ -29,18 +29,18 @@ void SaveSig(int s)
 int main(int argc, char **argv)
 {
     std::cout
-        << "\nAVX      : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
-        << "\nAVX 2    : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
-        << "\nSSE 2    : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
-        << "\nSSE 3    : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
-        << "\nSSE 4.1  : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
-        << "\nSSE 4.2  : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
+        << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
+        << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
+        << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
+        << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
+        << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
+        << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
 #if MULTI_THREADED
-        << "\n\nThreads  : " << get_nprocs() + 1
-        << "\nMulti thread : disabled"
+        << "\n\nThreads         : " << get_nprocs() + 1
+        << "\nMulti threading : enabled"
 #else
-        << "\n\nThreads  : " << 2
-        << "\nMulti thread : disabled"
+        << "\n\nThreads         : " << 2
+        << "\nMulti threading : disabled"
 #endif
         << std::endl; //flushing before EventLoop
 
