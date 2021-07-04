@@ -1,6 +1,6 @@
 * [problem/solution](docs/idea.md)
-* [contributors](docs/contributors.md)
-* connect services
+* [contributors](https://github.com/EntireTwix/CCash/graphs/contributors)
+* connected services
   * [existing services](docs/connected_services/existing_services.md)
   * how to contribute
     * [explanation](docs/connected_services/how_to/explanation.md)
