@@ -8,12 +8,14 @@
     const auto r = R;                                                             \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(std::move(r.second))); \
     resp->setStatusCode(r.first);                                                 \
+    resp->addHeader("Access-Control-Allow-Origin", "*");                          \
     callback(resp);
 
 #define RESPOND_TRUE                                               \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(true)); \
     resp->setStatusCode(k200OK);                                   \
     resp->setExpiredTime(0);                                       \
+    resp->addHeader("Access-Control-Allow-Origin", "*");           \
     callback(resp);
 
 #define NAME_PARAM req->getBody().data()
@@ -60,6 +62,7 @@ void api::GetLog(req_args)
     {
         auto resp = HttpResponse::newHttpJsonResponse("Logs are Disabled");
         resp->setStatusCode(k404NotFound);
+        resp->addHeader("Access-Control-Allow-Origin", "*");
         resp->setExpiredTime(0); //cached forever
         callback(resp);
     }
@@ -98,6 +101,7 @@ void api::Help(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody(""); //will be filled in with docs
+    resp->addHeader("Access-Control-Allow-Origin", "*");
     resp->setExpiredTime(0);
     callback(resp);
 }
@@ -105,6 +109,7 @@ void api::Ping(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody("pong");
+    resp->addHeader("Access-Control-Allow-Origin", "*");
     resp->setExpiredTime(0);
     callback(resp);
 }
@@ -118,6 +123,7 @@ void api::Contains(req_args, const std::string &name) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
     resp->setStatusCode(k200OK);
+    resp->addHeader("Access-Control-Allow-Origin", "*");
     callback(resp);
 }
 void api::AdminVerifyAccount(req_args)
@@ -128,6 +134,7 @@ void api::ApiVersion(req_args) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
     resp->setStatusCode(k200OK);
+    resp->addHeader("Access-Control-Allow-Origin", "*");
     resp->setExpiredTime(0); //cached forever
     callback(resp);
 }
