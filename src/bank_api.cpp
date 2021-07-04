@@ -49,11 +49,11 @@ api::api(Bank &b) noexcept : bank(b) {}
 #if API_VERSION >= 1
 
 //Usage
-void api::GetBal(req_args, const std::string &name) const noexcept
+void api::GetBal(req_args, const std::string &name) const
 {
     RESPONSE_PARSE(bank.GetBal(name));
 }
-void api::GetLog(req_args) noexcept
+void api::GetLog(req_args)
 {
     if constexpr (MAX_LOG_SIZE > 0)
     {
@@ -73,7 +73,7 @@ void api::SendFunds(req_args) const
     GEN_BODY
     RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["to"].asCString(), body["amount"].asUInt()));
 }
-void api::VerifyPassword(req_args) const noexcept { RESPOND_TRUE }
+void api::VerifyPassword(req_args) const { RESPOND_TRUE }
 
 //Meta Usage
 void api::ChangePassword(req_args) const
@@ -95,7 +95,7 @@ void api::SetBal(req_args) const
 }
 
 //System Usage
-void api::Help(req_args) const noexcept
+void api::Help(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody(""); //will be filled in with docs
@@ -103,7 +103,7 @@ void api::Help(req_args) const noexcept
     CACHE_FOREVER;
     callback(resp);
 }
-void api::Ping(req_args) const noexcept
+void api::Ping(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody("pong");
@@ -111,24 +111,24 @@ void api::Ping(req_args) const noexcept
     CACHE_FOREVER;
     callback(resp);
 }
-void api::Close(req_args) const noexcept
+void api::Close(req_args) const
 {
     bank.Save();
     app().quit();
     RESPOND_TRUE //filter handles admin creds
 }
-void api::Contains(req_args, const std::string &name) const noexcept
+void api::Contains(req_args, const std::string &name) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
     resp->setStatusCode(k200OK);
     CORS;
     callback(resp);
 }
-void api::AdminVerifyAccount(req_args) const noexcept
+void api::AdminVerifyAccount(req_args) const
 {
     RESPOND_TRUE //filter handles admin creds
 }
-void api::ApiVersion(req_args) const noexcept
+void api::ApiVersion(req_args) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
     resp->setStatusCode(k200OK);
