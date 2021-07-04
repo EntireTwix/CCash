@@ -66,6 +66,7 @@ int main(int argc, char **argv)
     bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
     Op_a(bank.AddUser("", 0, ""), "add user: ", 1000000, bank.DelUser(""));
+    Op(bank.AddBal("twix"), 1, "give bal: ", 1000000);
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
     Op(bank.SendFunds("twix", "twix", 1), "invalid send funds: ", 1000000);
