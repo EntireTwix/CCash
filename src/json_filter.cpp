@@ -6,7 +6,8 @@ void JsonFilter::doFilter(const HttpRequestPtr &req,
                           FilterCallback &&fcb,
                           FilterChainCallback &&fccb)
 {
-    if (req->getHeader("Content-Type") == "application/json" && req->getHeader("Accept") == "application/json")
+    std::string_view content_type = req->getHeader("Content-Type");
+    if ((content_type == "application/json" || content_type == "*/*") && req->getHeader("Accept") == "application/json") //probably will need to change to contains() type function rather then equality check
     {
         fccb();
         return;
