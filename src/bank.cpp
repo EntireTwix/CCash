@@ -158,31 +158,7 @@ bool Bank::AdminVerifyAccount(std::string_view name) noexcept
     return (name == admin_account);
 }
 
-BankResponse Bank::AddUser(std::string &&name, std::string &&init_pass) noexcept
-{
-    if (!ValidUsrname(name))
-    {
-        return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
-    }
-    std::shared_lock<std::shared_mutex> lock{size_l};
-    if (users.try_emplace_l(
-            std::move(name), [](User &) {}, std::move(init_pass)))
-    {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
-        return {k200OK, "User added!"};
-    }
-    else
-    {
-        return {k409Conflict, "User already exists"};
-    }
-}
-BankResponse Bank::AdminAddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
+BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
     if (!ValidUsrname(name))
     {
