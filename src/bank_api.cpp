@@ -95,6 +95,11 @@ void api::SetBal(req_args) const
     GEN_BODY
     RESPONSE_PARSE(bank.SetBal(body["name"].asCString(), body["amount"].asUInt()));
 }
+void api::AddBal(req_args) const
+{
+    GEN_BODY
+    RESPONSE_PARSE(bank.AddBal(body["name"].asCString(), body["amount"].asUInt()));
+}
 
 //System Usage
 void api::Help(req_args) const

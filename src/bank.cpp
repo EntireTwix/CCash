@@ -149,6 +149,24 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         return {k404NotFound, "User not found"};
     }
 }
+BankResponse Bank::AddBal(const std::string &name, uint32_t amount) noexcept
+{
+    if (users.modify_if(name, [amount](User &u) { u.balance += amount; }))
+    {
+#if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
+        save_flag.SetChangesOn();
+#else
+        save_flag = true;
+#endif
+#endif
+        return {k200OK, "Balance set!"};
+    }
+    else
+    {
+        return {k404NotFound, "User not found"};
+    }
+}
 bool Bank::Contains(const std::string &name) const noexcept
 {
     return users.contains(name);
