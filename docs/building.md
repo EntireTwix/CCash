@@ -37,6 +37,7 @@ there are multiple flags responsible configuring CCash:
 | MULTI_THREADED         |      `true`      | when `true` the program is compiled to utilize `n` threads which corresponds to how many Cores your CPU has, plus 1 for saving                          | speed                                | memory lock overhead may be in vain on single core machines |
 | RETURN_ON_DEL_NAME     |      `N/A`       | when defined, return on delete will be toggled and any accounts deleted will send their funds to the defined account, this prevent currency destruction | prevents destruction of currency     | deleting accounts is made slower                            |
 
+
 simply running 
 ```
 cmake ..
@@ -45,6 +46,7 @@ sets these flags to their defaults, an example of setting a flag would be
 ```
 cmake -DMULTI_THREADING=false ..
 ```
+with `-D`
 
 ### Lastly
 ```
