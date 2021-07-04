@@ -17,6 +17,7 @@ add_executable(${PROJECT_NAME} main.cpp )
 add_subdirectory(third_party/xxHash/cmake_unofficial third_party/xxHash/build EXCLUDE_FROM_ALL)
 
 target_sources(${PROJECT_NAME} PRIVATE
+    src/json_filter.cpp
     src/admin_filter.cpp
     src/bank_api.cpp
     src/bank.cpp
