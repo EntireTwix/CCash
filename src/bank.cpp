@@ -24,7 +24,7 @@ size_t Bank::NumOfUsers() const noexcept { return users.size(); }
 //NOT THREAD SAFE
 uint64_t Bank::NumOfLogs() const noexcept
 {
-    uint64_t res;
+    uint64_t res = 0;
     for (const auto &u : users)
     {
         res += u.second.log.data.size();
