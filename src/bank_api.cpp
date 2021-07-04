@@ -1,5 +1,11 @@
 #include "bank_api.h"
 
+// const auto data(R);                                                             \
+    // auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON); \
+    // res->setJsonObject(JsonCast(std::move(data.second)));                           \
+    // doResponseCreateAdvices(res);                                                   \
+    // callback(res);
+
 #define CACHE_FOREVER resp->setExpiredTime(0);
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
@@ -21,6 +27,7 @@
 template <typename T>
 constexpr Json::Value JsonCast(T &&val)
 {
+
     if constexpr (std::is_same_v<T, int_fast8_t>)
     {
         return (int)val; //becuase of json lib interpreting 67 as 'A' for example

@@ -1,6 +1,5 @@
 #pragma once
 #include <drogon/HttpController.h>
-#include <drogon/lib/src/HttpResponseImpl.h>
 #include "json_filter.h"
 #include "admin_filter.h"
 #include "user_filter.h"
@@ -49,7 +48,7 @@ public:
     METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options);
 #endif
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "JsonFilter", "UserFilter"); //expects ["to"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Get, Options, "UserFilter");
+    METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter");
 
     //Meta Usage
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter", "UserFilter");       //expects ["new_pass"](string)
@@ -61,7 +60,7 @@ public:
     METHOD_ADD(api::Ping, "/v1/ping", Get, Options);
     METHOD_ADD(api::Close, "/v1/admin/shutdown", Post, Options, "AdminFilter");
     METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options);
-    METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Get, Options, "AdminFilter");
+    METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Post, Options, "AdminFilter");
 
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options, "JsonFilter");                           //expects ["name"](string) ["pass"](string)
@@ -69,7 +68,7 @@ public:
     METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "JsonFilter", "AdminFilter"); //expects ["name"](string)
 #endif
-    METHOD_ADD(api::ApiVersion, "/version");
+    METHOD_ADD(api::ApiVersion, "/version", Get, Options);
 
     METHOD_LIST_END
 };
