@@ -36,17 +36,7 @@ private:
 #endif
 #endif
 
-    /**
-     * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
-     * 
-     */
-    std::shared_mutex size_l;
-
-    /**
-     * @brief send_funds_l should be grabbed if balances are being MODIFIED (shared) or if an operation needs to READ without the intermediary states that sendfunds has (unique)
-     * 
-     */
-    std::shared_mutex send_funds_l;
+    std::shared_mutex save_lock;
 
 public:
     std::string admin_account;

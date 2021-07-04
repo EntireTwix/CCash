@@ -68,7 +68,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse state;
-    std::shared_lock<std::shared_mutex> lock{send_funds_l}; //about 10% of this function's cost
+    std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
     Transaction temp(a_name, b_name, amount);
     if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
@@ -164,7 +164,7 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
     {
         return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
     }
-    std::shared_lock<std::shared_mutex> lock{size_l};
+    std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.try_emplace_l(
             std::move(name), [](User &) {}, init_bal, std::move(init_pass)))
     {
@@ -184,7 +184,7 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
 }
 BankResponse Bank::DelUser(const std::string &name) noexcept
 {
-    std::shared_lock<std::shared_mutex> lock{size_l};
+    std::shared_lock<std::shared_mutex> lock{save_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
     if (users.if_contains(name, [this, &bal](const User &u) {
@@ -223,7 +223,7 @@ void Bank::Save()
 
         //loading info into json temp
         {
-            std::scoped_lock<std::shared_mutex, std::shared_mutex> lock{size_l, send_funds_l};
+            std::unique_lock<std::shared_mutex> lock{save_lock};
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
