@@ -121,7 +121,6 @@ void api::Close(req_args) const
 void api::Contains(req_args, const std::string &name) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
-    resp->setStatusCode(k200OK);
     callback(resp);
 }
 void api::AdminVerifyAccount(req_args) const
@@ -131,7 +130,6 @@ void api::AdminVerifyAccount(req_args) const
 void api::ApiVersion(req_args) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
-    resp->setStatusCode(k200OK);
     CACHE_FOREVER;
     callback(resp);
 }
