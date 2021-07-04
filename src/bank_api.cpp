@@ -9,14 +9,12 @@
     const auto r(R);                                                              \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(std::move(r.second))); \
     resp->setStatusCode(r.first);                                                 \
-    CORS;                                                                         \
     callback(resp);
 
 #define RESPOND_TRUE                                               \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(true)); \
     resp->setStatusCode(k200OK);                                   \
     CACHE_FOREVER;                                                 \
-    CORS;                                                          \
     callback(resp);
 
 #define NAME_PARAM req->getBody().data()
@@ -61,7 +59,6 @@ void api::GetLog(req_args)
     {
         auto resp = HttpResponse::newHttpJsonResponse("Logs are Disabled");
         resp->setStatusCode(k404NotFound);
-        CORS;
         CACHE_FOREVER;
         callback(resp);
     }
