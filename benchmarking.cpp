@@ -62,17 +62,16 @@ static Bank bank;
 
 int main(int argc, char **argv)
 {
-    bank.AddUser("twix", "root");
-    bank.AddUser("jolly", "root");
+    bank.AddUser("twix", 0, "root");
+    bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
-    Op_a(bank.AddUser("", ""), "add user: ", 1000000, bank.DelUser(""));
-    Op_a(bank.AdminAddUser("", 0, ""), "admin add user: ", 1000000, bank.DelUser(""));
+    Op_a(bank.AddUser("", 0, ""), "add user: ", 1000000, bank.DelUser(""));
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
     Op(bank.SendFunds("twix", "twix", 1), "invalid send funds: ", 1000000);
 
-    bank.AddUser("", "");
-    Op_a(bank.DelUser(""), "del user: ", 1000000, bank.AddUser("", ""));
+    bank.AddUser("", 0, "");
+    Op_a(bank.DelUser(""), "del user: ", 1000000, bank.AddUser("", 0, ""));
     bank.DelUser("");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
