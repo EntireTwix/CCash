@@ -28,21 +28,6 @@ void SaveSig(int s)
 
 int main(int argc, char **argv)
 {
-    std::cout
-        << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
-        << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
-        << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
-        << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
-        << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
-        << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
-#if MULTI_THREADED
-        << "\n\nThreads         : " << get_nprocs() + 1
-        << "\nMulti threading : enabled"
-#else
-        << "\n\nThreads         : " << 2
-        << "\nMulti threading : disabled"
-#endif
-        << std::endl; //flushing before EventLoop
 
     static_assert(bool(MAX_LOG_SIZE) == bool(PRE_LOG_SIZE), "You must either utilize both or neither logging variables.\n");
     static_assert(MAX_LOG_SIZE >= PRE_LOG_SIZE, "The maximum log size must be larger than or equal to the amount preallocated.\n");
@@ -58,9 +43,27 @@ int main(int argc, char **argv)
         std::cerr << "ERROR: CCash MUST be ran as root\n";
         return 0;
     }
+    std::cout
+        << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
+        << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
+        << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
+        << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
+        << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
+        << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
+#if MULTI_THREADED
+        << "\n\nThreads         : " << get_nprocs() + 1
+        << "\nMulti threading : enabled";
+#else
+        << "\n\nThreads         : " << 2
+        << "\nMulti threading : disabled";
+#endif
 
     //Loading users from users.json
     bank.Load();
+
+    std::cout << "\n\nLoaded " << bank.NumOfUsers() << " Users"
+              << "\nLoaded " << bank.NumOfLogs() << " Logs"
+              << std::endl; //flushing before EventLoop
 
     //Sig handling
     struct sigaction sigIntHandler;

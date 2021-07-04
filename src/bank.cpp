@@ -1,5 +1,7 @@
 #include "bank.h"
 
+using namespace drogon;
+
 __attribute__((always_inline)) inline bool ValidUsrname(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
@@ -16,7 +18,19 @@ __attribute__((always_inline)) inline bool ValidUsrname(const std::string &name)
     return true;
 }
 
-using namespace drogon;
+//NOT THREAD SAFE
+size_t Bank::NumOfUsers() const noexcept { return users.size(); }
+
+//NOT THREAD SAFE
+uint64_t Bank::NumOfLogs() const noexcept
+{
+    uint64_t res;
+    for (const auto &u : users)
+    {
+        res += u.second.log.data.size();
+    }
+    return res;
+}
 
 #if CONSERVATIVE_DISK_SAVE
 bool Bank::GetChangeState() const noexcept
@@ -29,8 +43,7 @@ bool Bank::GetChangeState() const noexcept
 }
 #endif
 
-BankResponse
-Bank::GetBal(const std::string &name) const noexcept
+BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     uint64_t res = 0;
     users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });

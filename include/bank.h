@@ -41,6 +41,9 @@ private:
 public:
     std::string admin_account;
 
+    size_t NumOfUsers() const noexcept;
+    uint64_t NumOfLogs() const noexcept;
+
 #if CONSERVATIVE_DISK_SAVE
     bool GetChangeState() const noexcept;
 #endif
