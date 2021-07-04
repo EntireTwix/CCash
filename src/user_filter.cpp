@@ -30,7 +30,7 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
             }
         }
     }
-    auto resp = HttpResponse::newHttpJsonResponse("Invalid Credentials");
+    const auto &resp = HttpResponse::newHttpJsonResponse("Invalid Credentials");
     resp->setStatusCode(k401Unauthorized);
     fcb(resp);
 }
