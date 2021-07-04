@@ -1,12 +1,14 @@
 * [problem/solution](docs/idea.md)
 * [contributors](https://github.com/EntireTwix/CCash/graphs/contributors)
 * connected services
-  * [existing services](docs/connected_services/existing_services.md)
   * how to contribute
     * [explanation](docs/connected_services/how_to/explanation.md)
 	* [language APIs](docs/connected_services/how_to/APIs.md)
 	* [API endpoints](docs/connected_services/how_to/endpoints.md) 
+  * [existing services](docs/connected_services/existing_services.md)
+* features
+  * [user side](docs/features/user_side.md)
+  * [implementation](docs/features/implementations.md)
 * [building](docs/building.md)
-* [features](docs/features.md)
 * [FAQ](docs/FAQ.md)
 * [Patreon](https://www.patreon.com/twoxx) if you wanna support this and/or future projects.
