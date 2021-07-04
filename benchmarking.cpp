@@ -82,7 +82,9 @@ int main(int argc, char **argv)
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
     Op(bank.GetLogs("twix"), "get logs: ", 10000);
     Op(bank.Save(), "saving: ", 1);
+#if CONSERVATIVE_DISK_SAVE
     Op(bank.GetChangeState(), "change flag: ", 10000);
+#endif
 
     //GetBal scalining test
     // std::default_random_engine generator;

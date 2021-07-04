@@ -51,7 +51,9 @@ private:
 public:
     std::string admin_account;
 
+#if CONSERVATIVE_DISK_SAVE
     bool GetChangeState() const noexcept;
+#endif
 
     BankResponse GetBal(const std::string &name) const noexcept;
     BankResponse GetLogs(const std::string &name) noexcept;
