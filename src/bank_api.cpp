@@ -144,7 +144,7 @@ void api::AdminAddUser(req_args) const
 void api::DelUser(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.DelUser(body["name"].asCString()))
+    RESPONSE_PARSE(bank.DelUser(NAME_PARAM))
 }
 void api::AdminDelUser(req_args) const
 {
