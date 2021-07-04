@@ -187,17 +187,18 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{size_l};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.erase_if(name, [this, &bal, &name](User &u) {
+    if (users.if_contains(name, [this, &bal](const User &u) {
             bal = u.balance;
-            return true;
         }))
-#else
-    if (users.erase(name))
-#endif
     {
-#if RETURN_ON_DEL
-        users.modify_if(return_account, [&bal](User &u) { u.balance += bal; });
+        users.modify_if(return_account, [ this, bal ](User & u))
+        {
+            u.balance += bal;
+        }
+    }
 #endif
+    if (users.erase(name))
+    {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
         save_flag.SetChangesOn();
