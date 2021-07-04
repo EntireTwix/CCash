@@ -1,8 +1,6 @@
 #include "bank_api.h"
 
 #define CACHE_FOREVER resp->setExpiredTime(0)
-
-#define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
@@ -99,7 +97,6 @@ void api::Help(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody(""); //will be filled in with docs
-    CORS;
     CACHE_FOREVER;
     callback(resp);
 }
@@ -107,7 +104,6 @@ void api::Ping(req_args) const
 {
     auto resp = HttpResponse::newHttpResponse();
     resp->setBody("pong");
-    CORS;
     CACHE_FOREVER;
     callback(resp);
 }
@@ -121,7 +117,6 @@ void api::Contains(req_args, const std::string &name) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
     resp->setStatusCode(k200OK);
-    CORS;
     callback(resp);
 }
 void api::AdminVerifyAccount(req_args) const
@@ -132,7 +127,6 @@ void api::ApiVersion(req_args) const
 {
     auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
     resp->setStatusCode(k200OK);
-    CORS;
     CACHE_FOREVER;
     callback(resp);
 }

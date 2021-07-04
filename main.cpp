@@ -100,7 +100,11 @@ int main(int argc, char **argv)
     auto API = std::make_shared<api>(bank);
     auto user_filter = std::make_shared<UserFilter>(bank);
     auto admin_filter = std::make_shared<AdminFilter>(bank);
-
+    auto accept_filter = std::make_shared<AcceptFilter>();
+    app().registerPostHandlingAdvice(
+        [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
+            resp->addHeader("Access-Control-Allow-Origin", "*"); //CORS
+        });
     app()
         .loadConfigFile(config_location)
         .registerFilter(user_filter)
