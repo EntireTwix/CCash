@@ -10,10 +10,8 @@ the currency model most Minecraft Servers adopt if any, is resource based, usual
 
 CCash solves these issues and adds a level of abstraction, the main philosophy of CCash is to have fast core operations that other services build on
 
-the CCash instance can be external to the minecraft server,
-<diagram>
-or on localhost
-<diagram2>
+the CCash instance can be external to the minecraft server or on localhost
+[!image](localhost_diagram.png)
 running it local to the minecraft server reduces latency for ComputerCraft connected services, fortunately CCash is sufficiently lightweight as to not impact performance on most setups.
 
 **DISCLAIMER: if you are to run it locally and want to use ComputerCraft with it, make sure to add `127.0.0.1` to ComputerCraft's config section `allowed_domains`**   
