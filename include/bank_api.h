@@ -24,6 +24,7 @@ public:
     void AdminChangePassword(req_args) const;
     void SetBal(req_args) const;
     void AddBal(req_args) const;
+    void SubBal(req_args) const;
 
     void Help(req_args) const;
     void Ping(req_args) const;
@@ -55,7 +56,8 @@ public:
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter", "UserFilter");       //expects ["new_pass"](string)
     METHOD_ADD(api::AdminChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter", "AdminFilter"); //expects ["name"](string) and ["new_pass"](string)
     METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "JsonFilter", "AdminFilter");                 //expects ["name"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::AddBal, "/v1/admin/give_balance", Post, Options, "JsonFilter", "AdminFilter");                 //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::AddBal, "/v1/admin/add_balance", Post, Options, "JsonFilter", "AdminFilter");                  //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::SubBal, "/v1/admin/sub_balance", Post, Options, "JsonFilter", "AdminFilter");                  //expects ["name"](string) and ["amount"](32 bits)
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);
