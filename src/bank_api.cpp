@@ -1,6 +1,6 @@
 #include "bank_api.h"
 
-#define CACHE_FOREVER resp->setExpiredTime(0)
+#define CACHE_FOREVER resp->setExpiredTime(0);
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
@@ -13,8 +13,7 @@
 
 #define RESPOND_TRUE                                               \
     auto resp = HttpResponse::newHttpJsonResponse(JsonCast(true)); \
-    resp->setStatusCode(k200OK);                                   \
-    CACHE_FOREVER;                                                 \
+    CACHE_FOREVER                                                  \
     callback(resp);
 
 #define NAME_PARAM req->getBody().data()
@@ -59,7 +58,7 @@ void api::GetLog(req_args)
     {
         auto resp = HttpResponse::newHttpJsonResponse("Logs are Disabled");
         resp->setStatusCode(k404NotFound);
-        CACHE_FOREVER;
+        CACHE_FOREVER
         callback(resp);
     }
 }
@@ -99,10 +98,7 @@ void api::Help(req_args) const
 }
 void api::Ping(req_args) const
 {
-    auto resp = HttpResponse::newHttpResponse();
-    resp->setBody("pong");
-    CACHE_FOREVER;
-    callback(resp);
+    RESPOND_TRUE
 }
 void api::Close(req_args) const
 {
