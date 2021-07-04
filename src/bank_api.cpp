@@ -1,12 +1,13 @@
 #include "bank_api.h"
 
-// const auto data(R);                                                             \
-    // auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON); \
-    // res->setJsonObject(JsonCast(std::move(data.second)));                           \
-    // doResponseCreateAdvices(res);                                                   \
-    // callback(res);
+// const auto data(R);
+// auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
+// res->setJsonObject(JsonCast(std::move(data.second)));
+// doResponseCreateAdvices(res);
+// callback(res);
 
 #define CACHE_FOREVER resp->setExpiredTime(0);
+
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
@@ -98,8 +99,7 @@ void api::SetBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    auto resp = HttpResponse::newHttpResponse();
-    resp->setBody(""); //will be filled in with docs
+    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/docs/connected_services/how_to/endpoints.md"); //may make README.md
     CACHE_FOREVER;
     callback(resp);
 }
