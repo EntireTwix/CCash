@@ -43,15 +43,11 @@ const Json::Value &Log::GetLog() noexcept
             res[i - 1]["to"] = data[data.size() - i].to;
             res[i - 1]["from"] = data[data.size() - i].from;
             res[i - 1]["amount"] = (Json::UInt)data[data.size() - i].amount;
-#ifdef _USE_32BIT_TIME_T
-            res[i - 1]["time"] = (Json::UInt)data[data.size() - i].time;
-#else
-            res[i - 1]["time"] = (Json::UInt64)data[data.size() - i].time;
-#endif
+            res[i - 1]["time"] = (Json::Int64)data[data.size() - i].time;
         }
 #endif
-        log_flag.SetChangesOff();
         log_snapshot = res;
+        log_flag.SetChangesOff();
     }
     return log_snapshot;
 }
@@ -74,9 +70,9 @@ Json::Value Log::Serialize() const
         res[i]["from"] = data[i].from;
         res[i]["amount"] = (Json::UInt)data[i].amount;
 #ifdef _USE_32BIT_TIME_T
-        res[i]["time"] = (Json::UInt)data[i].time;
+        res[i]["time"] = (Json::Int)data[i].time;
 #else
-        res[i]["time"] = (Json::UInt64)data[i].time;
+        res[i]["time"] = (Json::Int64)data[i].time;
 #endif
     }
 #endif
