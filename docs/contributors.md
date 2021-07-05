@@ -1,5 +1,4 @@
 # Contributors
-## Project Work
 | name                                        | work                       |
 | :------------------------------------------ | -------------------------- |
 | Caesay                                      | Restful API suggestions    |
@@ -7,10 +6,3 @@
 | [React](https://github.com/Reactified)      | Computer Craft API, logo   |
 | [Doggo](https://github.com/FearlessDoggo21) | Logs optimized, Python API |
 | [Expand](https://github.com/Expand-sys)     | fixed Docker package       |
-
-## Connected Service Work
-
-| name                                    | work                                  |
-| :-------------------------------------- | ------------------------------------- |
-| [React](https://github.com/Reactified)  | Computer Craft Shop, ATM, Wallet, etc |
-| [Expand](https://github.com/Expand-sys) | a web Frontend                        |
