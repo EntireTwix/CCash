@@ -129,7 +129,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 bool Bank::VerifyPassword(std::string_view name, std::string_view attempt) const noexcept
 {
     bool res = false;
-    users.if_contains(name.data(), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
+    users.if_contains(name.data(), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt.data())); });
     return res;
 }
 
@@ -217,6 +217,8 @@ bool Bank::AdminVerifyAccount(std::string_view name) noexcept
 
 BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
+    std::cout << name << '\n'
+              << init_pass << '\n';
     if (!ValidUsrname(name))
     {
         return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
@@ -284,7 +286,7 @@ void Bank::Save()
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first.data()] = u_val.Serialize(); });
+                users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
             }
         }
         if (temp.isNull())

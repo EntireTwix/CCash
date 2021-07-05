@@ -20,8 +20,12 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
             std::size_t middle = results_view.find(':');
             if (middle != std::string::npos)
             {
+                base64_result[middle] = '\0';
+                base64_result[new_sz] = '\0';
+
                 std::string_view username = results_view.substr(0, middle);
                 std::string_view password = results_view.substr(middle + 1);
+
                 if (bank.VerifyPassword(username, password))
                 {
                     fccb();
