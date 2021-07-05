@@ -14,10 +14,10 @@
 :heavy_multiplication_x:
 
 ### Usage endpoints
-| name   | purpose                                          | json input | path                              | HTTP Method |  return type   |                 return value                 |       Jresp        |           Jreq           |            A             |            U             |
-| :----- | ------------------------------------------------ | ---------- | --------------------------------- | :---------: | :------------: | :------------------------------------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
-| GetBal | retrieving the balance of a given user, `{name}` | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    |     uint32     |              the user's balance              | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| GetLog | retrieves the logs of a given user               | `N/A`      | `api/v1/user/log`                 |    `GET`    | array of jsons | {"to":string, "amount":uint32, "time":int64} | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| name   | purpose                                                                   | json input | path                              | HTTP Method |  return type   |                  return value                  |       Jresp        |           Jreq           |            A             |            U             |
+| :----- | ------------------------------------------------------------------------- | ---------- | --------------------------------- | :---------: | :------------: | :--------------------------------------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
+| GetBal | retrieving the balance of a given user, `{name}`                          | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    |     uint32     |               the user's balance               | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| GetLog | retrieves the logs of a given user, length varies by server configuration | `N/A`      | `api/v1/user/log`                 |    `GET`    | array of jsons | `{"to":string, "amount":uint32, "time":int64}` | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### Usage endpoints support
 `v` denoting the API version
