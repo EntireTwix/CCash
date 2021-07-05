@@ -14,6 +14,11 @@
 :heavy_multiplication_x:
 
 ### Usage endpoints
-| name   | purpose                                          | json input | path                              | HTTP Method | return type |    return value    |       Jresp        |           Jreq           |            A             |            U             |         v1         |
-| :----- | ------------------------------------------------ | ---------- | --------------------------------- | :---------: | :---------: | :----------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: | :----------------: |
-| GetBal | retrieving the balance of a given user, `{name}` | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    | JSON uint32 | the user's balance | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: |
+| name   | purpose                                          | json input | path                              | HTTP Method | return type |    return value    |       Jresp        |           Jreq           |            A             |            U             |
+| :----- | ------------------------------------------------ | ---------- | --------------------------------- | :---------: | :---------: | :----------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
+| GetBal | retrieving the balance of a given user, `{name}` | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    | JSON uint32 | the user's balance | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+
+### Usage endpoints support
+| name   |         v1         |
+| :----- | :----------------: |
+| GetBal | :heavy_check_mark: |
