@@ -1,16 +1,18 @@
-FROM debian:latest
+FROM alpine:3.11
 
-WORKDIR /ccash
+WORKDIR /CCash
 
-RUN apt update && apt -y install build-essential g++ cmake protobuf-compiler libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
+RUN apk update && apk add cmake g++ make protobuf jsoncpp-dev openssl libressl-dev zlib-dev util-linux-dev libtool autoconf automake python3
 
 COPY . .
+RUN mkdir /CCash/build
+WORKDIR /CCash/build
+RUN cmake -DDROGON_CONFIG_LOC=\"\/CCash\/config\/config.json\" -DUSER_SAVE_LOC=\"\/CCash\/config\/users.json\" ..
+RUN make -j$(nproc)
 
-RUN mkdir build
+ARG ADMIN_A=admin
+ARG SAVE_FREQ=2
 
-WORKDIR /ccash/build
+RUN ["chmod", "+x", "/CCash/config/ssl.sh"]
 
-RUN cmake ..
-RUN make -j$(nprov)
-
-CMD ["/ccash/build/bank", "$CCASH_ADMIN_PASSWORD", "$CCASH_SAVE_FREQUENCY", "$CCASH_THREAD_COUNT"]
+CMD ["sh", "-c", "/CCash/config/ssl.sh && /CCash/build/bank ${ADMIN_A} ${SAVE_FREQ}"]
