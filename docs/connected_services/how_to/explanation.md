@@ -10,7 +10,7 @@ the aim of any of these services being to provide some kind of functionality tha
 
 if you want to browse the currently available services, check out [existing_services.md](../existing_services.md)
 
-to make a connected service yourself you can do so by using one of the langauge specific APIs, the way they work is by providing a clean in langauge way to interface with the CCash instance
+to make a connected service yourself you can do so by using one of the [langauge specific APIs](APIs.md), the way they work is by providing a clean in langauge way to interface with the CCash instance
 
 ![image](connected_c.png)
 
