@@ -1,4 +1,5 @@
 [PREVIOUS PAGE](user_side.md) | [NEXT PAGE](../building.md)
+
 # Implementation Features
 ## Parallel Hashmap
 ## xxHash
