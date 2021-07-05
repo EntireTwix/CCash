@@ -217,8 +217,6 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 
 BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
-    std::cout << name << '\n'
-              << init_pass << '\n';
     if (!ValidUsrname(name))
     {
         return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
