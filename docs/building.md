@@ -54,3 +54,6 @@ with `-D`
 cmake <flags of your choice or none> ..
 make -j<threads>
 ```
+
+### Certs
+make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use certbot, **it is Highly recommened you secure your server**.
