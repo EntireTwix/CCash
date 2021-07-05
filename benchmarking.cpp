@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
     // for (size_t i = 0; i < 10000000; ++i)
     // {
-    //     bank.AddUser(std::to_string(i), "root");
+    //     bank.AddUser(std::to_string(i), 0, "root");
     //     if (i % 10000 == 0)
     //     {
     //         auto u = std::to_string(distribution(generator) * i);
