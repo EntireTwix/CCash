@@ -18,4 +18,4 @@ if an API does not exist for your language it is simple to make one, and I encou
 
 while developing make sure to reference the list of [endpoints](endpoints.md)
 
-[PREVIOUS PAGE](../../contributors.md) | [NEXT PAGE](APIs.md)
+[PREVIOUS PAGE](../../idea.md) | [NEXT PAGE](APIs.md)

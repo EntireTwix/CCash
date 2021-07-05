@@ -22,4 +22,4 @@ running it local to the minecraft server reduces latency for ComputerCraft conne
 
 **DISCLAIMER: if you are to run it locally and want to use ComputerCraft with it, make sure to add `127.0.0.1` to ComputerCraft's config section `allowed_domains`**   
 
-[PREVIOUS PAGE](../README.md) | [NEXT PAGE](contributors.md)
+[PREVIOUS PAGE](../README.md) | [NEXT PAGE](connected_services/how_to/explanation.md)
