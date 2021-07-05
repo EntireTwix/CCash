@@ -126,10 +126,10 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
     return state;
 }
-bool Bank::VerifyPassword(std::string_view name, std::string_view attempt) const noexcept
+bool Bank::VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept
 {
     bool res = false;
-    users.if_contains(name.data(), [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt.data())); });
+    users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
     return res;
 }
 
@@ -210,7 +210,7 @@ bool Bank::Contains(const std::string &name) const noexcept
 {
     return users.contains(name);
 }
-bool Bank::AdminVerifyAccount(std::string_view name) noexcept
+bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 {
     return (name == admin_account);
 }

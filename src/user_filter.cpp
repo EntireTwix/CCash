@@ -22,12 +22,10 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
             {
                 base64_result[middle] = '\0';
                 base64_result[new_sz] = '\0';
-
-                std::string_view username = results_view.substr(0, middle);
-                std::string_view password = results_view.substr(middle + 1);
-
-                if (bank.VerifyPassword(username, password))
+                const std::string &username = results_view.substr(0, middle).data();
+                if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
                 {
+                    req->setBody(username); //feels sub optimal
                     fccb();
                     return;
                 }

@@ -21,13 +21,13 @@ void AdminFilter::doFilter(const HttpRequestPtr &req,
             if (middle != std::string::npos)
             {
                 base64_result[middle] = '\0';
-                std::string_view username = results_view.substr(0, middle);
+                const std::string &username = results_view.substr(0, middle).data();
                 if (bank.AdminVerifyAccount(username))
                 {
                     base64_result[new_sz] = '\0';
-                    std::string_view password = results_view.substr(middle + 1);
-                    if (bank.VerifyPassword(username, password))
+                    if (bank.VerifyPassword(std::move(username), results_view.substr(middle + 1)))
                     {
+                        req->setBody(username); //feels sub optimal
                         fccb();
                         return;
                     }
