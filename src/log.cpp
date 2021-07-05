@@ -2,6 +2,9 @@
 
 void Log::AddTrans(Transaction &&t) noexcept
 {
+#if MAX_LOG_SIZE == 1
+    data = std::move(t);
+#else
     if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
         for (uint32_t i = 1; i < data.size(); i++) // Make room at the back
@@ -16,6 +19,7 @@ void Log::AddTrans(Transaction &&t) noexcept
         data.reserve(data.capacity() + PRE_LOG_SIZE); // Reserve more memory
     }
     data.push_back(std::move(t)); // In either case we have space under max length, move to new spot
+#endif
     log_flag.SetChangesOn();
 }
 
@@ -25,6 +29,15 @@ const Json::Value &Log::GetLog() noexcept
     {
         //re-generate snapshot
         Json::Value res;
+#if MAX_LOG_SIZE == 1
+        res[0]["to"] = data.to;
+        res[0]["from"] = data.from;
+#ifdef _USE_32BIT_TIME_T
+        res[0]["time"] = (Json::UInt)data.time;
+#else
+        res[0]["time"] = (Json::UInt64)data.time;
+#endif
+#else
         for (uint32_t i = data.size(); i > 0; --i)
         {
             res[i - 1]["to"] = data[data.size() - i].to;
@@ -36,6 +49,7 @@ const Json::Value &Log::GetLog() noexcept
             res[i - 1]["time"] = (Json::UInt64)data[data.size() - i].time;
 #endif
         }
+#endif
         log_flag.SetChangesOff();
         log_snapshot = res;
     }
@@ -45,6 +59,15 @@ const Json::Value &Log::GetLog() noexcept
 Json::Value Log::Serialize() const
 {
     Json::Value res;
+#if MAX_LOG_SIZE == 1
+    res[0]["to"] = data.to;
+    res[0]["from"] = data.from;
+#ifdef _USE_32BIT_TIME_T
+    res[0]["time"] = (Json::UInt)data.time;
+#else
+    res[0]["time"] = (Json::UInt64)data.time;
+#endif
+#else
     for (uint32_t i = 0; i < data.size(); ++i)
     {
         res[i]["to"] = data[i].to;
@@ -56,5 +79,6 @@ Json::Value Log::Serialize() const
         res[i]["time"] = (Json::UInt64)data[i].time;
 #endif
     }
+#endif
     return res;
 }
