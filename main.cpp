@@ -104,7 +104,8 @@ int main(int argc, char **argv)
     auto user_filter_default = std::make_shared<UserFilterDefault>(bank);
     auto user_filter_sparse = std::make_shared<UserFilterSparse>(bank);
     auto admin_filter = std::make_shared<AdminFilter>(bank);
-    auto accept_filter = std::make_shared<JsonFilter>();
+    auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
+    auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
     app().registerPostHandlingAdvice(
         [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
@@ -115,6 +116,8 @@ int main(int argc, char **argv)
         .registerFilter(user_filter_default)
         .registerFilter(user_filter_sparse)
         .registerFilter(admin_filter)
+        .registerFilter(json_resp_and_req_filter)
+        .registerFilter(json_resp_filter)
         .registerController(API)
 #if MULTI_THREADED
         .setThreadNum(get_nprocs())
