@@ -1,5 +1,7 @@
 # API endpoints
 
+[PREVIOUS PAGE](endpoints.md) | [NEXT PAGE](../existing_services.md)
+
 ## KEY
 `Jresp` - Json Response, json must be accepted in the `Accept` header, be that via `application/json` or `*/*`, failing to do so results in error `406`
 
@@ -25,3 +27,4 @@
 | :----- | :----------------: |
 | GetBal | :heavy_check_mark: |
 | GetLog | :heavy_check_mark: |
+

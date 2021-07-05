@@ -53,3 +53,4 @@ with `-D`
 cmake <flags of your choice or none> ..
 make -j<threads>
 ```
+[PREVIOUS PAGE](features/implementation.md) | [NEXT PAGE](FAQ.md)

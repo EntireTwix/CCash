@@ -17,3 +17,5 @@ to make a connected service yourself you can do so by using one of the [langauge
 if an API does not exist for your language it is simple to make one, and I encourage you to add it to this list if you do decide to.
 
 while developing make sure to reference the list of [endpoints](endpoints.md)
+
+[PREVIOUS PAGE](../../contributors.md) | [NEXT PAGE](APIs.md)
