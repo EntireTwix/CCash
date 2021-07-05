@@ -8,7 +8,7 @@
   * [existing services](docs/connected_services/existing_services.md)
 * features
   * [user side](docs/features/user_side.md)
-  * [implementation](docs/features/implementations.md)
+  * [implementation](docs/features/implementation.md)
 * [building](docs/building.md)
 * [FAQ](docs/FAQ.md)
 * [Patreon](https://www.patreon.com/twoxx) if you wanna support this and/or future projects.
