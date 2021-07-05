@@ -101,7 +101,8 @@ int main(int argc, char **argv)
     }
 
     auto API = std::make_shared<api>(bank);
-    auto user_filter = std::make_shared<UserFilter>(bank);
+    auto user_filter_default = std::make_shared<UserFilterDefault>(bank);
+    auto user_filter_sparse = std::make_shared<UserFilterSparse>(bank);
     auto admin_filter = std::make_shared<AdminFilter>(bank);
     auto accept_filter = std::make_shared<JsonFilter>();
 
@@ -111,7 +112,8 @@ int main(int argc, char **argv)
         });
     app()
         .loadConfigFile(config_location)
-        .registerFilter(user_filter)
+        .registerFilter(user_filter_default)
+        .registerFilter(user_filter_sparse)
         .registerFilter(admin_filter)
         .registerController(API)
 #if MULTI_THREADED

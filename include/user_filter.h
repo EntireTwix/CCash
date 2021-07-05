@@ -5,7 +5,8 @@
 
 using namespace drogon;
 
-class UserFilter : public HttpFilter<UserFilter, false>
+template <bool set_body_flag>
+class UserFilter : public HttpFilter<UserFilter<set_body_flag>, false>
 {
 private:
     Bank &bank;
@@ -17,3 +18,6 @@ public:
                           FilterCallback &&,
                           FilterChainCallback &&) override;
 };
+
+using UserFilterDefault = UserFilter<true>;
+using UserFilterSparse = UserFilter<false>;

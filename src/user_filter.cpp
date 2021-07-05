@@ -1,10 +1,14 @@
 #include "user_filter.h"
 
-UserFilter::UserFilter(Bank &b) : bank(b) {}
+template <>
+UserFilter<true>::UserFilter(Bank &b) : bank(b) {}
+template <>
+UserFilter<false>::UserFilter(Bank &b) : bank(b) {}
 
-void UserFilter::doFilter(const HttpRequestPtr &req,
-                          FilterCallback &&fcb,
-                          FilterChainCallback &&fccb)
+template <bool set_body_flag>
+void UserFilter<set_body_flag>::doFilter(const HttpRequestPtr &req,
+                                         FilterCallback &&fcb,
+                                         FilterChainCallback &&fccb)
 {
     std::string_view auth_header = req->getHeader("Authorization");
     if (auth_header.size() > 6)
@@ -22,10 +26,13 @@ void UserFilter::doFilter(const HttpRequestPtr &req,
             {
                 base64_result[middle] = '\0';
                 base64_result[new_sz] = '\0';
-                const std::string &username = results_view.substr(0, middle).data();
+                const std::string &username(results_view.substr(0, middle).data());
                 if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
                 {
-                    req->setBody(username); //feels sub optimal
+                    if constexpr (set_body_flag)
+                    {
+                        req->setBody(username); //feels sub optimal
+                    }
                     fccb();
                     return;
                 }
