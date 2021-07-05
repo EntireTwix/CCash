@@ -1,11 +1,3 @@
-name
-path
-admin cert flag
-user cert flag
-v1
-description
-returns
-
 # API endpoints
 
 ## KEY
