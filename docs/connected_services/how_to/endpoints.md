@@ -1,0 +1,27 @@
+name
+path
+admin cert flag
+user cert flag
+v1
+description
+returns
+
+# API endpoints
+
+## KEY
+`Jresp` - Json Response, json must be accepted in the `Accept` header, be that via `application/json` or `*/*`, failing to do so results in `406`
+
+`Jreq` - Json Request, requires `application/json` as `content-type`, failing to do so results in `406`
+
+`A` - Admin, requires [basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication) in the header `Authorization`. This credential must be both a valid user and have a username of that of the admin account, failing to do so results in `401`
+
+`U` - User, requires [basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication) in the header `Authorization`. This credential must be a valid user, failing to do so results in `401`
+
+
+:heavy_check_mark:
+:heavy_multiplication_x:
+
+### Usage endpoints
+| name   | purpose                                | json input | path                              | HTTP Method |       Jresp        |           Jreq           |            A             |            U             | return type | return value       |         v1         |
+| :----- | -------------------------------------- | ---------- | --------------------------------- | :---------: | :----------------: | :----------------------: | :----------------------: | :----------------------: | :---------: | ------------------ | :----------------: |
+| GetBal | retrieving the balance of a given user | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: | JSON uint32 | the user's balance | :heavy_check_mark: |
