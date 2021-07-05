@@ -19,6 +19,7 @@
 | GetBal | retrieving the balance of a given user, `{name}` | `N/A`      | `api/v1/user/balance?name={name}` |    `GET`    | JSON uint32 | the user's balance | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### Usage endpoints support
+`v` denoting the API version
 | name   |         v1         |
 | :----- | :----------------: |
 | GetBal | :heavy_check_mark: |
