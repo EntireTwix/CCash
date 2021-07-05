@@ -1,10 +1,6 @@
 #include "bank_api.h"
 
-// const auto data(R);
-// auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
-// res->setJsonObject(JsonCast(std::move(data.second)));
-// doResponseCreateAdvices(res);
-// callback(res);
+//all my homies hate jsoncpp
 
 #define CACHE_FOREVER resp->setExpiredTime(0);
 
@@ -12,42 +8,37 @@
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
 
-#define RESPONSE_PARSE(R)                                                         \
-    const auto r(R);                                                              \
-    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(std::move(r.second))); \
-    resp->setStatusCode(r.first);                                                 \
-    callback(resp);
+#define RESPONSE_PARSE(R) callback(HttpResponse::newCustomHttpResponse(R));
 
-#define RESPOND_TRUE                                               \
-    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(true)); \
-    CACHE_FOREVER                                                  \
+#define RESPOND_TRUE                                     \
+    auto resp = HttpResponse::newHttpJsonResponse(true); \
+    CACHE_FOREVER                                        \
     callback(resp);
 
 #define NAME_PARAM req->getBody().data()
 
-template <typename T>
-constexpr Json::Value JsonCast(T &&val)
+#include <drogon/HttpResponse.h>
+#include <../src/HttpResponseImpl.h>
+#include <../src/HttpAppFrameworkImpl.h>
+template <>
+HttpResponsePtr drogon::toResponse(BankResponse &&data)
 {
-
-    if constexpr (std::is_same_v<T, int_fast8_t>)
+    auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
+    res->setJsonObject(std::move(data.second));
+    auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
+    if (!advices.empty())
     {
-        return (int)val; //becuase of json lib interpreting 67 as 'A' for example
+        for (auto &advice : advices)
+        {
+            advice(res);
+        }
     }
-    else if constexpr (std::is_same_v<T, uint64_t>)
-    {
-        return (Json::UInt64)val;
-    }
-    else if constexpr (std::is_same_v<T, uint32_t>)
-    {
-        return (Json::UInt)val;
-    }
-    else
-    {
-        return val;
-    }
+    return res;
 }
 
-api::api(Bank &b) noexcept : bank(b) {}
+api::api(Bank &b) noexcept : bank(b)
+{
+}
 
 #if API_VERSION >= 1
 
@@ -121,7 +112,7 @@ void api::Close(req_args) const
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    auto resp = HttpResponse::newHttpJsonResponse(JsonCast(bank.Contains(name)));
+    auto resp = HttpResponse::newHttpJsonResponse(bank.Contains(name));
     callback(resp);
 }
 void api::AdminVerifyAccount(req_args) const

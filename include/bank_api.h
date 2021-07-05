@@ -14,6 +14,9 @@ class api : public HttpController<api, false>
 
 public:
     api(Bank &b) noexcept;
+    void JsonCpp(req_args) const;
+    void Json(req_args) const;
+
 #if API_VERSION >= 1
     void GetBal(req_args, const std::string &name) const;
     void GetLog(req_args);

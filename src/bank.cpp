@@ -190,7 +190,7 @@ BankResponse Bank::SubBal(const std::string &name, uint32_t amount) noexcept
     {
         return {k400BadRequest, "Amount cannot be 0"};
     }
-    if (users.modify_if(name, [amount](User &u) { amount > u.balance ? u.balance = 0 : u.balance -= amount; }))
+    if (users.modify_if(name, [amount](User &u) { amount >= u.balance ? u.balance = 0 : u.balance -= amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
