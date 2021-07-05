@@ -70,8 +70,8 @@ public:
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                                               //expects ["name"](string) ["pass"](string)
     METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "JsonFilter<true>", "AdminFilter"); //expects ["name"](string) ["balance"](32 bits) ["pass"](string)
-    METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter<true>", "JsonFilter<false>");
-    METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "JsonFilter<true>", "AdminFilter"); //expects ["name"](string)
+    METHOD_ADD(api::DelUser, "/v1/user/delete", Delete, Options, "UserFilter<true>", "JsonFilter<false>");
+    METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "AdminFilter"); //expects ["name"](string)
 #endif
     METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
 
