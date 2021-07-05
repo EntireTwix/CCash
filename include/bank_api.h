@@ -27,11 +27,10 @@ public:
     void SubBal(req_args) const;
 
     void Help(req_args) const;
-    void Ping(req_args) const;
     void Close(req_args) const;
     void Contains(req_args, const std::string &name) const;
     void AdminVerifyAccount(req_args) const;
-    void ApiVersion(req_args) const;
+    void ApiProperties(req_args) const;
 
     void AddUser(req_args) const;
     void AdminAddUser(req_args) const;
@@ -61,7 +60,6 @@ public:
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);
-    METHOD_ADD(api::Ping, "/v1/ping", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::Close, "/v1/admin/shutdown", Post, Options, "AdminFilter", "JsonFilter<false>");
     METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Post, Options, "AdminFilter", "JsonFilter<false>");
@@ -72,7 +70,7 @@ public:
     METHOD_ADD(api::DelUser, "/v1/delete", Delete, Options, "UserFilter<true>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/delete", Delete, Options, "JsonFilter<true>", "AdminFilter"); //expects ["name"](string)
 #endif
-    METHOD_ADD(api::ApiVersion, "/version", Get, Options);
+    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
 
     METHOD_LIST_END
 };

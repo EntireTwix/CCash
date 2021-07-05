@@ -113,10 +113,6 @@ void api::Help(req_args) const
     CACHE_FOREVER;
     callback(resp);
 }
-void api::Ping(req_args) const
-{
-    RESPOND_TRUE
-}
 void api::Close(req_args) const
 {
     bank.Save();
@@ -132,9 +128,21 @@ void api::AdminVerifyAccount(req_args) const
 {
     RESPOND_TRUE //filter handles admin creds
 }
-void api::ApiVersion(req_args) const
+void api::ApiProperties(req_args) const
 {
-    auto resp = HttpResponse::newHttpJsonResponse(API_VERSION);
+    Json::Value temp;
+    temp["version"] = API_VERSION;
+    temp["max_log"] = MAX_LOG_SIZE;
+    temp["pre_log"] = PRE_LOG_SIZE;
+    temp["min_name"] = min_name_size;
+    temp["max_name"] = max_name_size;
+    temp["return_on_del"] = RETURN_ON_DEL;
+    if constexpr (RETURN_ON_DEL)
+    {
+        temp["return_on_del_acc"] = return_account;
+    }
+
+    auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
     CACHE_FOREVER;
     callback(resp);
 }
