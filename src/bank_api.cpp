@@ -109,7 +109,7 @@ void api::SubBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/docs/connected_services/how_to/endpoints.md"); //may make README.md
+    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md"); //may make README.md
     CACHE_FOREVER;
     callback(resp);
 }
