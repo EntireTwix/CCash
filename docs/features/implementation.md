@@ -1,3 +1,4 @@
+[PREVIOUS PAGE](user_side.md) | [NEXT PAGE](../building.md)
 # Implementation Features
 ## Parallel Hashmap
 ## xxHash
@@ -6,4 +7,3 @@
 ## multi-threading support
 ## intelligent saving
 ## Backwards Compatible API
-[PREVIOUS PAGE](user_side.md) | [NEXT PAGE](../building.md)

@@ -1,5 +1,4 @@
 # API endpoints
-
 [PREVIOUS PAGE](endpoints.md) | [NEXT PAGE](../existing_services.md)
 
 ## KEY

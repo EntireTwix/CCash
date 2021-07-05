@@ -1,3 +1,4 @@
+[PREVIOUS PAGE](../../idea.md) | [NEXT PAGE](APIs.md)
 Using the ledger's API allows (you/others) to (make/use) connected services that utilize the ledger, below is a visual represenation of connected services:
 
 ![image](connected_a.png)
@@ -17,5 +18,3 @@ to make a connected service yourself you can do so by using one of the [langauge
 if an API does not exist for your language it is simple to make one, and I encourage you to add it to this list if you do decide to.
 
 while developing make sure to reference the list of [endpoints](endpoints.md)
-
-[PREVIOUS PAGE](../../idea.md) | [NEXT PAGE](APIs.md)

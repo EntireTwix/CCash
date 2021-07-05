@@ -1,4 +1,3 @@
+[PREVIOUS PAGE](explanation.md) | [NEXT PAGE](endpoints.md)
 | language |
 | -------- |
-
-[PREVIOUS PAGE](explanation.md) | [NEXT PAGE](endpoints.md)

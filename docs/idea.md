@@ -1,3 +1,4 @@
+[PREVIOUS PAGE](../README.md) | [NEXT PAGE](connected_services/how_to/explanation.md)
 CCash is a web server hosting a ledger for Minecraft, able to be used from anything that can interact with its Restful API, including ComputerCraft. 
 
 the currency model most Minecraft Servers adopt if any, is resource based, usually diamonds, this model is fraught with issues however:
@@ -20,6 +21,4 @@ or on localhost:
 
 running it local to the minecraft server reduces latency for ComputerCraft connected services, fortunately CCash is sufficiently lightweight as to not impact performance on most setups.
 
-**DISCLAIMER: if you are to run it locally and want to use ComputerCraft with it, make sure to add `127.0.0.1` to ComputerCraft's config section `allowed_domains`**   
-
-[PREVIOUS PAGE](../README.md) | [NEXT PAGE](connected_services/how_to/explanation.md)
+**DISCLAIMER: if you are to run it locally and want to use ComputerCraft with it, make sure to add `127.0.0.1` to ComputerCraft's config section `allowed_domains`**   \
