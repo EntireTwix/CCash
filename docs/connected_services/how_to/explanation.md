@@ -1,7 +1,7 @@
 Using the ledger's API allows (you/others) to (make/use) connected services that utilize the ledger, below is a visual represenation of connected services:
-<diagram>
+![image](connected_a.png)
 ideally as the ecosystem develops, connected services become inner connected
-<diagram2>
+![image](connected_b.png)
 the aim of any of these services being to provide some kind of functionality that relies on the ground truth of who has what, this information is centrally secured in CCash.
 
 if you want to browse the currently available services, check out [existing_services.md](../existing_services.md)
