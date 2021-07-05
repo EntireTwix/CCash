@@ -11,7 +11,7 @@ void JsonFilter::doFilter(const HttpRequestPtr &req,
     std::string_view content_type = req->getHeader("content-type");
     std::string_view accept_header = req->getHeader("Accept");
 
-    if (content_type == "applications/json" && (Contains(accept_header, "*/*") || Contains(accept_header, "application/json")))
+    if (content_type == "application/json" && (Contains(accept_header, "*/*") || Contains(accept_header, "application/json")))
     {
         fccb();
         return;
