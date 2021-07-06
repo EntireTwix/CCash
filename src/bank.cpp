@@ -250,40 +250,34 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 }
 void Bank::Save()
 {
-#if CONSERVATIVE_DISK_SAVE
-    if (GetChangeState())
-    {
-#endif
-        Json::Value temp;
+    Json::Value temp;
 
-        //loading info into json temp
+    //loading info into json temp
+    {
+        std::unique_lock<std::shared_mutex> lock{save_lock};
+        for (const auto &u : users)
         {
-            std::unique_lock<std::shared_mutex> lock{save_lock};
-            for (const auto &u : users)
-            {
-                //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
-            }
+            //we know it contains this key but we call this func to grab mutex
+            users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
         }
-        if (temp.isNull())
-        {
-            throw std::invalid_argument("Saving Failed\n");
-        }
-        else
-        {
-            std::ofstream user_save(users_location);
-            Json::StreamWriterBuilder builder;
-            const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(temp, &user_save);
-            user_save.close();
-        }
+    }
+    if (temp.isNull())
+    {
+        throw std::invalid_argument("Saving Failed\n");
+    }
+    else
+    {
+        std::ofstream user_save(users_location);
+        Json::StreamWriterBuilder builder;
+        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+        writer->write(temp, &user_save);
+        user_save.close();
+    }
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-        save_flag.SetChangesOff();
+    save_flag.SetChangesOff();
 #else
-        save_flag = true;
-#endif
-    }
+    save_flag = true;
 #endif
 }
 
