@@ -1,14 +1,18 @@
 #include "user_filter.h"
 
+template <bool set_body_flag, bool require_admin>
+UserFilter<set_body_flag, require_admin>::UserFilter(Bank &b) : bank(b) {}
 template <>
-UserFilter<true>::UserFilter(Bank &b) : bank(b) {}
+UserFilter<true, false>::UserFilter(Bank &b) : bank(b) {}
 template <>
-UserFilter<false>::UserFilter(Bank &b) : bank(b) {}
+UserFilter<false, false>::UserFilter(Bank &b) : bank(b) {}
+template <>
+UserFilter<false, true>::UserFilter(Bank &b) : bank(b) {}
 
-template <bool set_body_flag>
-void UserFilter<set_body_flag>::doFilter(const HttpRequestPtr &req,
-                                         FilterCallback &&fcb,
-                                         FilterChainCallback &&fccb)
+template <bool set_body_flag, bool require_admin>
+void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &req,
+                                                        FilterCallback &&fcb,
+                                                        FilterChainCallback &&fccb)
 {
     std::string_view auth_header = req->getHeader("Authorization");
     if (auth_header.size() > 6)
@@ -25,16 +29,32 @@ void UserFilter<set_body_flag>::doFilter(const HttpRequestPtr &req,
             if (middle != std::string::npos)
             {
                 base64_result[middle] = '\0';
-                base64_result[new_sz] = '\0';
                 const std::string &username(results_view.substr(0, middle).data());
-                if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
+                if constexpr (require_admin)
                 {
-                    if constexpr (set_body_flag)
+                    base64_result[new_sz] = '\0';
+                    if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
                     {
-                        req->setBody(username); //feels sub optimal
+                        if constexpr (set_body_flag)
+                        {
+                            req->setBody(username); //feels sub optimal
+                        }
+                        fccb();
+                        return;
                     }
-                    fccb();
-                    return;
+                }
+                else
+                {
+
+                    if (bank.AdminVerifyAccount(username))
+                    {
+                        base64_result[new_sz] = '\0';
+                        if (bank.VerifyPassword(std::move(username), results_view.substr(middle + 1)))
+                        {
+                            fccb();
+                            return;
+                        }
+                    }
                 }
             }
         }

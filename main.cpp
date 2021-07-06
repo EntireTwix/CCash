@@ -101,9 +101,9 @@ int main(int argc, char **argv)
     }
 
     auto API = std::make_shared<api>(bank);
-    auto user_filter_default = std::make_shared<UserFilterDefault>(bank);
-    auto user_filter_sparse = std::make_shared<UserFilterSparse>(bank);
-    auto admin_filter = std::make_shared<AdminFilter>(bank);
+    auto user_filter_default = std::make_shared<UserFilter<true, false>>(bank);
+    auto user_filter_sparse = std::make_shared<UserFilter<false, false>>(bank);
+    auto admin_filter = std::make_shared<UserFilter<false, true>>(bank);
     auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
     auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
