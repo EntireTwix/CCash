@@ -47,7 +47,7 @@ void api::GetBal(req_args, const std::string &name) const
 {
     RESPONSE_PARSE(bank.GetBal(name));
 }
-void api::GetLog(req_args)
+void api::GetLogs(req_args)
 {
     if constexpr (MAX_LOG_SIZE > 0)
     {

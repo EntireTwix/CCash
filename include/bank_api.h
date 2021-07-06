@@ -18,7 +18,7 @@ public:
 
 #if API_VERSION >= 1
     void GetBal(req_args, const std::string &name) const;
-    void GetLog(req_args);
+    void GetLogs(req_args);
     void SendFunds(req_args) const;
     void VerifyPassword(req_args) const;
 
@@ -45,14 +45,14 @@ public:
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
 #if MAX_LOG_SIZE > 0
-    METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "UserFilter<true, false>", "JsonFilter<false>");
+    METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "UserFilter<true, false>", "JsonFilter<false>");
 #else
-    METHOD_ADD(api::GetLog, "/v1/user/log", Get, Options, "JsonFilter<false>");
+    METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>");
 #endif
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "JsonFilter<true>", "UserFilter<true, false>"); //expects ["name"](string) and ["amount"](32 bits)
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");
 
-    //Meta Usage1
+    //Meta Usage
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<true, false>");            //expects ["pass"](string)
     METHOD_ADD(api::AdminChangePassword, "/v1/admin/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) and ["pass"](string)
     METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>");                       //expects ["name"](string) and ["amount"](32 bits)
