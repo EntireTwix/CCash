@@ -62,9 +62,14 @@ static Bank bank;
 
 int main(int argc, char **argv)
 {
+
     bank.AddUser("twix", 0, "root");
     bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
+
+    Op(std::hash<std::string>{}("twix is pog champ :flushed:"), "std::hash<std::string> ", 100000);
+    Op(xxHashStringGen{}("twix is pog champ :flushed:", 27), "xxHashStringGen ", 100000);
+
     Op_a(bank.AddUser("", 0, ""), "add user: ", 100000, bank.DelUser(""));
     Op(bank.ImpactBal("twix", 1), "impact bal: ", 100000);
     Op(bank.SetBal("twix", 100000), "set bal: ", 100000);
@@ -85,7 +90,7 @@ int main(int argc, char **argv)
 #endif
     Op(bank.Save(), "saving: ", 1);
 #if CONSERVATIVE_DISK_SAVE
-    Op(bank.GetChangeState(), "change flag: ", 10000);
+    Op(bank.GetChangeState(), "change flag: ", 100000);
 #endif
 
     //GetBal scalining test
