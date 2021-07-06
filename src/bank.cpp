@@ -164,7 +164,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 }
 BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
 {
-    if (amount)
+    if (amount == 0)
     {
         return {k400BadRequest, "Amount cannot be 0"};
     }
