@@ -279,6 +279,7 @@ void Bank::Save()
 #else
     save_flag = true;
 #endif
+#endif
 }
 
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
