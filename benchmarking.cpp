@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <random>
+#include "xxhash_str.h"
 #include "bank.h"
 
 #include <signal.h>
@@ -67,8 +68,9 @@ int main(int argc, char **argv)
     bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
 
-    Op(std::hash<std::string>{}("twix is pog champ :flushed:"), "std::hash<std::string> ", 100000);
-    Op(xxHashStringGen{}("twix is pog champ :flushed:", 27), "xxHashStringGen ", 100000);
+    std::string data("twix is pog champ :flushed:");
+    Op(std::hash<std::string>{}(data), "std::hash<std::string> ", 100000);
+    Op(xxHashStringGen{}(data), "xxHashStringGen ", 100000);
 
     Op_a(bank.AddUser("", 0, ""), "add user: ", 100000, bank.DelUser(""));
     Op(bank.ImpactBal("twix", 1), "impact bal: ", 100000);
