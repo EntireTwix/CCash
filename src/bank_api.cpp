@@ -141,7 +141,7 @@ void api::AddUser(req_args) const
 void api::AdminAddUser(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.AddUser(body["name"].asCString(), body["balance"].asUInt(), body["pass"].asCString()))
+    RESPONSE_PARSE(bank.AddUser(body["name"].asCString(), body["amount"].asUInt(), body["pass"].asCString()))
 }
 void api::DelUser(req_args) const
 {
