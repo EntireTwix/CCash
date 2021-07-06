@@ -45,7 +45,7 @@ bool Bank::GetChangeState() const noexcept
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    uint64_t res = 0;
+    uint32_t res = 0;
     users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });
     return res ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
 }
