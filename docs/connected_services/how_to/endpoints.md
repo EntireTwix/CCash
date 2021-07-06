@@ -6,10 +6,9 @@
 
 `Jreq` - Json Request, requires `application/json` as `content-type`, failing to do so results in error `406`
 
-`A` - Admin, requires [basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication) in the header `Authorization`. This credential must be both a valid user and have a username of that of the admin account, failing to do so results in error `401`
-
 `U` - User, requires [basic auth](https://en.wikipedia.org/wiki/Basic_access_authentication) in the header `Authorization`. This credential must be a valid user, failing to do so results in error `401`
 
+`A` - Admin, same as `U` but in addition requires username supplied be equal to the admin account username
 
 :heavy_check_mark:
 :heavy_multiplication_x:
