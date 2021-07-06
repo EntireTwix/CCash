@@ -25,8 +25,7 @@ public:
     void ChangePassword(req_args) const;
     void AdminChangePassword(req_args) const;
     void SetBal(req_args) const;
-    void AddBal(req_args) const;
-    void SubBal(req_args) const;
+    void ImpactBal(req_args) const;
 
     void Help(req_args) const;
     void Close(req_args) const;
@@ -57,8 +56,7 @@ public:
     METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<true, false>");            //expects ["new_pass"](string)
     METHOD_ADD(api::AdminChangePassword, "/v1/admin/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) and ["new_pass"](string)
     METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>");                       //expects ["name"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::AddBal, "/v1/admin/add_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                        //expects ["name"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::SubBal, "/v1/admin/sub_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                        //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::ImpactBal, "/v1/admin/impact_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](32 bits)
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);

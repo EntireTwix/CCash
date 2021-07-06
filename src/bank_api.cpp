@@ -86,15 +86,10 @@ void api::SetBal(req_args) const
     GEN_BODY
     RESPONSE_PARSE(bank.SetBal(body["name"].asCString(), body["amount"].asUInt()));
 }
-void api::AddBal(req_args) const
+void api::ImpactBal(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.AddBal(body["name"].asCString(), body["amount"].asUInt()));
-}
-void api::SubBal(req_args) const
-{
-    GEN_BODY
-    RESPONSE_PARSE(bank.AddBal(body["name"].asCString(), body["amount"].asUInt()));
+    RESPONSE_PARSE(bank.ImpactBal(body["name"].asCString(), body["amount"].asInt64()));
 }
 
 //System Usage

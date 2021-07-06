@@ -55,8 +55,7 @@ public:
 
     void ChangePassword(const std::string &name, std::string &&new_pass) noexcept;
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
-    BankResponse AddBal(const std::string &name, uint32_t amount) noexcept;
-    BankResponse SubBal(const std::string &name, uint32_t amount) noexcept;
+    BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     bool Contains(const std::string &name) const noexcept;
     bool AdminVerifyAccount(const std::string &name) noexcept;
 

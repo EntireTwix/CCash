@@ -162,7 +162,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         return {k404NotFound, "User not found"};
     }
 }
-BankResponse Bank::AddBal(const std::string &name, uint32_t amount) noexcept
+BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
 {
     if (amount)
     {
@@ -178,28 +178,6 @@ BankResponse Bank::AddBal(const std::string &name, uint32_t amount) noexcept
 #endif
 #endif
         return {k200OK, "Balance added!"};
-    }
-    else
-    {
-        return {k404NotFound, "User not found"};
-    }
-}
-BankResponse Bank::SubBal(const std::string &name, uint32_t amount) noexcept
-{
-    if (amount)
-    {
-        return {k400BadRequest, "Amount cannot be 0"};
-    }
-    if (users.modify_if(name, [amount](User &u) { amount >= u.balance ? u.balance = 0 : u.balance -= amount; }))
-    {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
-        return {k200OK, "Balance subtracted!"};
     }
     else
     {
