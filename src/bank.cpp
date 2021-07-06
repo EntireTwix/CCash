@@ -25,10 +25,12 @@ size_t Bank::NumOfUsers() const noexcept { return users.size(); }
 uint64_t Bank::NumOfLogs() const noexcept
 {
     uint64_t res = 0;
+#if MAX_LOG_SIZE > 0
     for (const auto &u : users)
     {
         res += u.second.log.data.size();
     }
+#endif
     return res;
 }
 
