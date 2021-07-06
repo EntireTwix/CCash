@@ -64,7 +64,7 @@ void api::GetLog(req_args)
 void api::SendFunds(req_args) const
 {
     GEN_BODY
-    RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["to"].asCString(), body["amount"].asUInt()));
+    RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["name"].asCString(), body["amount"].asUInt()));
 }
 void api::VerifyPassword(req_args) const { RESPOND_TRUE }
 
@@ -72,13 +72,13 @@ void api::VerifyPassword(req_args) const { RESPOND_TRUE }
 void api::ChangePassword(req_args) const
 {
     GEN_BODY
-    bank.ChangePassword(NAME_PARAM, std::move(body["new_pass"].asCString()));
+    bank.ChangePassword(NAME_PARAM, std::move(body["pass"].asCString()));
     RESPOND_TRUE
 }
 void api::AdminChangePassword(req_args) const
 {
     GEN_BODY
-    bank.ChangePassword(body["name"].asCString(), std::move(body["new_pass"].asCString()));
+    bank.ChangePassword(body["name"].asCString(), std::move(body["pass"].asCString()));
     RESPOND_TRUE
 }
 void api::SetBal(req_args) const
