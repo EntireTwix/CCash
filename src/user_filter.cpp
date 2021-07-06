@@ -35,7 +35,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                     if (bank.AdminVerifyAccount(username))
                     {
                         base64_result[new_sz] = '\0';
-                        if (bank.VerifyPassword(std::move(username), results_view.substr(middle + 1)))
+                        if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
                         {
                             fccb();
                             return;
