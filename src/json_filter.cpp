@@ -1,5 +1,7 @@
 #include "json_filter.h"
 
+using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
+
 template <>
 JsonFilter<true>::JsonFilter() {}
 template <>
@@ -31,7 +33,6 @@ void JsonFilter<check_content_type>::doFilter(const HttpRequestPtr &req,
         }
     }
 
-    const auto &resp = HttpResponse::newHttpJsonResponse("Client must Accept JSON");
-    resp->setStatusCode(k406NotAcceptable);
+    const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k406NotAcceptable, "Client must Accept JSON"));
     fcb(resp);
 }
