@@ -80,7 +80,9 @@ int main(int argc, char **argv)
     Op(bank.GetBal("twix"), "get bal: ", 100000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 100000);
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 100000);
+#if MAX_LOG_SIZE > 0
     Op(bank.GetLogs("twix"), "get logs: ", 10000);
+#endif
     Op(bank.Save(), "saving: ", 1);
 #if CONSERVATIVE_DISK_SAVE
     Op(bank.GetChangeState(), "change flag: ", 10000);
