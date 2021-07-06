@@ -22,7 +22,15 @@ static Bank bank;
 void SaveSig(int s)
 {
     std::cout << "\nSaving on close...\n";
-    bank.Save();
+    if (bank.GetChangeState())
+    {
+        std::cout << "    to disk...\n";
+        bank.Save();
+    }
+    else
+    {
+        std::cout << "    no changes...\n";
+    }
     exit(1);
 }
 
