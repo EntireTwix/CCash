@@ -68,7 +68,7 @@ int main(int argc, char **argv)
     bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
 
-    std::string data("twix is pog champ :flushed:");
+    const std::string data("this string is quite long which is relevant when testing the speed of a hasing function");
     Op(std::hash<std::string>{}(data), "std::hash<std::string> ", 100000);
     Op(xxHashStringGen{}(data), "xxHashStringGen ", 100000);
 
