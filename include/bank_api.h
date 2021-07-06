@@ -54,11 +54,11 @@ public:
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");
 
     //Meta Usage
-    METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<true, false>");      //expects ["new_pass"](string)
-    METHOD_ADD(api::AdminChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) and ["new_pass"](string)
-    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>");                 //expects ["name"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::AddBal, "/v1/admin/add_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](32 bits)
-    METHOD_ADD(api::SubBal, "/v1/admin/sub_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::ChangePassword, "/v1/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<true, false>");            //expects ["new_pass"](string)
+    METHOD_ADD(api::AdminChangePassword, "/v1/admin/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) and ["new_pass"](string)
+    METHOD_ADD(api::SetBal, "/v1/admin/set_balance", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>");                       //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::AddBal, "/v1/admin/add_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                        //expects ["name"](string) and ["amount"](32 bits)
+    METHOD_ADD(api::SubBal, "/v1/admin/sub_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                        //expects ["name"](string) and ["amount"](32 bits)
 
     //System Usage
     METHOD_ADD(api::Help, "/v1/help", Get, Options);
