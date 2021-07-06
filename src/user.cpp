@@ -27,17 +27,24 @@ User::User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) 
 {
     if (log_j.size())
     {
+#if MAX_LOG_SIZE != 1
         log.data.reserve(std::min((size_t)PRE_LOG_SIZE * ((log_j.size() / PRE_LOG_SIZE) + 1), (size_t)MAX_LOG_SIZE));
+#endif
         for (uint32_t i = (log_j.size() - MAX_LOG_SIZE) * (log_j.size() > MAX_LOG_SIZE); i < log_j.size(); i++)
         {
-            log.data.push_back(Transaction(
-                log_j[i]["from"].asCString(),
-                log_j[i]["to"].asCString(),
-                log_j[i]["amount"].asUInt(),
-#ifdef _USE_32BIT_TIME_T
-                log_j[i]["time"].asUInt()));
+#if MAX_LOG_SIZE == 1
+            log.data = (
 #else
-                log_j[i]["time"].asUInt64()));
+            log.data.push_back(
+#endif
+                Transaction(
+                    log_j[i]["from"].asCString(),
+                    log_j[i]["to"].asCString(),
+                    log_j[i]["amount"].asUInt(),
+#ifdef _USE_32BIT_TIME_T
+                    log_j[i]["time"].asUInt()));
+#else
+                    log_j[i]["time"].asUInt64()));
 #endif
         }
     }
