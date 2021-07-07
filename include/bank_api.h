@@ -46,7 +46,7 @@ public:
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
 #if MAX_LOG_SIZE > 0
-    METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "UserFilter<true, false>", "JsonFilter<false>");
+    METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
 #else
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>");
 #endif
