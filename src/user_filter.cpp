@@ -52,7 +52,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
             }
         }
     }
-    const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k401Unauthorized, "Invalid Credentials"));
+    const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k401Unauthorized, "\"Invalid Credentials\""));
     fcb(resp);
 }
 
