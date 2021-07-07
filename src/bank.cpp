@@ -56,15 +56,15 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     uint32_t res = 0;
     users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });
-    return res ? BankResponse(k200OK, res - 1) : BankResponse(k404NotFound, "User not found");
+    return res ? BankResponse(k200OK, std::to_string(res - 1)) : BankResponse(k404NotFound, "\"User not found\"");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
 #if MAX_LOG_SIZE > 0
-    if (!users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLog()}; }))
+    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog().toStyledString()); }))
     {
-        return BankResponse(k404NotFound, "User not found");
+        return BankResponse(k404NotFound, "\"User not found\"");
     }
 #endif
     return res;
@@ -74,19 +74,19 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     //cant send money to self, from self or amount is 0
     if (a_name == b_name)
     {
-        return {k400BadRequest, "Sender and Reciever names cannot match"};
+        return {k400BadRequest, "\"Sender and Reciever names cannot match\""};
     }
 
     //cant send 0
     if (!amount)
     {
-        return {k400BadRequest, "Amount being sent cannot be 0"};
+        return {k400BadRequest, "\"Amount being sent cannot be 0\""};
     }
 
     //as first modify_if checks a_name and grabs unique lock
     if (!Contains(b_name))
     {
-        return {k404NotFound, "Reciever does not exist"};
+        return {k404NotFound, "\"Reciever does not exist\""};
     }
 
     BankResponse state;
@@ -100,7 +100,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it
             if (a.balance < amount)
             {
-                state = {k400BadRequest, "Sender has insufficient funds"};
+                state = BankResponse(k400BadRequest, "\"Sender has insufficient funds\"");
             }
             else
             {
@@ -108,11 +108,11 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
                 a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
 #endif
-                state = {k200OK, "Transfer successful!"};
+                state = BankResponse(k200OK, "\"Transfer successful!\"");
             }
         }))
     {
-        return {k404NotFound, "Sender does not exist"};
+        return {k404NotFound, "\"Sender does not exist\""};
     }
     if (state.first == k200OK)
     {
@@ -164,18 +164,18 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "Balance set!"};
+        return {k200OK, "\"Balance set!\""};
     }
     else
     {
-        return {k404NotFound, "User not found"};
+        return {k404NotFound, "\"User not found\""};
     }
 }
 BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
 {
     if (amount == 0)
     {
-        return {k400BadRequest, "Amount cannot be 0"};
+        return {k400BadRequest, "\"Amount cannot be 0\""};
     }
     if (users.modify_if(name, [amount](User &u) { u.balance += amount; }))
     {
@@ -186,11 +186,11 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "Balance added!"};
+        return {k200OK, "\"Balance added!\""};
     }
     else
     {
-        return {k404NotFound, "User not found"};
+        return {k404NotFound, "\"User not found\""};
     }
 }
 bool Bank::Contains(const std::string &name) const noexcept
@@ -206,7 +206,7 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
 {
     if (!ValidUsrname(name))
     {
-        return {k400BadRequest, "Invalid Name, breaks size and/or character restrictions"};
+        return {k400BadRequest, "\"Invalid Name, breaks size and/or character restrictions\""};
     }
     std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.try_emplace_l(
@@ -219,11 +219,11 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "User added!"};
+        return {k200OK, "\"User added!\""};
     }
     else
     {
-        return {k409Conflict, "User already exists"};
+        return {k409Conflict, "\"User already exists\""};
     }
 }
 BankResponse Bank::DelUser(const std::string &name) noexcept
@@ -250,11 +250,11 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse(k200OK, "User deleted!");
+        return BankResponse{k200OK, "\"User deleted!\""};
     }
     else
     {
-        return BankResponse(k404NotFound, "User not found");
+        return BankResponse{k404NotFound, "\"User not found\""};
     }
 }
 void Bank::Save()

@@ -37,6 +37,7 @@ public:
     void AdminAddUser(req_args) const;
     void DelUser(req_args) const;
     void AdminDelUser(req_args) const;
+
 #endif
 
     METHOD_LIST_BEGIN

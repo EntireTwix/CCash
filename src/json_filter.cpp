@@ -1,7 +1,5 @@
 #include "json_filter.h"
 
-using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
-
 template <>
 JsonFilter<true>::JsonFilter() {}
 template <>

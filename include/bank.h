@@ -2,15 +2,13 @@
 #include <iostream> //temporary
 #include <fstream>
 #include <shared_mutex>
-#include <drogon/HttpTypes.h>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
+#include "bank_resp.h"
 #include "user.h"
 
 #if (CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0) && !MULTI_THREADED
 #include "change_flag.h"
 #endif
-
-using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
 
 class Bank
 {

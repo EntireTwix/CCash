@@ -24,7 +24,7 @@ template <>
 HttpResponsePtr drogon::toResponse(BankResponse &&data)
 {
     auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
-    res->setJsonObject(std::move(data.second));
+    res->setBody(std::move(data.second));
     auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
     if (!advices.empty())
     {
