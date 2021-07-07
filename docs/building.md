@@ -5,11 +5,32 @@
 
 ### Linux
 #### Debian
-`sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev`
+```
+sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
+```
 #### CentOS 7.5
-`yum install git gcc gcc-c++ && git clone https://github.com/Kitware/CMake && cd CMake/ && ./bootstrap && make && make install && yum install centos-release-scl && devtoolset-8 && scl enable devtoolset-8 bash && git clone https://github.com/open-source-parsers/jsoncpp && cd jsoncpp/ && mkdir build && cd build && cmake .. && make && make install && yum install libuuid-devel && yum install openssl-devel && yum install zlib-devel`
+```
+yum install git gcc gcc-c++
+git clone https://github.com/Kitware/CMake
+cd CMake/
+./bootstrap
+make
+make install
+yum install centos-release-scl devtoolset-8
+scl enable devtoolset-8 bash
+git clone https://github.com/open-source-parsers/jsoncpp
+cd jsoncpp/
+mkdir build
+cd build
+cmake ..
+make
+make install
+yum install libuuid-devel openssl-devel zlib-devel
+```
 ### MacOS
-`brew install jsoncpp ossp-uuid openssl zlib`
+```
+brew install jsoncpp ossp-uuid openssl zlib
+```
 
 ### Docker
 Docker Package can be found [here](https://github.com/EntireTwix/CCash/packages/851105)
