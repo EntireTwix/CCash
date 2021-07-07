@@ -24,12 +24,12 @@ void SaveSig(int s)
     std::cout << "\nSaving on close...\n";
     if (bank.GetChangeState())
     {
-        std::cout << "    to disk...\n";
+        std::cout << "        to disk...\n";
         bank.Save();
     }
     else
     {
-        std::cout << "    no changes...\n";
+        std::cout << "     no changes...\n";
     }
     exit(1);
 }
@@ -89,15 +89,15 @@ int main(int argc, char **argv)
             while (1)
             {
                 std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                std::cout << "Saving " << std::time(0) << '\n';
+                std::cout << "Saving " << std::time(0) << "...\n";
                 if (bank.GetChangeState())
                 {
-                    std::cout << "      to disk\n";
+                    std::cout << "        to disk...\n";
                     bank.Save();
                 }
                 else
                 {
-                    std::cout << "      no changes\n";
+                    std::cout << "     no changes...\n";
                 }
             }
         })
