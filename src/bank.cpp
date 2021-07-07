@@ -2,7 +2,9 @@
 
 using namespace drogon;
 
-__attribute__((always_inline)) inline bool ValidUsrname(const std::string &name) noexcept
+#define INLINE __attribute__((always_inline)) inline
+
+INLINE bool ValidUsrname(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
     {
@@ -22,9 +24,9 @@ __attribute__((always_inline)) inline bool ValidUsrname(const std::string &name)
 size_t Bank::NumOfUsers() const noexcept { return users.size(); }
 
 //NOT THREAD SAFE
-uint64_t Bank::NumOfLogs() const noexcept
+size_t Bank::NumOfLogs() const noexcept
 {
-    uint64_t res = 0;
+    size_t res = 0;
 #if MAX_LOG_SIZE > 0
     for (const auto &u : users)
     {
@@ -38,6 +40,17 @@ uint64_t Bank::NumOfLogs() const noexcept
 #endif
     }
 #endif
+    return res;
+}
+
+//NOT THREAD SAFE
+size_t Bank::SumBal() const noexcept
+{
+    size_t res = 0;
+    for (const auto &u : users)
+    {
+        res += u.second.balance;
+    }
     return res;
 }
 
@@ -177,7 +190,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    if (users.modify_if(name, [amount](User &u) { u.balance < (amount*-1)? u.balance = 0 : u.balance += amount; }))
+    if (users.modify_if(name, [amount](User &u) { u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -233,7 +246,8 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     uint32_t bal;
     if (users.if_contains(name, [this, &bal](const User &u) {
             bal = u.balance;
-        }) && bal)
+        }) &&
+        bal)
     {
         users.modify_if(return_account, [ this, bal ](User & u))
         {
