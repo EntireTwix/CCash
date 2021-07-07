@@ -27,9 +27,6 @@ User::User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) 
 {
     if (log_j.size())
     {
-#if MAX_LOG_SIZE != 1
-        log.data.reserve(std::min((size_t)PRE_LOG_SIZE * ((log_j.size() / PRE_LOG_SIZE) + 1), (size_t)MAX_LOG_SIZE));
-#endif
         for (uint32_t i = (log_j.size() - MAX_LOG_SIZE) * (log_j.size() > MAX_LOG_SIZE); i < log_j.size(); i++)
         {
 #if MAX_LOG_SIZE == 1

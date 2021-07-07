@@ -14,10 +14,6 @@ void Log::AddTrans(Transaction &&t) noexcept
         data[data.size() - 1] = std::move(t); // Place new in opened spot
         return;
     }
-    else if (data.size() == data.capacity()) // If we haven't hit the max but hit capacity
-    {
-        data.reserve(data.capacity() + PRE_LOG_SIZE); // Reserve more memory
-    }
     data.push_back(std::move(t)); // In either case we have space under max length, move to new spot
 #endif
     log_flag.SetChangesOn();
