@@ -119,7 +119,6 @@ void api::ApiProperties(req_args) const
     Json::Value temp;
     temp["version"] = API_VERSION;
     temp["max_log"] = MAX_LOG_SIZE;
-    temp["pre_log"] = PRE_LOG_SIZE;
     temp["min_name"] = min_name_size;
     temp["max_name"] = max_name_size;
     temp["return_on_del"] = RETURN_ON_DEL;
