@@ -47,7 +47,8 @@ int main(int argc, char **argv)
         return 0;
     }
     std::cout
-        << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
+        << "\nAPI Version     : " << API_VERSION
+        << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
         << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
         << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
         << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
