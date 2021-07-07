@@ -51,7 +51,7 @@ void api::GetLogs(req_args)
 {
     if constexpr (MAX_LOG_SIZE > 0)
     {
-        RESPONSE_PARSE(bank.GetLogs("twix"));
+        RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
     }
     else
     {
