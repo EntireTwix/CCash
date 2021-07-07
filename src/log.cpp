@@ -1,5 +1,10 @@
 #include "log.h"
 
+Log::Log() noexcept
+{
+    log_flag.SetChangesOn();
+}
+
 void Log::AddTrans(Transaction &&t) noexcept
 {
 #if MAX_LOG_SIZE == 1
@@ -7,7 +12,7 @@ void Log::AddTrans(Transaction &&t) noexcept
 #else
     if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
-        for (uint32_t i = 1; i < data.size(); i++) // Make room at the back
+        for (size_t i = 1; i < data.size(); i++) // Make room at the back
         {
             data[i - 1] = std::move(data[i]); // Shifts everything left
         }
@@ -19,7 +24,7 @@ void Log::AddTrans(Transaction &&t) noexcept
     log_flag.SetChangesOn();
 }
 
-const Json::Value &Log::GetLog() noexcept
+const std::string &Log::GetLog() noexcept
 {
     if (log_flag.GetChangeState()) //if there are changes
     {
@@ -42,7 +47,7 @@ const Json::Value &Log::GetLog() noexcept
             res[i - 1]["time"] = (Json::Int64)data[data.size() - i].time;
         }
 #endif
-        log_snapshot = res;
+        log_snapshot = res.toStyledString();
         log_flag.SetChangesOff();
     }
     return log_snapshot;

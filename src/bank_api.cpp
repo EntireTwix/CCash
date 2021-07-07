@@ -51,12 +51,11 @@ void api::GetLogs(req_args)
 {
     if constexpr (MAX_LOG_SIZE > 0)
     {
-        RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
+        RESPONSE_PARSE(bank.GetLogs("twix"));
     }
     else
     {
-        auto resp = HttpResponse::newHttpJsonResponse("Logs are Disabled");
-        resp->setStatusCode(k404NotFound);
+        auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
         CACHE_FOREVER
         callback(resp);
     }

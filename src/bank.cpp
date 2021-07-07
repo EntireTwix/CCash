@@ -62,7 +62,7 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
 #if MAX_LOG_SIZE > 0
-    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog().toStyledString()); }))
+    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog()); }))
     {
         return BankResponse(k404NotFound, "\"User not found\"");
     }
