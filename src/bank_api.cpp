@@ -17,25 +17,6 @@
 
 #define NAME_PARAM req->getBody().data()
 
-#include <drogon/HttpResponse.h>
-#include <../src/HttpResponseImpl.h>
-#include <../src/HttpAppFrameworkImpl.h>
-template <>
-HttpResponsePtr drogon::toResponse(BankResponse &&data)
-{
-    auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
-    res->setBody(std::move(data.second));
-    auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
-    if (!advices.empty())
-    {
-        for (auto &advice : advices)
-        {
-            advice(res);
-        }
-    }
-    return res;
-}
-
 api::api(Bank &b) noexcept : bank(b)
 {
 }
