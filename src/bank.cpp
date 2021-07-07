@@ -233,7 +233,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     uint32_t bal;
     if (users.if_contains(name, [this, &bal](const User &u) {
             bal = u.balance;
-        }))
+        }) && bal)
     {
         users.modify_if(return_account, [ this, bal ](User & u))
         {
@@ -250,11 +250,11 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse{k200OK, "\"User deleted!\""};
+        return BankResponse(k200OK, "\"User deleted!\"");
     }
     else
     {
-        return BankResponse{k404NotFound, "\"User not found\""};
+        return BankResponse(k404NotFound, "\"User not found\"");
     }
 }
 void Bank::Save()
