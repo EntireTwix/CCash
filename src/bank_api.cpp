@@ -15,7 +15,7 @@
     CACHE_FOREVER                                        \
     callback(resp);
 
-#define NAME_PARAM req->getBody().data()
+#define NAME_PARAM req->getParameter("name")
 
 api::api(Bank &b) noexcept : bank(b)
 {

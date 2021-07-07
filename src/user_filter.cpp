@@ -43,7 +43,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                     {
                         if constexpr (set_body_flag)
                         {
-                            req->setBody(username); //feels sub optimal
+                            req->setParameter("name", username);
                         }
                         fccb();
                         return;
