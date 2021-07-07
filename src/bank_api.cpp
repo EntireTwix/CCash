@@ -4,13 +4,20 @@
 
 #define CACHE_FOREVER resp->setExpiredTime(0);
 
+#define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
+
 #define GEN_BODY                                \
     const auto temp_req = req->getJsonObject(); \
     const auto body = temp_req ? *temp_req : Json::Value();
 
-#define RESPONSE_PARSE(R) callback(HttpResponse::newCustomHttpResponse(R));
+#define RESPONSE_PARSE(R)                                     \
+    const auto resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                                     \
+    callback(resp);
 
-#define RESPOND_TRUE RESPONSE_PARSE(BankResponse(k200OK, "true"))
+#define RESPOND_TRUE                              \
+    RESPONSE_PARSE(BankResponse(k200OK, "true")); \
+    CACHE_FOREVER
 
 #define NAME_PARAM req->getParameter("name")
 
@@ -34,6 +41,7 @@ void api::GetLogs(req_args)
     else
     {
         auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        CORS;
         CACHE_FOREVER
         callback(resp);
     }
@@ -84,8 +92,7 @@ void api::Close(req_args) const
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    auto resp = HttpResponse::newHttpJsonResponse(bank.Contains(name));
-    callback(resp);
+    RESPONSE_PARSE(BankResponse(k200OK, std::to_string(bank.Contains(name))));
 }
 void api::AdminVerifyAccount(req_args) const
 {
@@ -105,6 +112,7 @@ void api::ApiProperties(req_args) const
     }
 
     auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
+    CORS;
     CACHE_FOREVER;
     callback(resp);
 }
