@@ -1,9 +1,7 @@
 #include "json_filter.h"
 
-template <>
-JsonFilter<true>::JsonFilter() {}
-template <>
-JsonFilter<false>::JsonFilter() {}
+template <bool check_content_type>
+JsonFilter<check_content_type>::JsonFilter() {}
 
 __attribute__((always_inline)) inline bool Contains(std::string_view str, const std::string &val) { return str.find(val) != std::string::npos; }
 
@@ -34,3 +32,6 @@ void JsonFilter<check_content_type>::doFilter(const HttpRequestPtr &req,
     const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k406NotAcceptable, "Client must Accept JSON"));
     fcb(resp);
 }
+
+template class JsonFilter<true>;
+template class JsonFilter<false>;

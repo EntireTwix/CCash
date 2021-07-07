@@ -2,12 +2,6 @@
 
 template <bool set_body_flag, bool require_admin>
 UserFilter<set_body_flag, require_admin>::UserFilter(Bank &b) : bank(b) {}
-template <>
-UserFilter<true, false>::UserFilter(Bank &b) : bank(b) {}
-template <>
-UserFilter<false, false>::UserFilter(Bank &b) : bank(b) {}
-template <>
-UserFilter<false, true>::UserFilter(Bank &b) : bank(b) {}
 
 template <bool set_body_flag, bool require_admin>
 void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &req,
@@ -61,3 +55,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
     const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k401Unauthorized, "Invalid Credentials"));
     fcb(resp);
 }
+
+template class UserFilter<true, false>;  //user default
+template class UserFilter<false, false>; //user sparse
+template class UserFilter<false, true>;  //admin
