@@ -10,7 +10,7 @@
 
 #define RESPONSE_PARSE(R) callback(HttpResponse::newCustomHttpResponse(R));
 
-#define RESPOND_TRUE RESPONSE_PARSE(BankResponse(k200OK, "\"true\""))
+#define RESPOND_TRUE RESPONSE_PARSE(BankResponse(k200OK, "true"))
 
 #define NAME_PARAM req->getParameter("name")
 
