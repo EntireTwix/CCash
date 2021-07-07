@@ -15,9 +15,11 @@
     CORS;                                                     \
     callback(resp);
 
-#define RESPOND_TRUE                              \
-    RESPONSE_PARSE(BankResponse(k200OK, "true")); \
-    CACHE_FOREVER
+#define RESPOND_TRUE                                               \
+    const auto resp = HttpResponse::newCustomHttpResponse("true"); \
+    CORS;                                                          \
+    CACHE_FOREVER                                                  \
+    callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
 
