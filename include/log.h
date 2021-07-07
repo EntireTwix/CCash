@@ -9,11 +9,10 @@
 struct Log
 {
 private:
-    ChangeFlag log_flag;
+    ChangeFlag<true> log_flag;
     std::string log_snapshot;
 
 public:
-    Log() noexcept;
 #if MAX_LOG_SIZE == 1
     Transaction data;
 #else

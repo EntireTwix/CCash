@@ -28,7 +28,7 @@ class Bank
 private:
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-    ChangeFlag save_flag;
+    ChangeFlag<false> save_flag;
 #else
     bool save_flag = false;
 #endif

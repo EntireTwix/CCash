@@ -1,10 +1,5 @@
 #include "log.h"
 
-Log::Log() noexcept
-{
-    log_flag.SetChangesOn();
-}
-
 void Log::AddTrans(Transaction &&t) noexcept
 {
 #if MAX_LOG_SIZE == 1
