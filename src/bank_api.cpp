@@ -92,7 +92,9 @@ void api::Close(req_args) const
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    RESPONSE_PARSE(BankResponse(k200OK, std::to_string(bank.Contains(name))));
+    const auto resp = HttpResponse::newCustomHttpResponse(bank.Contains(name) ? "true" : "false");
+    CORS;
+    callback(resp);
 }
 void api::AdminVerifyAccount(req_args) const
 {
