@@ -92,12 +92,12 @@ int main(int argc, char **argv)
                 std::cout << "Saving " << std::time(0) << '\n';
                 if (bank.GetChangeState())
                 {
-                    std::cout << "    to disk...\n";
+                    std::cout << "        to disk...\n";
                     bank.Save();
                 }
                 else
                 {
-                    std::cout << "    no changes...\n";
+                    std::cout << "     no changes...\n";
                 }
             }
         })
