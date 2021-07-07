@@ -28,7 +28,6 @@ void JsonFilter<check_content_type>::doFilter(const HttpRequestPtr &req,
             return;
         }
     }
-
     const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k406NotAcceptable, "Client must Accept JSON"));
     fcb(resp);
 }
