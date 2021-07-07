@@ -11,7 +11,7 @@ constexpr const char *users_location = @USER_SAVE@;
 constexpr const char *config_location = @DROGON_CONFIG@;
 
 // Returns money to an account on deletion (useful if you dont want any money to leave the economy)
-#define RETURN_ON_DEL @RETURN_ON_DEL_VAL @
+#define RETURN_ON_DEL @RETURN_ON_DEL_VAL@
 constexpr const char *return_account = @RETURN_ON_DEL_NAME_VAL@;
 
 /*
