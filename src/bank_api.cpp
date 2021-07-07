@@ -53,20 +53,20 @@ void api::SendFunds(req_args) const
     GEN_BODY
     RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["name"].asCString(), body["amount"].asUInt()));
 }
-void api::VerifyPassword(req_args) const { RESPOND_TRUE }
+void api::VerifyPassword(req_args) const { RESPOND_TRUE; }
 
 //Meta Usage
 void api::ChangePassword(req_args) const
 {
     GEN_BODY
     bank.ChangePassword(NAME_PARAM, std::move(body["pass"].asCString()));
-    RESPOND_TRUE
+    RESPOND_TRUE;
 }
 void api::AdminChangePassword(req_args) const
 {
     GEN_BODY
     bank.ChangePassword(body["name"].asCString(), std::move(body["pass"].asCString()));
-    RESPOND_TRUE
+    RESPOND_TRUE;
 }
 void api::SetBal(req_args) const
 {
@@ -90,7 +90,7 @@ void api::Close(req_args) const
 {
     bank.Save();
     app().quit();
-    RESPOND_TRUE //filter handles admin creds
+    RESPOND_TRUE; //filter handles admin creds
 }
 void api::Contains(req_args, const std::string &name) const
 {
@@ -100,7 +100,7 @@ void api::Contains(req_args, const std::string &name) const
 }
 void api::AdminVerifyAccount(req_args) const
 {
-    RESPOND_TRUE //filter handles admin creds
+    RESPOND_TRUE; //filter handles admin creds
 }
 void api::ApiProperties(req_args) const
 {
