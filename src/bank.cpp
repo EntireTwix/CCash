@@ -10,7 +10,7 @@ __attribute__((always_inline)) inline bool ValidUsrname(const std::string &name)
     }
     for (const char &c : name)
     {
-        if (!(std::isalpha(c) || std::islower(c) || std::isdigit(c) || c == '_'))
+        if (!((c > 96 && c < 122) || std::isdigit(c) || c == '_'))
         {
             return false;
         }
