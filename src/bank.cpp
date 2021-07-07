@@ -177,7 +177,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    if (users.modify_if(name, [amount](User &u) { u.balance += amount; }))
+    if (users.modify_if(name, [amount](User &u) { u.balance < (amount*-1)? u.balance = 0 : u.balance += amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
