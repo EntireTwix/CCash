@@ -1,18 +1,18 @@
 #pragma once
 
-// Setting both values to 0 does not compile logging (useful for if disk/memory is very valuable)
+// Setting to 0 does not compile logging (useful for if disk/memory is very valuable)
 #define MAX_LOG_SIZE @MAX_LOG_SIZE_VAL @
 
 //default to minecraft usernames
 constexpr unsigned min_name_size = 3;
 constexpr unsigned max_name_size = 16;
 
-constexpr const char *users_location = @USER_SAVE @;
-constexpr const char *config_location = @DROGON_CONFIG @;
+constexpr const char *users_location = @USER_SAVE@;
+constexpr const char *config_location = @DROGON_CONFIG@;
 
 // Returns money to an account on deletion (useful if you dont want any money to leave the economy)
 #define RETURN_ON_DEL @RETURN_ON_DEL_VAL @
-constexpr const char *return_account = @RETURN_ON_DEL_NAME_VAL @;
+constexpr const char *return_account = @RETURN_ON_DEL_NAME_VAL@;
 
 /*
 if true, when frequency is hit AND changes have happened then save 
@@ -26,7 +26,7 @@ if false, when frequency is hit save
     cons
         HIGH disk usage
 */
-#define CONSERVATIVE_DISK_SAVE @CONSERVATIVE_DISK_SAVE_VAL @
+#define CONSERVATIVE_DISK_SAVE @CONSERVATIVE_DISK_SAVE_VAL@
 
 /*
 example, when set to 2
@@ -37,4 +37,4 @@ etc
 */
 #define API_VERSION 1
 
-#define MULTI_THREADED @MULTI_THREADED_VAL @
+#define MULTI_THREADED @MULTI_THREADED_VAL@
