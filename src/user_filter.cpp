@@ -9,12 +9,12 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                                                         FilterChainCallback &&fccb)
 {
     static thread_local std::string_view auth_header = req->getHeader("Authorization");
-    if (auth_header.size() > 6)
+    if (auth_header.size() > 6 && auth_header.size() <= 517) //"Basic " + username + ':' + password
     {
         if (auth_header.substr(0, 6) == "Basic ")
         {
             static thread_local std::string_view base64_input = auth_header.substr(6);
-            static thread_local std::array<char, 511> base64_result; //255 username + ':' + 255 password
+            static thread_local std::array<char, 384> base64_result; //(255 username + ':' + 255 password) * 3/4
             static thread_local size_t new_sz;
             base64_decode(base64_input.data(), base64_input.size(), base64_result.begin(), &new_sz, 0);
 
@@ -22,14 +22,15 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
             static thread_local std::size_t middle = results_view.find(':');
             if (middle != std::string::npos)
             {
-                base64_result[middle] = '\0';
-                static thread_local const std::string &username(results_view.substr(0, middle).data());
+                static thread_local std::string username;
+                string_view_to_string(username, results_view.substr(0, middle));
                 if constexpr (require_admin)
                 {
                     if (bank.AdminVerifyAccount(username))
                     {
-                        base64_result[new_sz] = '\0';
-                        if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
+                        static thread_local std::string password;
+                        string_view_to_string(password, results_view.substr(middle + 1));
+                        if (bank.VerifyPassword(username, password))
                         {
                             fccb();
                             return;
@@ -38,7 +39,8 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                 }
                 else
                 {
-                    base64_result[new_sz] = '\0';
+                    static thread_local std::string password;
+                    string_view_to_string(password, results_view.substr(middle + 1));
                     if (bank.VerifyPassword(username, results_view.substr(middle + 1)))
                     {
                         if constexpr (set_body_flag)

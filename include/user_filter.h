@@ -2,6 +2,7 @@
 #include <drogon/HttpFilter.h>
 #include <libbase64.h>
 #include <array>
+#include "str_intrusion.h"
 #include "bank.h"
 
 using namespace drogon;

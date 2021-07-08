@@ -65,9 +65,9 @@ void api::SendFunds(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
-        res = bank.SendFunds(NAME_PARAM, name_val.data(), amount.value());
+        static thread_local std::string name_val;
+        string_view_to_string(name_val, name.value());
+        res = bank.SendFunds(NAME_PARAM, name_val, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -86,9 +86,9 @@ void api::ChangePassword(req_args) const
     }
     else
     {
-        static thread_local auto &pass_val = pass.value();
-        *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
-        bank.ChangePassword(NAME_PARAM, std::move(pass_val.data()));
+        static thread_local std::string pass_val;
+        string_view_to_string(pass_val, pass.value());
+        bank.ChangePassword(NAME_PARAM, std::move(pass_val));
     }
     RESPOND_TRUE;
 }
@@ -104,10 +104,10 @@ void api::AdminChangePassword(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        static thread_local auto &pass_val = name.value();
-        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
-        bank.ChangePassword(name_val.data(), std::move(pass_val.data()));
+        static thread_local std::string name_val, pass_val;
+        string_view_to_string(name_val, name.value());
+        string_view_to_string(pass_val, pass.value());
+        bank.ChangePassword(name_val, std::move(pass_val));
     }
     RESPOND_TRUE;
 }
@@ -123,9 +123,9 @@ void api::SetBal(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
-        res = bank.SetBal(name_val.data(), amount.value());
+        static thread_local std::string name_val;
+        string_view_to_string(name_val, name.value());
+        res = bank.SetBal(name_val, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -141,9 +141,9 @@ void api::ImpactBal(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
-        res = bank.ImpactBal(name_val.data(), amount.value());
+        static thread_local std::string name_val;
+        string_view_to_string(name_val, name.value());
+        res = bank.ImpactBal(name_val, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -188,7 +188,6 @@ void api::ApiProperties(req_args) const
     CACHE_FOREVER;
     callback(resp);
 }
-
 void api::AddUser(req_args) const
 {
     SIMD_JSON_GEN;
@@ -201,10 +200,10 @@ void api::AddUser(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        static thread_local auto &pass_val = pass.value();
-        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
-        res = bank.AddUser(name_val.data(), 0, pass_val.data());
+        static thread_local std::string name_val, pass_val;
+        string_view_to_string(name_val, name.value());
+        string_view_to_string(pass_val, pass.value());
+        res = bank.AddUser(std::move(name_val), 0, std::move(pass_val));
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -221,10 +220,10 @@ void api::AdminAddUser(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        static thread_local auto &pass_val = pass.value();
-        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
-        res = bank.AddUser(name_val.data(), amount.value(), pass_val.data());
+        static thread_local std::string name_val, pass_val;
+        string_view_to_string(name_val, name.value());
+        string_view_to_string(pass_val, pass.value());
+        res = bank.AddUser(std::move(name_val), amount.value(), std::move(pass_val));
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -243,9 +242,9 @@ void api::AdminDelUser(req_args) const
     }
     else
     {
-        static thread_local auto &name_val = name.value();
-        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
-        res = bank.DelUser(name_val.data());
+        static thread_local std::string name_val;
+        string_view_to_string(name_val, name.value());
+        res = bank.DelUser(name_val);
     }
     RESPONSE_PARSE(std::move(res));
 }

@@ -1,6 +1,7 @@
 #pragma once
 #include <drogon/HttpController.h>
 #include "simdjson.h"
+#include "str_intrusion.h"
 #include "json_filter.h"
 #include "user_filter.h"
 
