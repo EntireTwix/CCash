@@ -1,6 +1,7 @@
 #pragma once
 #include <drogon/HttpFilter.h>
 #include <libbase64.h>
+#include <array>
 #include "bank.h"
 
 using namespace drogon;
