@@ -133,7 +133,7 @@ void api::ImpactBal(req_args) const
 {
     SIMD_JSON_GEN;
     static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    static thread_local auto amount = doc.find_field("amount").get_int64();
     BankResponse res;
     if (name.error() || amount.error())
     {
