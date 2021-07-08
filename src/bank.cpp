@@ -2,8 +2,6 @@
 
 using namespace drogon;
 
-#define INLINE __attribute__((always_inline)) inline
-
 INLINE bool ValidUsrname(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
@@ -68,14 +66,16 @@ bool Bank::GetChangeState() const noexcept
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     static thread_local uint32_t res = 0;
-    users.if_contains(name, [](const User &u) { res = u.balance + 1; });
+    users.if_contains(name, [](const User &u)
+                      { res = u.balance + 1; });
     return res ? BankResponse(k200OK, std::to_string(res - 1)) : BankResponse(k404NotFound, "\"User not found\"");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
 #if MAX_LOG_SIZE > 0
     BankResponse res;
-    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog()); }))
+    if (!users.modify_if(name, [&res](User &u)
+                         { res = BankResponse(k200OK, u.log.GetLog()); }))
     {
         return BankResponse(k404NotFound, "\"User not found\"");
     }
@@ -106,36 +106,40 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
     static thread_local Transaction temp(a_name, b_name, amount);
-    if (!users.modify_if(a_name, [amount](User &a) {
+    if (!users.modify_if(a_name, [amount](User &a)
+                         {
 #else
-    if (!users.modify_if(a_name, [&state, amount](User &a) {
+    if (!users.modify_if(a_name, [&state, amount](User &a)
+                         {
 #endif
-            //if A can afford it
-            if (a.balance < amount)
-            {
-                state = BankResponse(k400BadRequest, "\"Sender has insufficient funds\"");
-            }
-            else
-            {
-                a.balance -= amount;
+                             //if A can afford it
+                             if (a.balance < amount)
+                             {
+                                 state = BankResponse(k400BadRequest, "\"Sender has insufficient funds\"");
+                             }
+                             else
+                             {
+                                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
+                                 a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
 #endif
-                state = BankResponse(k200OK, "\"Transfer successful!\"");
-            }
-        }))
+                                 state = BankResponse(k200OK, "\"Transfer successful!\"");
+                             }
+                         }))
     {
         return {k404NotFound, "\"Sender does not exist\""};
     }
     if (state.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [amount](User &b) {
-            b.balance += amount;
-            b.log.AddTrans(std::move(temp));
-        }); //about 40% of this function's cost
+        users.modify_if(b_name, [amount](User &b)
+                        {
+                            b.balance += amount;
+                            b.log.AddTrans(std::move(temp));
+                        }); //about 40% of this function's cost
 #else
-        users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
+        users.modify_if(b_name, [amount](User &b)
+                        { b.balance += amount; });
 #endif
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -150,13 +154,15 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 bool Bank::VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept
 {
     static thread_local bool res = false;
-    users.if_contains(name, [&attempt](const User &u) { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
+    users.if_contains(name, [&attempt](const User &u)
+                      { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
     return res;
 }
 
 void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
 {
-    users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
+    users.modify_if(name, [&new_pass](User &u)
+                    { u.password = xxHashStringGen{}(new_pass); });
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
     save_flag.SetChangesOn();
@@ -167,7 +173,8 @@ void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexc
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    if (users.modify_if(name, [amount](User &u)
+                        { u.balance = amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -189,7 +196,8 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    if (users.modify_if(name, [amount](User &u) { u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount; }))
+    if (users.modify_if(name, [amount](User &u)
+                        { u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -243,7 +251,9 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{save_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [this, &bal](const User &u) { bal = u.balance; }) && bal)
+    if (users.if_contains(name, [this, &bal](const User &u)
+                          { bal = u.balance; }) &&
+        bal)
     {
         users.modify_if(return_account, [ this, bal ](User & u))
         {
@@ -269,36 +279,40 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 }
 void Bank::Save()
 {
-    static thread_local Json::Value temp;
+    if (GetChangeState())
+    {
+        static thread_local Json::Value temp;
 
-    //loading info into json temp
-    {
-        std::unique_lock<std::shared_mutex> lock{save_lock};
-        for (const auto &u : users)
+        //loading info into json temp
         {
-            //we know it contains this key but we call this func to grab mutex
-            users.if_contains(u.first, [&u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
+            std::unique_lock<std::shared_mutex> lock{save_lock};
+            for (const auto &u : users)
+            {
+                //we know it contains this key but we call this func to grab mutex
+                users.if_contains(u.first, [&u](const User &u_val)
+                                  { temp[u.first] = u_val.Serialize(); });
+            }
         }
-    }
-    if (temp.isNull())
-    {
-        throw std::invalid_argument("Saving Failed\n");
-    }
-    else
-    {
-        static thread_local std::ofstream user_save(users_location);
-        static thread_local Json::StreamWriterBuilder builder;
-        static thread_local const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-        writer->write(temp, &user_save);
-        user_save.close();
-    }
+        if (temp.isNull())
+        {
+            throw std::invalid_argument("Saving Failed\n");
+        }
+        else
+        {
+            static thread_local std::ofstream user_save(users_location);
+            static thread_local Json::StreamWriterBuilder builder;
+            static thread_local const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+            writer->write(temp, &user_save);
+            user_save.close();
+        }
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-    save_flag.SetChangesOff();
+        save_flag.SetChangesOff();
 #else
-    save_flag = true;
+        save_flag = true;
 #endif
 #endif
+    }
 }
 
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
