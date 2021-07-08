@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include <xxhash.h>
+#include "xxhash.h"
 
 struct xxHashStringGen
 {
