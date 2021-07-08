@@ -22,6 +22,7 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/json_filter.cpp
     src/log.cpp
     src/simdjson.cpp
+    src/str_intrusion.cpp
     src/transaction.cpp
     src/user_filter.cpp
     src/user.cpp
