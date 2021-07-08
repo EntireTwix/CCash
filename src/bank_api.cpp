@@ -2,24 +2,29 @@
 
 //all my homies hate jsoncpp
 
-#define CACHE_FOREVER resp->setExpiredTime(0);
+#define CACHE_FOREVER resp->setExpiredTime(0)
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
-#define GEN_BODY                                \
-    const auto temp_req = req->getJsonObject(); \
-    const auto body = temp_req ? *temp_req : Json::Value();
+#define GEN_BODY                                                    \
+    static thread_local const auto temp_req = req->getJsonObject(); \
+    static thread_local const auto body = temp_req ? *temp_req : Json::Value()
 
-#define RESPONSE_PARSE(R)                                     \
-    const auto resp = HttpResponse::newCustomHttpResponse(R); \
-    CORS;                                                     \
-    callback(resp);
+static thread_local ondemand::parser parser;
+#define SIMD_JSON_GEN                                                  \
+    static thread_local simdjson::padded_string input(req->getBody()); \
+    static thread_local ondemand::document doc = parser.iterate(input)
 
-#define RESPOND_TRUE                                               \
-    const auto resp = HttpResponse::newCustomHttpResponse("true"); \
-    CORS;                                                          \
-    CACHE_FOREVER                                                  \
-    callback(resp);
+#define RESPONSE_PARSE(R)                                                         \
+    static thread_local const auto resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                                                         \
+    callback(resp)
+
+#define RESPOND_TRUE                                                                                         \
+    static thread_local const auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
+    CORS;                                                                                                    \
+    CACHE_FOREVER;                                                                                           \
+    callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
 
@@ -42,68 +47,131 @@ void api::GetLogs(req_args)
     }
     else
     {
-        auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        static thread_local const auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
         CORS;
-        CACHE_FOREVER
+        CACHE_FOREVER;
         callback(resp);
     }
 }
 void api::SendFunds(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.SendFunds(NAME_PARAM, body["name"].asCString(), body["amount"].asUInt()));
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    BankResponse res;
+    if (name.error() || amount.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
+        res = bank.SendFunds(NAME_PARAM, name_val.data(), amount.value());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
-void api::VerifyPassword(req_args) const { RESPOND_TRUE }
+void api::VerifyPassword(req_args) const { RESPOND_TRUE; }
 
 //Meta Usage
 void api::ChangePassword(req_args) const
 {
-    GEN_BODY
-    bank.ChangePassword(NAME_PARAM, std::move(body["pass"].asCString()));
-    RESPOND_TRUE
+    SIMD_JSON_GEN;
+    static thread_local auto pass = doc.find_field("pass").get_string();
+    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    BankResponse res;
+    if (pass.error() || amount.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &pass_val = pass.value();
+        *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
+        bank.ChangePassword(NAME_PARAM, std::move(pass_val.data()));
+    }
+    RESPOND_TRUE;
 }
 void api::AdminChangePassword(req_args) const
 {
-    GEN_BODY
-    bank.ChangePassword(body["name"].asCString(), std::move(body["pass"].asCString()));
-    RESPOND_TRUE
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto pass = doc.find_field("pass").get_string();
+    BankResponse res;
+    if (name.error() || pass.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        static thread_local auto &pass_val = name.value();
+        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
+        bank.ChangePassword(name_val.data(), std::move(pass_val.data()));
+    }
+    RESPOND_TRUE;
 }
 void api::SetBal(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.SetBal(body["name"].asCString(), body["amount"].asUInt()));
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    BankResponse res;
+    if (name.error() || amount.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
+        res = bank.SetBal(name_val.data(), amount.value());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 void api::ImpactBal(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.ImpactBal(body["name"].asCString(), body["amount"].asInt64()));
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    BankResponse res;
+    if (name.error() || amount.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
+        res = bank.ImpactBal(name_val.data(), amount.value());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 
 //System Usage
 void api::Help(req_args) const
 {
-    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md"); //may make README.md
+    static thread_local const auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
     CACHE_FOREVER;
     callback(resp);
 }
 void api::Close(req_args) const
 {
     bank.Save();
+    RESPOND_TRUE; //filter handles admin creds
     app().quit();
-    RESPOND_TRUE //filter handles admin creds
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    const auto resp = HttpResponse::newCustomHttpResponse(bank.Contains(name) ? "true" : "false");
-    CORS;
-    callback(resp);
+    RESPONSE_PARSE(BankResponse(k200OK, bank.Contains(name) ? "true" : "false"));
 }
 void api::AdminVerifyAccount(req_args) const
 {
-    RESPOND_TRUE //filter handles admin creds
+    RESPOND_TRUE; //filter handles admin creds
 }
 void api::ApiProperties(req_args) const
 {
+    //yet to be converted to simdjson
     Json::Value temp;
     temp["version"] = API_VERSION;
     temp["max_log"] = MAX_LOG_SIZE;
@@ -123,22 +191,62 @@ void api::ApiProperties(req_args) const
 
 void api::AddUser(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.AddUser(body["name"].asCString(), 0, body["pass"].asCString()))
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto pass = doc.find_field("pass").get_string();
+    BankResponse res;
+    if (name.error() || pass.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        static thread_local auto &pass_val = pass.value();
+        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
+        res = bank.AddUser(name_val.data(), 0, pass_val.data());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 void api::AdminAddUser(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.AddUser(body["name"].asCString(), body["amount"].asUInt(), body["pass"].asCString()))
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    static thread_local auto pass = doc.find_field("pass").get_string();
+    BankResponse res;
+    if (name.error() || amount.error() || pass.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        static thread_local auto &pass_val = pass.value();
+        *(char *)(name_val.data() + name_val.size()) = *(char *)(pass_val.data() + pass_val.size()) = '\0'; //ignoring read-only
+        res = bank.AddUser(name_val.data(), amount.value(), pass_val.data());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 void api::DelUser(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.DelUser(NAME_PARAM))
+    RESPONSE_PARSE(bank.DelUser(NAME_PARAM));
 }
 void api::AdminDelUser(req_args) const
 {
-    GEN_BODY
-    RESPONSE_PARSE(bank.DelUser(body["name"].asCString()))
+    SIMD_JSON_GEN;
+    static thread_local auto name = doc.find_field("name").get_string();
+    BankResponse res;
+    if (name.error())
+    {
+        res = BankResponse(k400BadRequest, "Invalid JSON");
+    }
+    else
+    {
+        static thread_local auto &name_val = name.value();
+        *(char *)(name_val.data() + name_val.size()) = '\0'; //ignoring read-only
+        res = bank.DelUser(name_val.data());
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 #endif
