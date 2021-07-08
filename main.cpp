@@ -87,31 +87,32 @@ int main(int argc, char **argv)
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
-            std::thread([saving_freq]() {
-                while (1)
-                {
-                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                    std::cout << "Saving " << std::time(0) << "...\n";
-                    if (bank.GetChangeState())
-                    {
-                        std::cout << "        to disk...\n";
-                        bank.Save();
-                    }
-                    else
-                    {
-                        std::cout << "     no changes...\n";
-                    }
-                }
-            })
+            std::thread([saving_freq]()
+                        {
+                            while (1)
+                            {
+                                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                                std::cout << "Saving " << std::time(0) << "...\n";
+                                if (bank.GetChangeState())
+                                {
+                                    std::cout << "        to disk...\n";
+                                    bank.Save();
+                                }
+                                else
+                                {
+                                    std::cout << "     no changes...\n";
+                                }
+                            }
+                        })
                 .detach();
         }
-    }
-    auto API = std::make_shared<api>(bank);
-    auto user_filter_default = std::make_shared<UserFilter<true, false>>(bank);
-    auto user_filter_sparse = std::make_shared<UserFilter<false, false>>(bank);
-    auto admin_filter = std::make_shared<UserFilter<false, true>>(bank);
-    auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
-    auto json_resp_filter = std::make_shared<JsonFilter<false>>();
+    } //destroying setup variables
+    static auto API = std::make_shared<api>(bank);
+    static auto user_filter_default = std::make_shared<UserFilter<true, false>>(bank);
+    static auto user_filter_sparse = std::make_shared<UserFilter<false, false>>(bank);
+    static auto admin_filter = std::make_shared<UserFilter<false, true>>(bank);
+    static auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
+    static auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
     app()
         .loadConfigFile(config_location)
