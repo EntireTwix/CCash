@@ -67,20 +67,20 @@ bool Bank::GetChangeState() const noexcept
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    uint32_t res = 0;
-    users.if_contains(name, [&res](const User &u) { res = u.balance + 1; });
+    static thread_local uint32_t res = 0;
+    users.if_contains(name, [](const User &u) { res = u.balance + 1; });
     return res ? BankResponse(k200OK, std::to_string(res - 1)) : BankResponse(k404NotFound, "\"User not found\"");
 }
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
-    BankResponse res;
 #if MAX_LOG_SIZE > 0
+    BankResponse res;
     if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog()); }))
     {
         return BankResponse(k404NotFound, "\"User not found\"");
     }
-#endif
     return res;
+#endif
 }
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {
@@ -102,11 +102,11 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         return {k404NotFound, "\"Reciever does not exist\""};
     }
 
-    BankResponse state;
+    static thread_local BankResponse state;
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    Transaction temp(a_name, b_name, amount);
-    if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
+    static thread_local Transaction temp(a_name, b_name, amount);
+    if (!users.modify_if(a_name, [amount](User &a) {
 #else
     if (!users.modify_if(a_name, [&state, amount](User &a) {
 #endif
@@ -130,14 +130,13 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (state.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [&temp, amount](User &b) {
+        users.modify_if(b_name, [amount](User &b) {
             b.balance += amount;
             b.log.AddTrans(std::move(temp));
         }); //about 40% of this function's cost
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
 #endif
-
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
         save_flag.SetChangesOn(); //about 5% of this function's cost
@@ -150,8 +149,8 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 }
 bool Bank::VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept
 {
-    bool res = false;
-    users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
+    static thread_local bool res = false;
+    users.if_contains(name, [&attempt](const User &u) { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
     return res;
 }
 
@@ -244,10 +243,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{save_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [this, &bal](const User &u) {
-            bal = u.balance;
-        }) &&
-        bal)
+    if (users.if_contains(name, [this, &bal](const User &u) { bal = u.balance; }) && bal)
     {
         users.modify_if(return_account, [ this, bal ](User & u))
         {
@@ -273,7 +269,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 }
 void Bank::Save()
 {
-    Json::Value temp;
+    static thread_local Json::Value temp;
 
     //loading info into json temp
     {
@@ -281,7 +277,7 @@ void Bank::Save()
         for (const auto &u : users)
         {
             //we know it contains this key but we call this func to grab mutex
-            users.if_contains(u.first, [&temp, &u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
+            users.if_contains(u.first, [&u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
         }
     }
     if (temp.isNull())
@@ -290,9 +286,9 @@ void Bank::Save()
     }
     else
     {
-        std::ofstream user_save(users_location);
-        Json::StreamWriterBuilder builder;
-        const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
+        static thread_local std::ofstream user_save(users_location);
+        static thread_local Json::StreamWriterBuilder builder;
+        static thread_local const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
         writer->write(temp, &user_save);
         user_save.close();
     }
@@ -308,12 +304,12 @@ void Bank::Save()
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
 void Bank::Load()
 {
-    Json::CharReaderBuilder builder;
+    static thread_local Json::CharReaderBuilder builder;
 
-    Json::Value temp;
-    std::ifstream user_save(users_location);
+    static thread_local Json::Value temp;
+    static thread_local std::ifstream user_save(users_location);
     builder["collectComments"] = true;
-    JSONCPP_STRING errs;
+    static thread_local JSONCPP_STRING errs;
     if (!parseFromStream(builder, user_save, &temp, &errs))
     {
         std::cerr << errs << '\n';
