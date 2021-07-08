@@ -1,9 +1,11 @@
 #pragma once
 #include <drogon/HttpController.h>
+#include "simdjson.h"
 #include "json_filter.h"
 #include "user_filter.h"
 
 using namespace drogon;
+using namespace simdjson;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 
