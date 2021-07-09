@@ -100,11 +100,11 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         return {k404NotFound, "\"Reciever does not exist\""};
     }
 
-    static thread_local BankResponse state;
+    BankResponse state;
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
     static thread_local Transaction temp(a_name, b_name, amount);
-    if (!users.modify_if(a_name, [amount](User &a) {
+    if (!users.modify_if(a_name, [&state, amount](User &a) {
 #else
     if (!users.modify_if(a_name, [&state, amount](User &a) {
 #endif
