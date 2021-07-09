@@ -19,7 +19,7 @@ void Log::AddTrans(Transaction &&t) noexcept
 #endif
 }
 
-const std::string &Log::GetLog() noexcept
+const std::string &Log::GetLogs() noexcept
 {
     if (log_flag.GetChangeState()) //if there are changes
     {
