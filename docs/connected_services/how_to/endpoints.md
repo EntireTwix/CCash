@@ -33,8 +33,9 @@ all error responses have JSON along with them to describe
 
 ### Usage endpoints support
 `v` denoting the API version
-| name      |         v1         |
-| :-------- | :----------------: |
-| GetBal    | :heavy_check_mark: |
-| GetLog    | :heavy_check_mark: |
-| SendFunds | :heavy_check_mark: |
+| name           |         v1         |
+| :------------- | :----------------: |
+| GetBal         | :heavy_check_mark: |
+| GetLog         | :heavy_check_mark: |
+| SendFunds      | :heavy_check_mark: |
+| VerifyPassword | :heavy_check_mark: |
