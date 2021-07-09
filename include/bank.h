@@ -48,7 +48,9 @@ public:
 #endif
 
     BankResponse GetBal(const std::string &name) const noexcept;
+#if MAX_LOG_SIZE > 0
     BankResponse GetLogs(const std::string &name) noexcept;
+#endif
     BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
     bool VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept;
 

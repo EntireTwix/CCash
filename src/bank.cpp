@@ -69,17 +69,17 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
     users.if_contains(name, [](const User &u) { res = u.balance + 1; });
     return res ? BankResponse(k200OK, std::to_string(res - 1)) : BankResponse(k404NotFound, "\"User not found\"");
 }
+#if MAX_LOG_SIZE > 0
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
-#if MAX_LOG_SIZE > 0
     BankResponse res;
-    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLog()); }))
+    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLogs()); }))
     {
         return BankResponse(k404NotFound, "\"User not found\"");
     }
     return res;
-#endif
 }
+#endif
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {
     //cant send money to self, from self or amount is 0
@@ -119,7 +119,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
                 a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
 #endif
-                state = BankResponse(k200OK, "\"Transfer successful!\"");
+                state = BankResponse(k200OK, "true");
             }
         }))
     {
@@ -174,7 +174,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "\"Balance set!\""};
+        return {k200OK, "true"};
     }
     else
     {
@@ -196,7 +196,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "\"Balance added!\""};
+        return {k200OK, "true"};
     }
     else
     {
@@ -229,7 +229,7 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "\"User added!\""};
+        return {k200OK, "true"};
     }
     else
     {
@@ -259,7 +259,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse(k200OK, "\"User deleted!\"");
+        return BankResponse(k200OK, "true");
     }
     else
     {
