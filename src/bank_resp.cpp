@@ -7,9 +7,9 @@ BankResponse::BankResponse(drogon::HttpStatusCode code, const std::string &str) 
 template <>
 drogon::HttpResponsePtr drogon::toResponse(BankResponse &&data)
 {
-    static thread_local auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
+    auto res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
     res->setBody(std::move(data.second));
-    static thread_local auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
+    const auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
     if (!advices.empty())
     {
         for (auto &advice : advices)
