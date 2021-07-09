@@ -2,6 +2,7 @@
 
 void Log::AddTrans(Transaction &&t) noexcept
 {
+    log_flag.SetChangesOn();
 #if MAX_LOG_SIZE == 1
     data = std::move(t);
 #else
@@ -16,7 +17,6 @@ void Log::AddTrans(Transaction &&t) noexcept
     }
     data.push_back(std::move(t)); // In either case we have space under max length, move to new spot
 #endif
-    log_flag.SetChangesOn();
 }
 
 const std::string &Log::GetLog() noexcept
