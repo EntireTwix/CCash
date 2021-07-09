@@ -26,6 +26,7 @@
 | GetBal    | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 | GetLog    | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_check_mark: |
 | SendFunds |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_check_mark: |
+all error responses have JSON along with them to describe
 
 ### Usage endpoints support
 `v` denoting the API version
