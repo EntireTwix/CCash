@@ -1,6 +1,13 @@
 # Building
 [PREVIOUS PAGE](features/implementation.md) | [NEXT PAGE](FAQ.md)
 
+## System Requirements
+as CCash is very lightweight it can run on practically any device but here are some tips:
+* single core machines should toggle `MULTI_THREADED` to `false`
+* if your server is sufficiently active as so that each save freqeuncy saving is highly likely then `CONSERVATIVE_DISK_SAVE` should be toggled to `false`
+* `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage at about 173 bytes in memory and (size) in disk space per log. Setting to 0 will not even compile logs
+* with no users memory usage is 8.792517 Mb
+
 ## Drogon Depedencies 
 
 ### Linux
@@ -69,11 +76,12 @@ cmake -DMULTI_THREADING=false ..
 ```
 with `-D`
 
-### Lastly
+### Finishing building
+lastly type in
 ```
 cmake <flags of your choice or none> ..
 make -j<threads>
 ```
 
-### Certs
-make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use certbot, **it is Highly recommened you secure your server**.
+## Certs
+make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use [certbot](https://certbot.eff.org/), **it is Highly recommened you secure your server**.
