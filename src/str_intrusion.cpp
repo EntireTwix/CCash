@@ -32,6 +32,7 @@ struct string_data
 };
 template class rob<string_data, &std::string::_M_data>;
 
+StrFromSV_Wrapper::StrFromSV_Wrapper() noexcept {}
 StrFromSV_Wrapper::StrFromSV_Wrapper(std::string_view sv) noexcept
 {
     (str.*result<string_data>::ptr)((char *)sv.data());

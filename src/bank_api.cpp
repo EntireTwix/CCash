@@ -11,22 +11,27 @@
     static thread_local const auto body = temp_req ? *temp_req : Json::Value()
 
 static thread_local ondemand::parser parser;
-#define SIMD_JSON_GEN                                                  \
-    static thread_local simdjson::padded_string input(req->getBody()); \
-    static thread_local ondemand::document doc = parser.iterate(input)
+static thread_local simdjson::padded_string input;
+static thread_local ondemand::document doc;
+#define SIMD_JSON_GEN       \
+    input = req->getBody(); \
+    doc = parser.iterate(input)
 
-#define RESPONSE_PARSE(R)                                                          \
-    static thread_local const auto &resp = HttpResponse::newCustomHttpResponse(R); \
-    CORS;                                                                          \
+thread_local static drogon::HttpResponsePtr resp;
+#define RESPONSE_PARSE(R)                          \
+    resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                          \
     callback(resp)
 
-#define RESPOND_TRUE                                                                                          \
-    static thread_local const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
-    CORS;                                                                                                     \
-    CACHE_FOREVER;                                                                                            \
+#define RESPOND_TRUE                                                          \
+    resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
+    CORS;                                                                     \
+    CACHE_FOREVER;                                                            \
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
+
+static thread_local StrFromSV_Wrapper name_val, pass_val;
 
 api::api(Bank &b) noexcept : bank(b)
 {
@@ -47,7 +52,7 @@ void api::GetLogs(req_args)
     }
     else
     {
-        static thread_local const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
         CORS;
         CACHE_FOREVER;
         callback(resp);
@@ -65,7 +70,7 @@ void api::SendFunds(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
+        name_val = name.value();
         res = bank.SendFunds(NAME_PARAM, name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
@@ -84,7 +89,7 @@ void api::ChangePassword(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper pass_val(pass.value());
+        pass_val = pass.value();
         bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
     }
     RESPOND_TRUE;
@@ -101,8 +106,8 @@ void api::AdminChangePassword(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
-        static thread_local StrFromSV_Wrapper pass_val(pass.value());
+        name_val = name.value();
+        pass_val = pass.value();
         bank.ChangePassword(name_val.str, std::move(pass_val.str));
     }
     RESPOND_TRUE;
@@ -119,7 +124,7 @@ void api::SetBal(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
+        name_val = name.value();
         res = bank.SetBal(name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
@@ -136,7 +141,7 @@ void api::ImpactBal(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
+        name_val = name.value();
         res = bank.ImpactBal(name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
@@ -145,7 +150,7 @@ void api::ImpactBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    static thread_local const auto &resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
+    resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
     CACHE_FOREVER;
     callback(resp);
 }
@@ -177,7 +182,7 @@ void api::ApiProperties(req_args) const
         temp["return_on_del_acc"] = return_account;
     }
 
-    auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
+    resp = HttpResponse::newHttpJsonResponse(std::move(temp));
     CORS;
     CACHE_FOREVER;
     callback(resp);
@@ -194,8 +199,8 @@ void api::AddUser(req_args) const
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        StrFromSV_Wrapper pass_val(pass.value());
+        name_val = name.value();
+        pass_val = pass.value();
         res = bank.AddUser(std::move(name_val.str), 0, std::move(pass_val.str));
     }
     RESPONSE_PARSE(std::move(res));
@@ -213,8 +218,8 @@ void api::AdminAddUser(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
-        static thread_local StrFromSV_Wrapper pass_val(pass.value());
+        name_val = name.value();
+        pass_val = pass.value();
         res = bank.AddUser(std::move(name_val.str), amount.value(), std::move(pass_val.str));
     }
     RESPONSE_PARSE(std::move(res));
@@ -234,7 +239,7 @@ void api::AdminDelUser(req_args) const
     }
     else
     {
-        static thread_local StrFromSV_Wrapper name_val(name.value());
+        name_val = name.value();
         res = bank.DelUser(name_val.str);
     }
     RESPONSE_PARSE(std::move(res));
