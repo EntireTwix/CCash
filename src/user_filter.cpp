@@ -9,13 +9,13 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                                                         FilterChainCallback &&fccb)
 {
     std::string_view auth_header = req->getHeader("Authorization");
-    if (auth_header.size() > 6 && auth_header.size() <= 688) //"Basic " + (username + ':' + password) * 4/3
+    if (auth_header.size() > 6 && auth_header.size() <= ((max_name_size + 256) * 4) / 3) //"Basic " + (username + ':' + password) * 4/3
     {
         if (auth_header.substr(0, 6) == "Basic ")
         {
             std::string_view base64_input = auth_header.substr(6);
-            static thread_local char result_buffer[511]; //(255 username + ':' + 255 password)
-            std::memset(result_buffer, 0, 511);
+            static thread_local char result_buffer[max_name_size + 256]; //(username + ':' + 255 password)
+            std::memset(result_buffer, 0, max_name_size + 256);
             size_t new_sz;
             base64_decode(base64_input.data(), base64_input.size(), result_buffer, &new_sz, 0);
 
