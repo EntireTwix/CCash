@@ -63,6 +63,6 @@ public:
     BankResponse AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
 
-    void Save();
+    const char *Save();
     void Load();
 };

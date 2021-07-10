@@ -21,16 +21,8 @@ static Bank bank;
 
 void SaveSig(int s)
 {
-    std::cout << "\nSaving on close...\n";
-    if (bank.GetChangeState())
-    {
-        std::cout << "        to disk...\n";
-        bank.Save();
-    }
-    else
-    {
-        std::cout << "     no changes...\n";
-    }
+    std::cout << "\nSaving on close...\n"
+              << bank.Save();
     exit(1);
 }
 
@@ -87,23 +79,14 @@ int main(int argc, char **argv)
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
-            std::thread([saving_freq]()
-                        {
-                            while (1)
-                            {
-                                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                                std::cout << "Saving " << std::time(0) << "...\n";
-                                if (bank.GetChangeState())
-                                {
-                                    std::cout << "        to disk...\n";
-                                    bank.Save();
-                                }
-                                else
-                                {
-                                    std::cout << "     no changes...\n";
-                                }
-                            }
-                        })
+            std::thread([saving_freq]() {
+                while (1)
+                {
+                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                    std::cout << "Saving " << std::time(0) << "...\n"
+                              << bank.Save();
+                }
+            })
                 .detach();
         }
     } //destroying setup variables
