@@ -226,7 +226,7 @@ BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::stri
         save_flag = true;
 #endif
 #endif
-        return {k204NoContent, ""};
+        return {k204NoContent, std::nullopt};
     }
     else
     {
@@ -256,11 +256,11 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse(k204NoContent, "");
+        return {k204NoContent, std::nullopt};
     }
     else
     {
-        return BankResponse(k404NotFound, "\"User not found\"");
+        return {k404NotFound, "\"User not found\""};
     }
 }
 void Bank::Save()
