@@ -15,16 +15,15 @@ static thread_local ondemand::parser parser;
     static thread_local simdjson::padded_string input(req->getBody()); \
     static thread_local ondemand::document doc = parser.iterate(input)
 
-thread_local static drogon::HttpResponsePtr resp;
-#define RESPONSE_PARSE(R)                          \
-    resp = HttpResponse::newCustomHttpResponse(R); \
-    CORS;                                          \
+#define RESPONSE_PARSE(R)                               \
+    auto resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                               \
     callback(resp)
 
-#define RESPOND_TRUE                                                          \
-    resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
-    CORS;                                                                     \
-    CACHE_FOREVER;                                                            \
+#define RESPOND_TRUE                                                               \
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
+    CORS;                                                                          \
+    CACHE_FOREVER;                                                                 \
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
@@ -48,7 +47,7 @@ void api::GetLogs(req_args)
     }
     else
     {
-        resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
         CORS;
         CACHE_FOREVER;
         callback(resp);
@@ -146,7 +145,7 @@ void api::ImpactBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
+    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
     CACHE_FOREVER;
     callback(resp);
 }
@@ -178,7 +177,7 @@ void api::ApiProperties(req_args) const
         temp["return_on_del_acc"] = return_account;
     }
 
-    resp = HttpResponse::newHttpJsonResponse(std::move(temp));
+    auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
     CORS;
     CACHE_FOREVER;
     callback(resp);
