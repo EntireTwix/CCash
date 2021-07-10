@@ -10,13 +10,13 @@ drogon::HttpResponsePtr drogon::toResponse(BankResponse &&data)
     std::shared_ptr<HttpResponseImpl> res;
     if (data.first == k204NoContent)
     {
-        res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
-        res->setBody(std::move(data.second));
+        res = std::make_shared<HttpResponseImpl>();
+        res->setStatusCode(data.first);
     }
     else
     {
-        res = std::make_shared<HttpResponseImpl>();
-        res->setStatusCode(data.first);
+        res = std::make_shared<HttpResponseImpl>(data.first, CT_APPLICATION_JSON);
+        res->setBody(std::move(data.second));
     }
     const auto &advices = HttpAppFrameworkImpl::instance().getResponseCreationAdvices();
     if (!advices.empty())
