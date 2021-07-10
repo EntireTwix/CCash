@@ -56,7 +56,6 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
         {
             std::string_view base64_input = auth_header.substr(6);
             char result_buffer[max_name_size + 256]; //(username + ':' + 255 password)
-            std::memset(result_buffer, 0, max_name_size + 256);
             size_t new_sz;
             base64_decode(base64_input.data(), base64_input.size(), result_buffer, &new_sz, 0);
 
