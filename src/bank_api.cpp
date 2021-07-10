@@ -6,12 +6,14 @@
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
+#define GEN_BODY                                                    \
+    static thread_local const auto temp_req = req->getJsonObject(); \
+    static thread_local const auto body = temp_req ? *temp_req : Json::Value()
+
 static thread_local ondemand::parser parser;
-static thread_local simdjson::padded_string input;
-static thread_local ondemand::document doc;
-#define SIMD_JSON_GEN       \
-    input = req->getBody(); \
-    doc = parser.iterate(input)
+#define SIMD_JSON_GEN                                                  \
+    static thread_local simdjson::padded_string input(req->getBody()); \
+    static thread_local ondemand::document doc = parser.iterate(input)
 
 thread_local static drogon::HttpResponsePtr resp;
 #define RESPONSE_PARSE(R)                          \
@@ -26,8 +28,6 @@ thread_local static drogon::HttpResponsePtr resp;
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
-
-static thread_local StrFromSV_Wrapper name_val, pass_val;
 
 api::api(Bank &b) noexcept : bank(b)
 {
@@ -57,8 +57,8 @@ void api::GetLogs(req_args)
 void api::SendFunds(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    auto name = doc.find_field("name").get_string();
+    auto amount = doc.find_field("amount").get_uint64();
     BankResponse res;
     if (name.error() || amount.error())
     {
@@ -66,7 +66,7 @@ void api::SendFunds(req_args) const
     }
     else
     {
-        name_val = name.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
         res = bank.SendFunds(NAME_PARAM, name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
@@ -77,7 +77,7 @@ void api::VerifyPassword(req_args) const { RESPOND_TRUE; }
 void api::ChangePassword(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto pass = doc.find_field("pass").get_string();
+    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
     if (pass.error())
     {
@@ -85,7 +85,7 @@ void api::ChangePassword(req_args) const
     }
     else
     {
-        pass_val = pass.value();
+        static thread_local StrFromSV_Wrapper pass_val(pass.value());
         bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
     }
     RESPOND_TRUE;
@@ -93,8 +93,8 @@ void api::ChangePassword(req_args) const
 void api::AdminChangePassword(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto pass = doc.find_field("pass").get_string();
+    auto name = doc.find_field("name").get_string();
+    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
     if (name.error() || pass.error())
     {
@@ -102,8 +102,8 @@ void api::AdminChangePassword(req_args) const
     }
     else
     {
-        name_val = name.value();
-        pass_val = pass.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
+        static thread_local StrFromSV_Wrapper pass_val(pass.value());
         bank.ChangePassword(name_val.str, std::move(pass_val.str));
     }
     RESPOND_TRUE;
@@ -111,8 +111,8 @@ void api::AdminChangePassword(req_args) const
 void api::SetBal(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto amount = doc.find_field("amount").get_uint64();
+    auto name = doc.find_field("name").get_string();
+    auto amount = doc.find_field("amount").get_uint64();
     BankResponse res;
     if (name.error() || amount.error())
     {
@@ -120,16 +120,71 @@ void api::SetBal(req_args) const
     }
     else
     {
-        name_val = name.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
         res = bank.SetBal(name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
 }
+
+#define time_func_a(f, a, x)                                                                  \
+    {                                                                                         \
+        using namespace std::chrono;                                                          \
+        uint32_t timer = 0;                                                                   \
+        for (int i = 0; i < x; ++i)                                                           \
+        {                                                                                     \
+            auto t1 = high_resolution_clock::now().time_since_epoch();                        \
+            f;                                                                                \
+            auto t2 = high_resolution_clock::now().time_since_epoch();                        \
+            a;                                                                                \
+            timer += std::chrono::duration_cast<std::chrono::nanoseconds>((t2 - t1)).count(); \
+        }                                                                                     \
+        std::cout << timer / x << '\n';                                                       \
+    }
+
+#define time_func(f, x)                                                                       \
+    {                                                                                         \
+        using namespace std::chrono;                                                          \
+        uint32_t timer = 0;                                                                   \
+        for (int i = 0; i < x; ++i)                                                           \
+        {                                                                                     \
+            auto t1 = high_resolution_clock::now().time_since_epoch();                        \
+            f;                                                                                \
+            auto t2 = high_resolution_clock::now().time_since_epoch();                        \
+            timer += std::chrono::duration_cast<std::chrono::nanoseconds>((t2 - t1)).count(); \
+        }                                                                                     \
+        std::cout << timer / x << '\n';                                                       \
+    }
+
+#define Op_a(v, name, x, a)   \
+    {                         \
+        std::cout << name;    \
+        time_func_a(v, a, x); \
+    }
+
+#define Op(v, name, x)     \
+    {                      \
+        std::cout << name; \
+        time_func(v, x);   \
+    }
 void api::ImpactBal(req_args) const
 {
+    Op(
+        SIMD_JSON_GEN;
+        auto name = doc.find_field("name").get_string();
+        auto amount = doc.find_field("amount").get_int64();
+        BankResponse res;
+        if (name.error() || amount.error()) {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        } else {
+            static thread_local StrFromSV_Wrapper name_val(name.value());
+            res = bank.ImpactBal(name_val.str, amount.value());
+        },
+        "simdjson ", 10000);
+    Op(GEN_BODY; bank.ImpactBal(body["name"].asCString(), body["amount"].asInt64()), "jsoncpp ", 10000);
+
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto amount = doc.find_field("amount").get_int64();
+    auto name = doc.find_field("name").get_string();
+    auto amount = doc.find_field("amount").get_int64();
     BankResponse res;
     if (name.error() || amount.error())
     {
@@ -137,7 +192,7 @@ void api::ImpactBal(req_args) const
     }
     else
     {
-        name_val = name.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
         res = bank.ImpactBal(name_val.str, amount.value());
     }
     RESPONSE_PARSE(std::move(res));
@@ -186,8 +241,8 @@ void api::ApiProperties(req_args) const
 void api::AddUser(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto pass = doc.find_field("pass").get_string();
+    auto name = doc.find_field("name").get_string();
+    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
     if (name.error() || pass.error())
     {
@@ -195,8 +250,8 @@ void api::AddUser(req_args) const
     }
     else
     {
-        name_val = name.value();
-        pass_val = pass.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
+        static thread_local StrFromSV_Wrapper pass_val(pass.value());
         res = bank.AddUser(std::move(name_val.str), 0, std::move(pass_val.str));
     }
     RESPONSE_PARSE(std::move(res));
@@ -204,9 +259,9 @@ void api::AddUser(req_args) const
 void api::AdminAddUser(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
-    static thread_local auto amount = doc.find_field("amount").get_uint64();
-    static thread_local auto pass = doc.find_field("pass").get_string();
+    auto name = doc.find_field("name").get_string();
+    auto amount = doc.find_field("amount").get_uint64();
+    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
     if (name.error() || amount.error() || pass.error())
     {
@@ -214,8 +269,8 @@ void api::AdminAddUser(req_args) const
     }
     else
     {
-        name_val = name.value();
-        pass_val = pass.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
+        static thread_local StrFromSV_Wrapper pass_val(pass.value());
         res = bank.AddUser(std::move(name_val.str), amount.value(), std::move(pass_val.str));
     }
     RESPONSE_PARSE(std::move(res));
@@ -227,7 +282,7 @@ void api::DelUser(req_args) const
 void api::AdminDelUser(req_args) const
 {
     SIMD_JSON_GEN;
-    static thread_local auto name = doc.find_field("name").get_string();
+    auto name = doc.find_field("name").get_string();
     BankResponse res;
     if (name.error())
     {
@@ -235,7 +290,7 @@ void api::AdminDelUser(req_args) const
     }
     else
     {
-        name_val = name.value();
+        static thread_local StrFromSV_Wrapper name_val(name.value());
         res = bank.DelUser(name_val.str);
     }
     RESPONSE_PARSE(std::move(res));
