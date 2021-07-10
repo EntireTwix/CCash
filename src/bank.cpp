@@ -104,10 +104,8 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
     static thread_local Transaction temp(a_name, b_name, amount);
-    if (!users.modify_if(a_name, [&state, amount](User &a) {
-#else
-    if (!users.modify_if(a_name, [&state, amount](User &a) {
 #endif
+    if (!users.modify_if(a_name, [&state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -119,7 +117,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
                 a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
 #endif
-                state = BankResponse(k200OK, "true");
+                state = BankResponse(k200OK, std::to_string(a.balance));
             }
         }))
     {
@@ -211,8 +209,7 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 {
     return (name == admin_account);
 }
-
-BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept
+BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
     if (!ValidUsrname(name))
     {
@@ -229,7 +226,7 @@ BankResponse Bank::AddUser(std::string &&name, uint32_t init_bal, std::string &&
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "true"};
+        return {k204NoContent, nullptr};
     }
     else
     {
@@ -259,7 +256,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse(k200OK, "true");
+        return BankResponse(k204NoContent, nullptr);
     }
     else
     {

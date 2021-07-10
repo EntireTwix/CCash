@@ -60,7 +60,7 @@ public:
     bool Contains(const std::string &name) const noexcept;
     bool AdminVerifyAccount(const std::string &name) noexcept;
 
-    BankResponse AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
+    BankResponse AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
 
     void Save();
