@@ -15,15 +15,15 @@ static thread_local ondemand::parser parser;
     static thread_local simdjson::padded_string input(req->getBody()); \
     static thread_local ondemand::document doc = parser.iterate(input)
 
-#define RESPONSE_PARSE(R)                               \
-    auto resp = HttpResponse::newCustomHttpResponse(R); \
-    CORS;                                               \
+#define RESPONSE_PARSE(R)                                                   \
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                                                   \
     callback(resp)
 
-#define RESPOND_TRUE                                                               \
-    auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
-    CORS;                                                                          \
-    CACHE_FOREVER;                                                                 \
+#define RESPOND_TRUE                                                                                   \
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
+    CORS;                                                                                              \
+    CACHE_FOREVER;                                                                                     \
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
@@ -47,7 +47,7 @@ void api::GetLogs(req_args)
     }
     else
     {
-        auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
         CORS;
         CACHE_FOREVER;
         callback(resp);
@@ -145,7 +145,7 @@ void api::ImpactBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
+    static thread_local auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/Refractor/README.md");
     CACHE_FOREVER;
     callback(resp);
 }
@@ -177,7 +177,7 @@ void api::ApiProperties(req_args) const
         temp["return_on_del_acc"] = return_account;
     }
 
-    auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
+    static thread_local auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
     CORS;
     CACHE_FOREVER;
     callback(resp);
