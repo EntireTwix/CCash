@@ -14,7 +14,8 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
         if (auth_header.substr(0, 6) == "Basic ")
         {
             std::string_view base64_input = auth_header.substr(6);
-            static char result_buffer[511]{0}; //(255 username + ':' + 255 password)
+            static thread_local char result_buffer[511]; //(255 username + ':' + 255 password)
+            std::memset(result_buffer, 0, 511);
             size_t new_sz;
             base64_decode(base64_input.data(), base64_input.size(), result_buffer, &new_sz, 0);
 
@@ -31,7 +32,6 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                         if (bank.VerifyPassword(username.str, password.str))
                         {
                             fccb();
-                            std::memset(result_buffer, 0, 511);
                             return;
                         }
                     }
@@ -46,12 +46,10 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                             req->setParameter("name", username.str);
                         }
                         fccb();
-                        std::memset(result_buffer, 0, 511);
                         return;
                     }
                 }
             }
-            std::memset(result_buffer, 0, 511);
         }
     }
     const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k401Unauthorized, "\"Invalid Credentials\""));
