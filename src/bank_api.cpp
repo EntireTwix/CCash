@@ -6,10 +6,6 @@
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
-#define GEN_BODY                                                    \
-    static thread_local const auto temp_req = req->getJsonObject(); \
-    static thread_local const auto body = temp_req ? *temp_req : Json::Value()
-
 static thread_local ondemand::parser parser;
 static thread_local simdjson::padded_string input;
 static thread_local ondemand::document doc;
