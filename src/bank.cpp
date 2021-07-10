@@ -172,7 +172,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "true"};
+        return {k200OK, "true"}; //may return new balance
     }
     else
     {
@@ -194,7 +194,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "true"};
+        return {k200OK, "true"}; //may return new balance
     }
     else
     {
@@ -226,7 +226,7 @@ BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::stri
         save_flag = true;
 #endif
 #endif
-        return {k204NoContent, nullptr};
+        return {k204NoContent, ""};
     }
     else
     {
@@ -256,7 +256,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         save_flag = true;
 #endif
 #endif
-        return BankResponse(k204NoContent, nullptr);
+        return BankResponse(k204NoContent, "");
     }
     else
     {
