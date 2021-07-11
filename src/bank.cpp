@@ -172,7 +172,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "true"}; //may return new balance
+        return {k204NoContent, std::nullopt}; //may return new balance
     }
     else
     {
@@ -194,7 +194,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k200OK, "true"}; //may return new balance
+        return {k204NoContent, std::nullopt}; //may return new balance
     }
     else
     {
@@ -269,8 +269,6 @@ const char *Bank::Save()
     if (GetChangeState())
     {
 #endif
-        return "        to disk...\n";
-
         static thread_local Json::Value temp;
 
         //loading info into json temp
@@ -300,6 +298,7 @@ const char *Bank::Save()
 #else
         save_flag = true;
 #endif
+        return "        to disk...\n";
     }
     else
     {
