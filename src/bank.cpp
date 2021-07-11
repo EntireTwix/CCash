@@ -67,15 +67,15 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     static thread_local uint32_t res = 0;
     users.if_contains(name, [](const User &u) { res = u.balance + 1; });
-    return res ? BankResponse(k200OK, std::to_string(res - 1)) : BankResponse(k404NotFound, "\"User not found\"");
+    return res ? BankResponse{k200OK, std::to_string(res - 1)} : BankResponse{k404NotFound, "\"User not found\""};
 }
 #if MAX_LOG_SIZE > 0
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
-    if (!users.modify_if(name, [&res](User &u) { res = BankResponse(k200OK, u.log.GetLogs()); }))
+    if (!users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLogs()}; }))
     {
-        return BankResponse(k404NotFound, "\"User not found\"");
+        return {k404NotFound, "\"User not found\""};
     }
     return res;
 }
@@ -109,7 +109,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it
             if (a.balance < amount)
             {
-                state = BankResponse(k400BadRequest, "\"Sender has insufficient funds\"");
+                state = {k400BadRequest, "\"Sender has insufficient funds\""};
             }
             else
             {
@@ -117,7 +117,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
                 a.log.AddTrans(temp); //about 40% of this function's cost
 #endif
-                state = BankResponse(k200OK, std::to_string(a.balance));
+                state = {k200OK, std::to_string(a.balance)};
             }
         }))
     {
@@ -185,7 +185,8 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    if (users.modify_if(name, [amount](User &u) { u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount; }))
+    static thread_local uint32_t balance;
+    if (users.modify_if(name, [amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -194,7 +195,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k204NoContent, std::nullopt}; //may return new balance
+        return {k200OK, std::to_string(balance)}; //may return new balance
     }
     else
     {
