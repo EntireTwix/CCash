@@ -58,8 +58,9 @@ int main(int argc, char **argv)
 
         //Loading users from users.json
         bank.Load();
+        size_t num_of_logs = bank.NumOfLogs();
         std::cout << "\n\nLoaded " << bank.NumOfUsers() << " Users"
-                  << "\nLoaded " << bank.NumOfLogs() << " Logs"
+                  << "\nLoaded " << num_of_logs << " Logs : " << (float)(num_of_logs * (90 + 80 + (max_name_size * 2))) / 1048576 << "Mb" //90:string representation(heap), sizeof(Transaction), max_name_size*2:filled to&from(heap)
                   << "\nLoaded " << bank.SumBal() << " CSH"
                   << std::endl; //flushing before EventLoop
 
