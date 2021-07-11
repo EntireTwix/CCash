@@ -5,6 +5,9 @@
 #include "ccash_config.hpp"
 #include "change_flag.h"
 #include "transaction.h"
+#include "simdjson.h"
+
+using namespace simdjson;
 
 struct Log
 {

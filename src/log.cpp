@@ -24,25 +24,26 @@ const std::string &Log::GetLogs() noexcept
     if (log_flag.GetChangeState()) //if there are changes
     {
         //re-generate snapshot
-        Json::Value res;
-#if MAX_LOG_SIZE == 1
-        res[0]["to"] = data.to;
-        res[0]["from"] = data.from;
-#ifdef _USE_32BIT_TIME_T
-        res[0]["time"] = (Json::UInt)data.time;
-#else
-        res[0]["time"] = (Json::UInt64)data.time;
-#endif
-#else
-        for (uint32_t i = data.size(); i > 0; --i)
+        //({\"amount\":1,\"from\":\"\",\"time\":1625943626,\"to\":\"\"}, + (2*max_name_size)+10+10) * # of logs) + 1
+        size_t predicted_size = ((58 + (2 * max_name_size)) * data.size()) + 1;
+        if (log_snapshot.capacity() < predicted_size)
         {
-            res[i - 1]["to"] = data[data.size() - i].to;
-            res[i - 1]["from"] = data[data.size() - i].from;
-            res[i - 1]["amount"] = (Json::UInt)data[data.size() - i].amount;
-            res[i - 1]["time"] = (Json::Int64)data[data.size() - i].time;
+            log_snapshot.reserve(predicted_size);
         }
-#endif
-        log_snapshot = res.toStyledString();
+        log_snapshot = '[';
+        for (size_t i = 0; i < data.size(); ++i)
+        {
+            log_snapshot += "{\"to\":\"";
+            log_snapshot += data[i].to;
+            log_snapshot += "\",\"from\":\"";
+            log_snapshot += data[i].from;
+            log_snapshot += "\",\"amount\":";
+            log_snapshot += std::to_string(data[i].amount);
+            log_snapshot += ",\"time\":";
+            log_snapshot += std::to_string(data[i].time);
+            log_snapshot += "},";
+        }
+        log_snapshot[log_snapshot.size() - 1] = ']';
         log_flag.SetChangesOff();
     }
     return log_snapshot;
