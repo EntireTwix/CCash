@@ -23,6 +23,6 @@ public:
 #endif
 
     const std::string &GetLogs() noexcept;
-    void AddTrans(Transaction &&t) noexcept;
+    void AddTrans(const Transaction &t) noexcept;
     Json::Value Serialize() const; // to be removed later
 };

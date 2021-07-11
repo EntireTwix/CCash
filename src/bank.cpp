@@ -10,7 +10,7 @@ bool ValidUsername(const std::string &name) noexcept
     }
     for (const char &c : name)
     {
-        if (!((c > 96 && c < 122) || std::isdigit(c) || c == '_'))
+        if (!((c >= 97 && c <= 122) || std::isdigit(c) || c == '_'))
         {
             return false;
         }
@@ -103,9 +103,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     BankResponse state;
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    Transaction temp(a_name, b_name, amount);
+    static thread_local Transaction temp(a_name, b_name, amount);
 #endif
-    if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
+    if (!users.modify_if(a_name, [&state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -115,7 +115,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             {
                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(Transaction(temp)); //about 40% of this function's cost
+                a.log.AddTrans(temp); //about 40% of this function's cost
 #endif
                 state = BankResponse(k200OK, std::to_string(a.balance));
             }
@@ -126,9 +126,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (state.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [&temp, amount](User &b) {
+        users.modify_if(b_name, [amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(std::move(temp));
+            b.log.AddTrans(temp);
         }); //about 40% of this function's cost
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
