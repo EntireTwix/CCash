@@ -103,9 +103,9 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     BankResponse state;
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    static thread_local Transaction temp(a_name, b_name, amount);
+    Transaction temp(a_name, b_name, amount);
 #endif
-    if (!users.modify_if(a_name, [&state, amount](User &a) {
+    if (!users.modify_if(a_name, [&temp, &state, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
@@ -126,7 +126,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (state.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [amount](User &b) {
+        users.modify_if(b_name, [&temp, amount](User &b) {
             b.balance += amount;
             b.log.AddTrans(std::move(temp));
         }); //about 40% of this function's cost
