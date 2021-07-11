@@ -20,10 +20,10 @@ static thread_local ondemand::parser parser;
     CORS;                                                                   \
     callback(resp)
 
-#define RESPOND_TRUE                                                                                   \
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k200OK, "true")); \
-    CORS;                                                                                              \
-    CACHE_FOREVER;                                                                                     \
+#define RESPOND_TRUE                                                                                                \
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k204NoContent, std::nullopt)); \
+    CORS;                                                                                                           \
+    CACHE_FOREVER;                                                                                                  \
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
