@@ -61,32 +61,35 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
 
             std::string_view results_view(result_buffer, new_sz);
             std::size_t middle = results_view.find(':');
-            if (middle != std::string::npos)
+            if (middle != std::string::npos && ((new_sz - middle) <= 256))
             {
                 StrFromSV_Wrapper username(results_view.substr(0, middle));
-                if constexpr (require_admin)
+                if (ValidUsername(username.str)) //check if username is a valid attempt to avoid hashing/grabbing shared lock
                 {
-                    if (bank.AdminVerifyAccount(username.str))
+                    if constexpr (require_admin)
+                    {
+                        if (bank.AdminVerifyAccount(username.str))
+                        {
+                            StrFromSV_Wrapper password(results_view.substr(middle + 1));
+                            if (bank.VerifyPassword(username.str, password.str))
+                            {
+                                fccb();
+                                return;
+                            }
+                        }
+                    }
+                    else
                     {
                         StrFromSV_Wrapper password(results_view.substr(middle + 1));
-                        if (bank.VerifyPassword(username.str, password.str))
+                        if (bank.VerifyPassword(username.str, results_view.substr(middle + 1)))
                         {
+                            if constexpr (set_body_flag)
+                            {
+                                req->setParameter("name", username.str);
+                            }
                             fccb();
                             return;
                         }
-                    }
-                }
-                else
-                {
-                    StrFromSV_Wrapper password(results_view.substr(middle + 1));
-                    if (bank.VerifyPassword(username.str, results_view.substr(middle + 1)))
-                    {
-                        if constexpr (set_body_flag)
-                        {
-                            req->setParameter("name", username.str);
-                        }
-                        fccb();
-                        return;
                     }
                 }
             }

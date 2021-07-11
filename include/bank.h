@@ -10,6 +10,8 @@
 #include "change_flag.h"
 #endif
 
+bool ValidUsername(const std::string &name) noexcept;
+
 class Bank
 {
 #if MULTI_THREADED

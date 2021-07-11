@@ -2,7 +2,7 @@
 
 using namespace drogon;
 
-INLINE bool ValidUsrname(const std::string &name) noexcept
+bool ValidUsername(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
     {
@@ -211,7 +211,7 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 }
 BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
-    if (!ValidUsrname(name))
+    if (!ValidUsername(name))
     {
         return {k400BadRequest, "\"Invalid Name, breaks size and/or character restrictions\""};
     }
