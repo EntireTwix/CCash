@@ -60,8 +60,8 @@ int main(int argc, char **argv)
         bank.Load();
         size_t num_of_logs = bank.NumOfLogs();
         size_t num_of_users = bank.NumOfUsers();
-        std::cout << "\n\nLoaded " << num_of_users << " Users : " << (float)(sizeof(User) * num_of_users) / 1048576 << "Mb"
-                  << "\nLoaded " << num_of_logs << " Logs : " << (float)(num_of_logs * (90 + 80 + (max_name_size * 2))) / 1048576 << "Mb" //90:string representation(heap), sizeof(Transaction), max_name_size*2:filled to&from(heap)
+        std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "Mb"
+                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (90 + 80 + (max_name_size * 2))) / 1048576 << "Mb" //90:string representation(heap), sizeof(Transaction), max_name_size*2:filled to&from(heap)
                   << "\nLoaded " << bank.SumBal() << " CSH"
                   << std::endl; //flushing before EventLoop
 
