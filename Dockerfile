@@ -1,10 +1,10 @@
 FROM alpine:3.11
 
-WORKDIR /CCash
+WORKDIR /
 
-RUN apk update && apk add cmake g++ make protobuf jsoncpp-dev openssl libressl-dev zlib-dev util-linux-dev libtool autoconf automake python3
+RUN apk update && apk add git cmake g++ make protobuf jsoncpp-dev openssl libressl-dev zlib-dev util-linux-dev libtool autoconf automake python3
 
-COPY . .
+RUN git clone --recurse-submodules https://github.com/EntireTwix/CCash.git --branch Refractor
 RUN mkdir /CCash/build
 WORKDIR /CCash/build
 RUN cmake -DDROGON_CONFIG_LOC=\"\/CCash\/config\/config.json\" -DUSER_SAVE_LOC=\"\/CCash\/config\/users.json\" ..
