@@ -65,9 +65,15 @@ bool Bank::GetChangeState() const noexcept
 
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
-    static thread_local uint32_t res = 0;
-    users.if_contains(name, [](const User &u) { res = u.balance + 1; });
-    return res ? BankResponse{k200OK, std::to_string(res - 1)} : BankResponse{k404NotFound, "\"User not found\""};
+    uint32_t res = 0;
+    if (!users.if_contains(name, [&res](const User &u) { res = u.balance; }))
+    {
+        return {k404NotFound, "\"User not found\""};
+    }
+    else
+    {
+        return {k200OK, std::to_string(res)};
+    }
 }
 #if MAX_LOG_SIZE > 0
 BankResponse Bank::GetLogs(const std::string &name) noexcept
@@ -77,7 +83,10 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
     {
         return {k404NotFound, "\"User not found\""};
     }
-    return res;
+    else
+    {
+        return res;
+    }
 }
 #endif
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
@@ -143,16 +152,15 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
     return state;
 }
-bool Bank::VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept
+bool Bank::VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept
 {
-    static thread_local bool res = false;
-    users.if_contains(name, [&attempt](const User &u) { res = (u.password == xxHashStringGen{}(std::move(attempt))); });
+    bool res = false;
+    users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
 
-void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexcept
+void Bank::ChangePassword(const std::string &name, const std::string &new_pass) noexcept
 {
-    users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
     save_flag.SetChangesOn();
@@ -160,10 +168,15 @@ void Bank::ChangePassword(const std::string &name, std::string &&new_pass) noexc
     save_flag = true;
 #endif
 #endif
+    users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    if (!users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    {
+        return {k404NotFound, "\"User not found\""};
+    }
+    else
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -174,10 +187,6 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 #endif
         return {k204NoContent, std::nullopt}; //may return new balance
     }
-    else
-    {
-        return {k404NotFound, "\"User not found\""};
-    }
 }
 BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
 {
@@ -185,8 +194,8 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    static thread_local uint32_t balance;
-    if (users.modify_if(name, [amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
+    uint32_t balance;
+    if (users.modify_if(name, [&balance, amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -239,10 +248,10 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{save_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [this, &bal](const User &u) { bal = u.balance; }) &&
+    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
         bal)
     {
-        users.modify_if(return_account, [ this, bal ](User & u))
+        users.modify_if(return_account, [bal](User & u))
         {
             u.balance += bal;
         }

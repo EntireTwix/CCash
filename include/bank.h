@@ -54,9 +54,9 @@ public:
     BankResponse GetLogs(const std::string &name) noexcept;
 #endif
     BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
-    bool VerifyPassword(const std::string &name, std::string_view &&attempt) const noexcept;
+    bool VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept;
 
-    void ChangePassword(const std::string &name, std::string &&new_pass) noexcept;
+    void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
     BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     bool Contains(const std::string &name) const noexcept;
