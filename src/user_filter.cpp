@@ -3,47 +3,6 @@
 template <bool set_body_flag, bool require_admin>
 UserFilter<set_body_flag, require_admin>::UserFilter(Bank &b) : bank(b) {}
 
-#define time_func_a(f, a, x)                                                                  \
-    {                                                                                         \
-        using namespace std::chrono;                                                          \
-        uint32_t timer = 0;                                                                   \
-        for (int i = 0; i < x; ++i)                                                           \
-        {                                                                                     \
-            auto t1 = high_resolution_clock::now().time_since_epoch();                        \
-            f;                                                                                \
-            auto t2 = high_resolution_clock::now().time_since_epoch();                        \
-            a;                                                                                \
-            timer += std::chrono::duration_cast<std::chrono::nanoseconds>((t2 - t1)).count(); \
-        }                                                                                     \
-        std::cout << timer / x << '\n';                                                       \
-    }
-
-#define time_func(f, x)                                                                       \
-    {                                                                                         \
-        using namespace std::chrono;                                                          \
-        uint32_t timer = 0;                                                                   \
-        for (int i = 0; i < x; ++i)                                                           \
-        {                                                                                     \
-            auto t1 = high_resolution_clock::now().time_since_epoch();                        \
-            f;                                                                                \
-            auto t2 = high_resolution_clock::now().time_since_epoch();                        \
-            timer += std::chrono::duration_cast<std::chrono::nanoseconds>((t2 - t1)).count(); \
-        }                                                                                     \
-        std::cout << timer / x << '\n';                                                       \
-    }
-
-#define Op_a(v, name, x, a)   \
-    {                         \
-        std::cout << name;    \
-        time_func_a(v, a, x); \
-    }
-
-#define Op(v, name, x)     \
-    {                      \
-        std::cout << name; \
-        time_func(v, x);   \
-    }
-
 template <bool set_body_flag, bool require_admin>
 void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &req,
                                                         FilterCallback &&fcb,
