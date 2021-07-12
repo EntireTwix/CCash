@@ -165,19 +165,16 @@ void api::AdminVerifyAccount(req_args) const
 }
 void api::ApiProperties(req_args) const
 {
-    //yet to be converted to simdjson
-    Json::Value temp;
-    temp["version"] = API_VERSION;
-    temp["max_log"] = MAX_LOG_SIZE;
-    temp["min_name"] = min_name_size;
-    temp["max_name"] = max_name_size;
-    temp["return_on_del"] = RETURN_ON_DEL;
+    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"return_on_del\":" + std::to_string(RETURN_ON_DEL);
     if constexpr (RETURN_ON_DEL)
     {
-        temp["return_on_del_acc"] = return_account;
+        info += ",\"" + std::string(return_account) + "\"}";
     }
-
-    static thread_local auto resp = HttpResponse::newHttpJsonResponse(std::move(temp));
+    else
+    {
+        info += "}";
+    }
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k200OK, std::move(info)});
     CORS;
     CACHE_FOREVER;
     callback(resp);
