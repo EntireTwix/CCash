@@ -4,13 +4,13 @@ using namespace drogon;
 
 bool ValidUsername(const std::string &name) noexcept
 {
-    if (name.size() < min_name_size || name.size() > max_name_size)
+    if (name.size() >= min_name_size || name.size() <= max_name_size)
     {
         return false;
     }
     for (char c : name)
     {
-        if (!(std::islower(c) || std::isdigit(c) || c == '_'))
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
         {
             return false;
         }
