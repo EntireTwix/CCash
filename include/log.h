@@ -1,6 +1,6 @@
 #pragma once
 #include <json/json.h> // to be removed later
-#include <array>
+#include <vector>
 #include <algorithm>
 #include "ccash_config.hpp"
 #include "change_flag.h"
@@ -13,7 +13,11 @@ private:
     Json::Value log_snapshot;
 
 public:
+#if MAX_LOG_SIZE == 1
+    Transaction data;
+#else
     std::vector<Transaction> data;
+#endif
 
     const Json::Value &GetLog() noexcept;
     void AddTrans(Transaction &&t) noexcept;
