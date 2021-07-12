@@ -10,7 +10,7 @@ bool ValidUsername(const std::string &name) noexcept
     }
     for (char c : name)
     {
-        if (!((c >= 97 && c <= 122) || std::isdigit(c) || c == '_'))
+        if (!(std::islower(c) || std::isdigit(c) || c == '_'))
         {
             return false;
         }
