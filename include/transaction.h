@@ -9,7 +9,7 @@ struct Transaction
     uint32_t amount = 0;
     time_t time = 0;
 
-    Transaction();
-    Transaction(const std::string &from_str, const std::string &to_str, uint32_t amount, time_t time);
-    Transaction(const std::string &from_str, const std::string &to_str, uint32_t amount);
+    Transaction() noexcept;
+    Transaction(const std::string &from_str, const std::string &to_str, uint32_t amount, time_t time) noexcept;
+    Transaction(const std::string &from_str, const std::string &to_str, uint32_t amount) noexcept;
 };

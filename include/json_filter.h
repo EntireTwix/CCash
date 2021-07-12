@@ -1,9 +1,11 @@
 #pragma once
 #include <drogon/HttpFilter.h>
+#include "bank_resp.h"
 
 using namespace drogon;
 
-class JsonFilter : public HttpFilter<JsonFilter, false>
+template <bool check_content_type>
+class JsonFilter : public HttpFilter<JsonFilter<check_content_type>, false>
 {
 public:
     JsonFilter();

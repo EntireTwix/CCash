@@ -5,12 +5,15 @@
 #include "ccash_config.hpp"
 #include "change_flag.h"
 #include "transaction.h"
+#include "simdjson.h"
+
+using namespace simdjson;
 
 struct Log
 {
 private:
-    ChangeFlag log_flag;
-    Json::Value log_snapshot;
+    ChangeFlag<true> log_flag;
+    std::string log_snapshot;
 
 public:
 #if MAX_LOG_SIZE == 1
@@ -19,7 +22,7 @@ public:
     std::vector<Transaction> data;
 #endif
 
-    const Json::Value &GetLog() noexcept;
-    void AddTrans(Transaction &&t) noexcept;
+    const std::string &GetLogs() noexcept;
+    void AddTrans(const Transaction &t) noexcept;
     Json::Value Serialize() const; // to be removed later
 };

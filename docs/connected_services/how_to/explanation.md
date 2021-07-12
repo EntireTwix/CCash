@@ -1,3 +1,5 @@
+[PREVIOUS PAGE](../../idea.md) | [NEXT PAGE](APIs.md)
+
 Using the ledger's API allows (you/others) to (make/use) connected services that utilize the ledger, below is a visual represenation of connected services:
 
 ![image](connected_a.png)

@@ -1,10 +1,11 @@
 #pragma once
 #include <atomic>
 
+template <bool init>
 class ChangeFlag
 {
 private:
-    std::atomic<bool> change_flag = false; //if true changes have been made
+    std::atomic<bool> change_flag = init; //if true changes have been made
 
 public:
     ChangeFlag() noexcept;

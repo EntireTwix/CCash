@@ -2,15 +2,15 @@
 #include <iostream> //temporary
 #include <fstream>
 #include <shared_mutex>
-#include <drogon/HttpTypes.h>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
+#include "bank_resp.h"
 #include "user.h"
 
 #if (CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0) && !MULTI_THREADED
 #include "change_flag.h"
 #endif
 
-using BankResponse = std::pair<drogon::HttpStatusCode, Json::Value>;
+bool ValidUsername(const std::string &name) noexcept;
 
 class Bank
 {
@@ -30,7 +30,7 @@ class Bank
 private:
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-    ChangeFlag save_flag;
+    ChangeFlag<false> save_flag;
 #else
     bool save_flag = false;
 #endif
@@ -42,27 +42,29 @@ public:
     std::string admin_account;
 
     size_t NumOfUsers() const noexcept;
-    uint64_t NumOfLogs() const noexcept;
+    size_t NumOfLogs() const noexcept;
+    size_t SumBal() const noexcept;
 
 #if CONSERVATIVE_DISK_SAVE
     bool GetChangeState() const noexcept;
 #endif
 
     BankResponse GetBal(const std::string &name) const noexcept;
+#if MAX_LOG_SIZE > 0
     BankResponse GetLogs(const std::string &name) noexcept;
+#endif
     BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
-    bool VerifyPassword(std::string_view name, std::string_view attempt) const noexcept;
+    bool VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept;
 
-    void ChangePassword(const std::string &name, std::string &&new_pass) noexcept;
+    void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
-    BankResponse AddBal(const std::string &name, uint32_t amount) noexcept;
-    BankResponse SubBal(const std::string &name, uint32_t amount) noexcept;
+    BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     bool Contains(const std::string &name) const noexcept;
-    bool AdminVerifyAccount(std::string_view name) noexcept;
+    bool AdminVerifyAccount(const std::string &name) noexcept;
 
-    BankResponse AddUser(std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
+    BankResponse AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
 
-    void Save();
+    const char *Save();
     void Load();
 };

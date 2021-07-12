@@ -4,6 +4,7 @@
 #include <sys/types.h>
 #include <unistd.h>
 #include <random>
+#include "xxhash_str.h"
 #include "bank.h"
 
 #include <signal.h>
@@ -62,12 +63,17 @@ static Bank bank;
 
 int main(int argc, char **argv)
 {
+
     bank.AddUser("twix", 0, "root");
     bank.AddUser("jolly", 0, "root");
     bank.admin_account = "twix";
+
+    const std::string data("this string is quite long which is relevant when testing the speed of a hasing function");
+    Op(std::hash<std::string>{}(data), "hash<string>: ", 1000000);
+    Op(xxHashStringGen{}(data), "xxHashStringGen: ", 1000000);
+
     Op_a(bank.AddUser("", 0, ""), "add user: ", 1000000, bank.DelUser(""));
-    Op(bank.AddBal("twix", 1), "give bal: ", 1000000);
-    Op(bank.SubBal("twix", 1), "give bal: ", 1000000);
+    Op(bank.ImpactBal("twix", 1), "impact bal: ", 1000000);
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
     Op(bank.SendFunds("twix", "twix", 1), "invalid send funds: ", 1000000);
@@ -81,11 +87,13 @@ int main(int argc, char **argv)
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
-    Op(bank.GetLogs("twix"), "get logs: ", 10000);
-    Op(bank.Save(), "saving: ", 1);
-#if CONSERVATIVE_DISK_SAVE
-    Op(bank.GetChangeState(), "change flag: ", 10000);
+#if MAX_LOG_SIZE > 0
+    Op(bank.GetLogs("twix"), "get logs: ", 1000000);
 #endif
+#if CONSERVATIVE_DISK_SAVE
+    Op(bank.GetChangeState(), "change flag: ", 1000000);
+#endif
+    Op(bank.Save(), "saving: ", 1);
 
     //GetBal scalining test
     // std::default_random_engine generator;
@@ -93,10 +101,10 @@ int main(int argc, char **argv)
 
     // for (size_t i = 0; i < 10000000; ++i)
     // {
-    //     bank.AddUser(std::to_string(i), "root");
+    //     bank.AddUser(std::to_string(i), 100000, "root");
     //     if (i % 10000 == 0)
     //     {
-    //         auto u = std::to_string(distribution(generator) * i);
+    //         auto u = std::to_string((int)(distribution(generator) * i));
     //         Op(bank.GetBal(u), std::to_string(i) + ", ", 100000);
     //     }
     // }

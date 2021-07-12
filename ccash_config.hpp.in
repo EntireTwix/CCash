@@ -1,8 +1,7 @@
 #pragma once
 
-// Setting both values to 0 does not compile logging (useful for if disk/memory is very valuable)
+// Setting to 0 does not compile logging (useful for if disk/memory is very valuable)
 #define MAX_LOG_SIZE @MAX_LOG_SIZE_VAL@
-#define PRE_LOG_SIZE @PRE_LOG_SIZE_VAL@
 
 //default to minecraft usernames
 constexpr unsigned min_name_size = 3;

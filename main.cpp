@@ -21,98 +21,91 @@ static Bank bank;
 
 void SaveSig(int s)
 {
-    std::cout << "\nSaving on close...\n";
-    bank.Save();
+    std::cout << "\nSaving on close...\n"
+              << bank.Save();
     exit(1);
 }
 
 int main(int argc, char **argv)
 {
-
-    static_assert(bool(MAX_LOG_SIZE) == bool(PRE_LOG_SIZE), "You must either utilize both or neither logging variables.\n");
-    static_assert(MAX_LOG_SIZE >= PRE_LOG_SIZE, "The maximum log size must be larger than or equal to the amount preallocated.\n");
-    static_assert(!MAX_LOG_SIZE || !(MAX_LOG_SIZE % PRE_LOG_SIZE), "The maximum log size must be divisible by the preallocation size.\n");
-
-    if (argc != 3)
     {
-        std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes>\n";
-        return 0;
-    }
-    if (geteuid() != 0)
-    {
-        std::cerr << "ERROR: CCash MUST be ran as root\n";
-        return 0;
-    }
-    std::cout
-        << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
-        << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
-        << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
-        << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
-        << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
-        << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
+
+        if (argc != 3)
+        {
+            std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes>\n";
+            return 0;
+        }
+        if (geteuid() != 0)
+        {
+            std::cerr << "ERROR: CCash MUST be ran as root\n";
+            return 0;
+        }
+        std::cout
+            << "\nAPI Version     : " << API_VERSION
+            << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
+            << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
+            << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
+            << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
+            << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
+            << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
 #if MULTI_THREADED
-        << "\n\nThreads         : " << get_nprocs() + 1
-        << "\nMulti threading : enabled";
+            << "\n\nThreads         : " << get_nprocs() + 1
+            << "\nMulti threading : enabled";
 #else
-        << "\n\nThreads         : " << 2
-        << "\nMulti threading : disabled";
+            << "\n\nThreads         : " << 2
+            << "\nMulti threading : disabled";
 #endif
 
-    //Loading users from users.json
-    bank.Load();
+        //Loading users from users.json
+        bank.Load();
+        size_t num_of_logs = bank.NumOfLogs();
+        size_t num_of_users = bank.NumOfUsers();
+        std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "Mb"
+                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (90 + 80 + (max_name_size * 2))) / 1048576 << "Mb" //90:string representation(heap), sizeof(Transaction), max_name_size*2:filled to&from(heap)
+                  << "\nLoaded " << bank.SumBal() << " CSH"
+                  << std::endl; //flushing before EventLoop
 
-    std::cout << "\n\nLoaded " << bank.NumOfUsers() << " Users"
-              << "\nLoaded " << bank.NumOfLogs() << " Logs"
-              << std::endl; //flushing before EventLoop
+        //Sig handling
+        struct sigaction sigIntHandler;
 
-    //Sig handling
-    struct sigaction sigIntHandler;
+        sigIntHandler.sa_handler = SaveSig;
+        sigemptyset(&sigIntHandler.sa_mask);
+        sigIntHandler.sa_flags = 0;
 
-    sigIntHandler.sa_handler = SaveSig;
-    sigemptyset(&sigIntHandler.sa_mask);
-    sigIntHandler.sa_flags = 0;
+        sigaction(SIGINT, &sigIntHandler, NULL);
 
-    sigaction(SIGINT, &sigIntHandler, NULL);
+        //Admin account
+        bank.admin_account = argv[1];
 
-    //Admin account
-    bank.admin_account = argv[1];
-
-    //Auto Saving
-    const unsigned long saving_freq = std::stoul(std::string(argv[2]));
-    if (saving_freq) //if saving frequency is 0 then auto saving is turned off
-    {
-        std::thread([saving_freq]() {
-            while (1)
-            {
-                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                std::cout << "Saving " << std::time(0) << '\n';
-                if (bank.GetChangeState())
+        //Auto Saving
+        const unsigned long saving_freq = std::stoul(std::string(argv[2]));
+        if (saving_freq) //if saving frequency is 0 then auto saving is turned off
+        {
+            std::thread([saving_freq]() {
+                while (1)
                 {
-                    std::cout << "    to disk...\n";
-                    bank.Save();
+                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                    std::cout << "Saving " << std::time(0) << "...\n"
+                              << bank.Save();
                 }
-                else
-                {
-                    std::cout << "    no changes...\n";
-                }
-            }
-        })
-            .detach();
-    }
+            })
+                .detach();
+        }
+    } //destroying setup variables
+    static auto API = std::make_shared<api>(bank);
+    static auto user_filter_default = std::make_shared<UserFilter<true, false>>(bank);
+    static auto user_filter_sparse = std::make_shared<UserFilter<false, false>>(bank);
+    static auto admin_filter = std::make_shared<UserFilter<false, true>>(bank);
+    static auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
+    static auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
-    auto API = std::make_shared<api>(bank);
-    auto user_filter = std::make_shared<UserFilter>(bank);
-    auto admin_filter = std::make_shared<AdminFilter>(bank);
-    auto accept_filter = std::make_shared<JsonFilter>();
-
-    app().registerPostHandlingAdvice(
-        [](const drogon::HttpRequestPtr &req, const drogon::HttpResponsePtr &resp) {
-            resp->addHeader("Access-Control-Allow-Origin", "*"); //CORS
-        });
     app()
         .loadConfigFile(config_location)
-        .registerFilter(user_filter)
+        .registerFilter(user_filter_default)
+        .registerFilter(user_filter_sparse)
         .registerFilter(admin_filter)
+        .registerFilter(json_resp_and_req_filter)
+        .registerFilter(json_resp_filter)
         .registerController(API)
 #if MULTI_THREADED
         .setThreadNum(get_nprocs())
