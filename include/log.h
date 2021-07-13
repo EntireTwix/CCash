@@ -13,7 +13,7 @@ struct Log
 {
 private:
     ChangeFlag<true> log_flag;
-    std::string log_snapshot;
+    std::string log_snapshot = "null";
 
 public:
 #if MAX_LOG_SIZE == 1
