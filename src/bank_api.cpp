@@ -95,6 +95,7 @@ void api::ChangePassword(req_args) const
         {
             StrFromSV_Wrapper pass_val(pass.value());
             bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
+            res = BankResponse{k204NoContent, std::nullopt};
         }
     }
     RESPONSE_PARSE(std::move(res));
