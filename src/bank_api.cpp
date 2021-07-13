@@ -6,14 +6,10 @@
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
-#define GEN_BODY                                                    \
-    static thread_local const auto temp_req = req->getJsonObject(); \
-    static thread_local const auto body = temp_req ? *temp_req : Json::Value()
-
 static thread_local ondemand::parser parser;
 #define SIMD_JSON_GEN                                                  \
     static thread_local simdjson::padded_string input(req->getBody()); \
-    static thread_local ondemand::document doc = parser.iterate(input)
+    static thread_local auto doc = parser.iterate(input)
 
 #define RESPONSE_PARSE(R)                                                   \
     static thread_local auto resp = HttpResponse::newCustomHttpResponse(R); \
@@ -21,7 +17,7 @@ static thread_local ondemand::parser parser;
     callback(resp)
 
 #define RESPOND_TRUE                                                                                                \
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k204NoContent, std::nullopt)); \
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k204NoContent, std::nullopt}); \
     CORS;                                                                                                           \
     CACHE_FOREVER;                                                                                                  \
     callback(resp)
@@ -47,7 +43,7 @@ void api::GetLogs(req_args)
     }
     else
     {
-        static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse(k404NotFound, "\"Logs are Disabled\""));
+        static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
         CORS;
         CACHE_FOREVER;
         callback(resp);
@@ -56,17 +52,24 @@ void api::GetLogs(req_args)
 void api::SendFunds(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto amount = doc.find_field("amount").get_uint64();
     BankResponse res;
-    if (name.error() || amount.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        res = bank.SendFunds(NAME_PARAM, name_val.str, amount.value());
+        auto name = doc.find_field("name").get_string();
+        auto amount = doc.find_field("amount").get_uint64();
+        if (name.error() || amount.error())
+        {
+            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            res = bank.SendFunds(NAME_PARAM, name_val.str, amount.value());
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -76,68 +79,96 @@ void api::VerifyPassword(req_args) const { RESPOND_TRUE; }
 void api::ChangePassword(req_args) const
 {
     SIMD_JSON_GEN;
-    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
-    if (pass.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper pass_val(pass.value());
-        bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
+        auto pass = doc.find_field("pass").get_string();
+        if (pass.error())
+        {
+            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+        }
+        else
+        {
+            StrFromSV_Wrapper pass_val(pass.value());
+            bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
+        }
     }
     RESPOND_TRUE;
 }
 void api::AdminChangePassword(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
-    if (name.error() || pass.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        StrFromSV_Wrapper pass_val(pass.value());
-        bank.ChangePassword(name_val.str, std::move(pass_val.str));
+        auto name = doc.find_field("name").get_string();
+        auto pass = doc.find_field("pass").get_string();
+        if (name.error() || pass.error())
+        {
+            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            StrFromSV_Wrapper pass_val(pass.value());
+            bank.ChangePassword(name_val.str, std::move(pass_val.str));
+        }
     }
     RESPOND_TRUE;
 }
 void api::SetBal(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto amount = doc.find_field("amount").get_uint64();
     BankResponse res;
-    if (name.error() || amount.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        res = bank.SetBal(name_val.str, amount.value());
+        auto name = doc.find_field("name").get_string();
+        auto amount = doc.find_field("amount").get_uint64();
+        if (name.error() || amount.error())
+        {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            res = bank.SetBal(name_val.str, amount.value());
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
 void api::ImpactBal(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto amount = doc.find_field("amount").get_int64();
     BankResponse res;
-    if (name.error() || amount.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        res = bank.ImpactBal(name_val.str, amount.value());
+        auto name = doc.find_field("name").get_string();
+        auto amount = doc.find_field("amount").get_int64();
+        if (name.error() || amount.error())
+        {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            res = bank.ImpactBal(name_val.str, amount.value());
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -182,37 +213,51 @@ void api::ApiProperties(req_args) const
 void api::AddUser(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
-    if (name.error() || pass.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        StrFromSV_Wrapper pass_val(pass.value());
-        res = bank.AddUser(std::move(name_val.str), 0, std::move(pass_val.str));
+        auto name = doc.find_field("name").get_string();
+        auto pass = doc.find_field("pass").get_string();
+        if (name.error() || pass.error())
+        {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            StrFromSV_Wrapper pass_val(pass.value());
+            res = bank.AddUser(std::move(name_val.str), 0, std::move(pass_val.str));
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
 void api::AdminAddUser(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
-    auto amount = doc.find_field("amount").get_uint64();
-    auto pass = doc.find_field("pass").get_string();
     BankResponse res;
-    if (name.error() || amount.error() || pass.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        StrFromSV_Wrapper pass_val(pass.value());
-        res = bank.AddUser(std::move(name_val.str), amount.value(), std::move(pass_val.str));
+        auto name = doc.find_field("name").get_string();
+        auto amount = doc.find_field("amount").get_uint64();
+        auto pass = doc.find_field("pass").get_string();
+        if (name.error() || amount.error() || pass.error())
+        {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            StrFromSV_Wrapper pass_val(pass.value());
+            res = bank.AddUser(std::move(name_val.str), amount.value(), std::move(pass_val.str));
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -223,16 +268,23 @@ void api::DelUser(req_args) const
 void api::AdminDelUser(req_args) const
 {
     SIMD_JSON_GEN;
-    auto name = doc.find_field("name").get_string();
     BankResponse res;
-    if (name.error())
+    if (doc.error())
     {
-        res = BankResponse(k400BadRequest, "Invalid JSON");
+        res = BankResponse{k400BadRequest, "Invalid JSON"};
     }
     else
     {
-        StrFromSV_Wrapper name_val(name.value());
-        res = bank.DelUser(name_val.str);
+        auto name = doc.find_field("name").get_string();
+        if (name.error())
+        {
+            res = BankResponse(k400BadRequest, "Invalid JSON");
+        }
+        else
+        {
+            StrFromSV_Wrapper name_val(name.value());
+            res = bank.DelUser(name_val.str);
+        }
     }
     RESPONSE_PARSE(std::move(res));
 }
