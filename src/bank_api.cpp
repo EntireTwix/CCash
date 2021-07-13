@@ -121,6 +121,7 @@ void api::AdminChangePassword(req_args) const
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
             bank.ChangePassword(name_val.str, std::move(pass_val.str));
+            res = BankResponse{k204NoContent, std::nullopt};
         }
     }
     RESPONSE_PARSE(std::move(res));
