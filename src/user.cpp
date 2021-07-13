@@ -1,13 +1,6 @@
 #include "user.h"
 
 /**
-     * @brief User constructor
-     * 
-     * @param init_pass initial password
-     */
-User::User(std::string &&init_pass) noexcept : password(xxHashStringGen{}(init_pass)) {}
-
-/**
      * @brief User Constructor for admins
      * 
      * @param init_bal initial balance

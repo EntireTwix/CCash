@@ -5,13 +5,12 @@
 
 struct User
 {
-    uint32_t balance = 0;
+    uint32_t balance;
     XXH64_hash_t password;
 #if MAX_LOG_SIZE > 0
     Log log;
 #endif
 
-    User(std::string &&init_pass) noexcept;
     User(uint32_t init_bal, std::string &&init_pass) noexcept;
     User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept;
 #if MAX_LOG_SIZE > 0
