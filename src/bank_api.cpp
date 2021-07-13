@@ -55,7 +55,7 @@ void api::SendFunds(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -63,7 +63,7 @@ void api::SendFunds(req_args) const
         auto amount = doc.find_field("amount").get_uint64();
         if (name.error() || amount.error())
         {
-            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -82,14 +82,14 @@ void api::ChangePassword(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
         auto pass = doc.find_field("pass").get_string();
         if (pass.error())
         {
-            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -105,7 +105,7 @@ void api::AdminChangePassword(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -113,7 +113,7 @@ void api::AdminChangePassword(req_args) const
         auto pass = doc.find_field("pass").get_string();
         if (name.error() || pass.error())
         {
-            res = BankResponse{k400BadRequest, "Missing JSON arg(s)"};
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -130,7 +130,7 @@ void api::SetBal(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -138,7 +138,7 @@ void api::SetBal(req_args) const
         auto amount = doc.find_field("amount").get_uint64();
         if (name.error() || amount.error())
         {
-            res = BankResponse(k400BadRequest, "Invalid JSON");
+            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
         }
         else
         {
@@ -154,7 +154,7 @@ void api::ImpactBal(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -162,7 +162,7 @@ void api::ImpactBal(req_args) const
         auto amount = doc.find_field("amount").get_int64();
         if (name.error() || amount.error())
         {
-            res = BankResponse(k400BadRequest, "Invalid JSON");
+            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
         }
         else
         {
@@ -216,7 +216,7 @@ void api::AddUser(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -224,7 +224,7 @@ void api::AddUser(req_args) const
         auto pass = doc.find_field("pass").get_string();
         if (name.error() || pass.error())
         {
-            res = BankResponse(k400BadRequest, "Invalid JSON");
+            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
         }
         else
         {
@@ -241,7 +241,7 @@ void api::AdminAddUser(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
@@ -250,7 +250,7 @@ void api::AdminAddUser(req_args) const
         auto pass = doc.find_field("pass").get_string();
         if (name.error() || amount.error() || pass.error())
         {
-            res = BankResponse(k400BadRequest, "Invalid JSON");
+            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
         }
         else
         {
@@ -271,14 +271,14 @@ void api::AdminDelUser(req_args) const
     BankResponse res;
     if (doc.error())
     {
-        res = BankResponse{k400BadRequest, "Invalid JSON"};
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
     {
         auto name = doc.find_field("name").get_string();
         if (name.error())
         {
-            res = BankResponse(k400BadRequest, "Invalid JSON");
+            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
         }
         else
         {
