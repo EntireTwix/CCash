@@ -97,7 +97,7 @@ void api::ChangePassword(req_args) const
             bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
         }
     }
-    RESPOND_TRUE;
+    RESPONSE_PARSE(std::move(res));
 }
 void api::AdminChangePassword(req_args) const
 {
@@ -122,7 +122,7 @@ void api::AdminChangePassword(req_args) const
             bank.ChangePassword(name_val.str, std::move(pass_val.str));
         }
     }
-    RESPOND_TRUE;
+    RESPONSE_PARSE(std::move(res));
 }
 void api::SetBal(req_args) const
 {
