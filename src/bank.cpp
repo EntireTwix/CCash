@@ -245,7 +245,6 @@ BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::stri
 }
 BankResponse Bank::DelUser(const std::string &name) noexcept
 {
-    std::shared_lock<std::shared_mutex> lock{save_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
     if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) && bal)
@@ -256,6 +255,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         }
     }
 #endif
+    std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.erase(name))
     {
 #if CONSERVATIVE_DISK_SAVE
