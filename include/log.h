@@ -22,7 +22,7 @@ public:
     std::vector<Transaction> data;
 #endif
 
-    const std::string &GetLogs() noexcept;
+    std::string GetLogs() noexcept;
     void AddTrans(const Transaction &t) noexcept;
     Json::Value Serialize() const; // to be removed later
 };
