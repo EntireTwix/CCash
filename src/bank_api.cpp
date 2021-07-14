@@ -94,7 +94,7 @@ void api::ChangePassword(req_args) const
         else
         {
             StrFromSV_Wrapper pass_val(pass.value());
-            bank.ChangePassword(NAME_PARAM, std::move(pass_val.str));
+            bank.ChangePassword(NAME_PARAM, pass_val.str);
             res = BankResponse{k204NoContent, std::nullopt};
         }
     }
@@ -120,7 +120,7 @@ void api::AdminChangePassword(req_args) const
         {
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
-            bank.ChangePassword(name_val.str, std::move(pass_val.str));
+            bank.ChangePassword(name_val.str, pass_val.str);
             res = BankResponse{k204NoContent, std::nullopt};
         }
     }
@@ -232,7 +232,7 @@ void api::AddUser(req_args) const
         {
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
-            res = bank.AddUser(std::move(name_val.str), 0, std::move(pass_val.str));
+            res = bank.AddUser(name_val.str, 0, pass_val.str);
         }
     }
     RESPONSE_PARSE(std::move(res));
@@ -258,7 +258,7 @@ void api::AdminAddUser(req_args) const
         {
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
-            res = bank.AddUser(std::move(name_val.str), amount.value(), std::move(pass_val.str));
+            res = bank.AddUser(name_val.str, amount.value(), pass_val.str);
         }
     }
     RESPONSE_PARSE(std::move(res));
