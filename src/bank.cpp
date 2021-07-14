@@ -2,7 +2,7 @@
 
 using namespace drogon;
 
-bool ValidUsername(const std::string &name) noexcept
+__attribute__((always_inline)) inline bool ValidUsername(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
     {
@@ -52,21 +52,10 @@ size_t Bank::SumBal() const noexcept
     return res;
 }
 
-#if CONSERVATIVE_DISK_SAVE
-bool Bank::GetChangeState() const noexcept
-{
-#if MULTI_THREADED
-    return save_flag.GetChangeState();
-#else
-    return save_flag;
-#endif
-}
-#endif
-
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     uint32_t res = 0;
-    if (!users.if_contains(name, [&res](const User &u) { res = u.balance; }))
+    if (!ValidUsername(name) || !users.if_contains(name, [&res](const User &u) { res = u.balance; }))
     {
         return {k404NotFound, "\"User not found\""};
     }
@@ -92,18 +81,14 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {
     //cant send money to self, from self or amount is 0
-    if (a_name == b_name)
-    {
-        return {k400BadRequest, "\"Sender and Reciever names cannot match\""};
-    }
-
-    //cant send 0
     if (!amount)
     {
-        return {k400BadRequest, "\"Amount being sent cannot be 0\""};
+        return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-
-    //as first modify_if checks a_name and grabs unique lock
+    if (a_name == b_name)
+    {
+        return {k400BadRequest, "\"Names cannot match\""};
+    }
     if (!Contains(b_name))
     {
         return {k404NotFound, "\"Reciever does not exist\""};
@@ -118,7 +103,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             //if A can afford it
             if (a.balance < amount)
             {
-                state = {k400BadRequest, "\"Sender has insufficient funds\""};
+                state = {k400BadRequest, "\"Insufficient funds\""};
             }
             else
             {
@@ -213,7 +198,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
 }
 bool Bank::Contains(const std::string &name) const noexcept
 {
-    return users.contains(name);
+    return ValidUsername(name) && users.contains(name);
 }
 bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 {
@@ -221,10 +206,6 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 }
 BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept
 {
-    if (!ValidUsername(name))
-    {
-        return {k400BadRequest, "\"Invalid Name, breaks size and/or character restrictions\""};
-    }
     std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.try_emplace_l(
             std::move(name), [](User &) {}, init_bal, std::move(init_pass)))
@@ -256,7 +237,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     }
 #endif
     std::shared_lock<std::shared_mutex> lock{save_lock};
-    if (users.erase(name))
+    if (ValidUsername(name) && users.erase(name))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -272,10 +253,39 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         return {k404NotFound, "\"User not found\""};
     }
 }
+//assumes we know name exists, unlike DelUser
+void Bank::DelSelf(const std::string &name) noexcept
+{
+#if RETURN_ON_DEL
+    uint32_t bal;
+    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) && bal)
+    {
+        users.modify_if(return_account, [bal](User & u))
+        {
+            u.balance += bal;
+        }
+    }
+#endif
+#if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
+    save_flag.SetChangesOn();
+#else
+    save_flag = true;
+#endif
+#endif
+    std::shared_lock<std::shared_mutex> lock{save_lock};
+    users.erase(name);
+}
 const char *Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE
-    if (GetChangeState())
+    if (
+#if MULTI_THREADED
+        save_flag.GetChangeState()
+#else
+        save_flag
+#endif
+    )
     {
 #endif
         static thread_local Json::Value temp;
