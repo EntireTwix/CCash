@@ -6,11 +6,11 @@ void Log::AddTrans(const std::string &from, const std::string &to, uint32_t amou
 #if MAX_LOG_SIZE == 1
     data = std::move(Transaction(from, to, amount, time));
 #else
-    if (data.size() == MAX_LOG_SIZE) // If we hit the max size
+    if (data.size() == MAX_LOG_SIZE)
     {
         data.pop_back();
     }
-    data.emplace_back(from, to, amount, time); // In either case we have space under max length, move to new spot
+    data.emplace_back(from, to, amount, time);
 #endif
 }
 
