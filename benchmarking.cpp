@@ -72,15 +72,16 @@ int main(int argc, char **argv)
     Op(std::hash<std::string>{}(data), "hash<string>: ", 1000000);
     Op(xxHashStringGen{}(data), "xxHashStringGen: ", 1000000);
 
-    Op_a(bank.AddUser("", 0, ""), "add user: ", 1000000, bank.DelUser(""));
+    Op_a(bank.AddUser("abc", 0, "abc"), "add user: ", 1000000, bank.DelUser("abc"));
     Op(bank.ImpactBal("twix", 1), "impact bal: ", 1000000);
     Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
     Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
-    Op(bank.SendFunds("twix", "twix", 1), "invalid send funds: ", 1000000);
+    Op(bank.SendFunds("", "", 1), "invalid send funds: ", 1000000);
 
-    bank.AddUser("", 0, "");
-    Op_a(bank.DelUser(""), "del user: ", 1000000, bank.AddUser("", 0, ""));
-    bank.DelUser("");
+    bank.AddUser("abc", 0, "abc");
+    Op_a(bank.DelUser("abc"), "del user: ", 1000000, bank.AddUser("abc", 0, "abc"));
+    Op_a(bank.DelSelf("abc"), "del self: ", 1000000, bank.AddUser("abc", 0, "abc"));
+    bank.DelUser("abc");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
     Op(bank.AdminVerifyAccount("twix"), "admin verify pass: ", 1000000);
@@ -89,9 +90,6 @@ int main(int argc, char **argv)
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
 #if MAX_LOG_SIZE > 0
     Op(bank.GetLogs("twix"), "get logs: ", 1000000);
-#endif
-#if CONSERVATIVE_DISK_SAVE
-    Op(bank.GetChangeState(), "change flag: ", 1000000);
 #endif
     Op(bank.Save(), "saving: ", 1);
 
