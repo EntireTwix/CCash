@@ -94,35 +94,35 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         return {k404NotFound, "\"Reciever does not exist\""};
     }
 
-    BankResponse state;
+    BankResponse res;
     std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
 #if MAX_LOG_SIZE > 0
-    static thread_local Transaction temp(a_name, b_name, amount);
+    time_t current_time = time(NULL);
 #endif
-    if (!users.modify_if(a_name, [&state, amount](User &a) {
+    if (!users.modify_if(a_name, [current_time, &a_name, &b_name, &res, amount](User &a) {
             //if A can afford it
             if (a.balance < amount)
             {
-                state = {k400BadRequest, "\"Insufficient funds\""};
+                res = {k400BadRequest, "\"Insufficient funds\""};
             }
             else
             {
                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(temp); //about 40% of this function's cost
+                a.log.AddTrans(a_name, b_name, amount, current_time); //about 40% of this function's cost
 #endif
-                state = {k200OK, std::to_string(a.balance)};
+                res = {k200OK, std::to_string(a.balance)};
             }
         }))
     {
         return {k404NotFound, "\"Sender does not exist\""};
     }
-    if (state.first == k200OK)
+    if (res.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [amount](User &b) {
+        users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(temp);
+            b.log.AddTrans(a_name, b_name, amount, current_time);
         }); //about 40% of this function's cost
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
@@ -135,7 +135,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #endif
 #endif
     }
-    return state;
+    return res;
 }
 bool Bank::VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept
 {
@@ -204,11 +204,11 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 {
     return (name == admin_account);
 }
-BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept
+BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept
 {
     std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.try_emplace_l(
-            std::move(name), [](User &) {}, init_bal, std::move(init_pass)))
+            name, [](User &) {}, init_bal, init_pass))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
