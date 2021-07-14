@@ -10,8 +10,6 @@
 #include "change_flag.h"
 #endif
 
-bool ValidUsername(const std::string &name) noexcept;
-
 class Bank
 {
 #if MULTI_THREADED
@@ -45,10 +43,6 @@ public:
     size_t NumOfLogs() const noexcept;
     size_t SumBal() const noexcept;
 
-#if CONSERVATIVE_DISK_SAVE
-    bool GetChangeState() const noexcept;
-#endif
-
     BankResponse GetBal(const std::string &name) const noexcept;
 #if MAX_LOG_SIZE > 0
     BankResponse GetLogs(const std::string &name) noexcept;
@@ -64,6 +58,7 @@ public:
 
     BankResponse AddUser(const std::string &name, uint32_t init_bal, std::string &&init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
+    void DelSelf(const std::string &name) noexcept;
 
     const char *Save();
     void Load();
