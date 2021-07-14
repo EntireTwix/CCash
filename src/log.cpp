@@ -38,7 +38,7 @@ std::string Log::GetLogs() noexcept
             log_snapshot += std::to_string(data[i].time);
             log_snapshot += "},";
         }
-        log_snapshot[log_snapshot.size() - 1] = ']';
+        log_snapshot.back() = ']';
         log_flag.SetChangesOff();
     }
     return log_snapshot;
