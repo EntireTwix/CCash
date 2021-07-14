@@ -1,5 +1,21 @@
 #include "user_filter.h"
 
+__attribute__((always_inline)) inline bool ValidUsername(const std::string &name) noexcept
+{
+    if (name.size() < min_name_size || name.size() > max_name_size)
+    {
+        return false;
+    }
+    for (char c : name)
+    {
+        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
+        {
+            return false;
+        }
+    }
+    return true;
+}
+
 template <bool set_body_flag, bool require_admin>
 UserFilter<set_body_flag, require_admin>::UserFilter(Bank &b) : bank(b) {}
 
