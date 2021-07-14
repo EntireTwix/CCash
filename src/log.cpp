@@ -4,7 +4,7 @@ void Log::AddTrans(const std::string &from, const std::string &to, uint32_t amou
 {
     log_flag.SetChangesOn();
 #if MAX_LOG_SIZE == 1
-    data = t;
+    data = std::move(Transaction(from, to, amount, time));
 #else
     if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
