@@ -206,6 +206,10 @@ bool Bank::AdminVerifyAccount(const std::string &name) noexcept
 }
 BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept
 {
+    if (!ValidUsername(name))
+    {
+        return {k400BadRequest, "\"Invalid Username\""};
+    }
     std::shared_lock<std::shared_mutex> lock{save_lock};
     if (users.try_emplace_l(
             name, [](User &) {}, init_bal, init_pass))
