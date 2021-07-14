@@ -80,7 +80,6 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
 #endif
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {
-    //cant send money to self, from self or amount is 0
     if (!amount)
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
@@ -95,7 +94,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse res;
-    std::shared_lock<std::shared_mutex> lock{save_lock}; //about 10% of this function's cost
+    std::shared_lock<std::shared_mutex> lock{save_lock};
 #if MAX_LOG_SIZE > 0
     time_t current_time = time(NULL);
 #endif
@@ -109,7 +108,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
             {
                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(a_name, b_name, amount, current_time); //about 40% of this function's cost
+                a.log.AddTrans(a_name, b_name, amount, current_time);
 #endif
                 res = {k200OK, std::to_string(a.balance)};
             }
@@ -123,13 +122,13 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
         users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b) {
             b.balance += amount;
             b.log.AddTrans(a_name, b_name, amount, current_time);
-        }); //about 40% of this function's cost
+        });
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
 #endif
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-        save_flag.SetChangesOn(); //about 5% of this function's cost
+        save_flag.SetChangesOn();
 #else
         save_flag = true;
 #endif
@@ -170,7 +169,7 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
         save_flag = true;
 #endif
 #endif
-        return {k204NoContent, std::nullopt}; //may return new balance
+        return {k204NoContent, std::nullopt}; //returns new balance
     }
 }
 BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
