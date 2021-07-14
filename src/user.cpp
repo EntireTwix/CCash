@@ -6,7 +6,7 @@
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-User::User(uint32_t init_bal, std::string &&init_pass) noexcept : balance(init_bal), password(xxHashStringGen{}(init_pass)) {}
+User::User(uint32_t init_bal, const std::string &init_pass) noexcept : balance(init_bal), password(xxHashStringGen{}(init_pass)) {}
 
 /**
      * @brief User Constructor for loading
@@ -25,16 +25,15 @@ User::User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) 
 #if MAX_LOG_SIZE == 1
             log.data = (
 #else
-            log.data.push_back(
+            log.data.emplace_back(
 #endif
-                Transaction(
                     log_j[i]["from"].asCString(),
                     log_j[i]["to"].asCString(),
                     log_j[i]["amount"].asUInt(),
 #ifdef _USE_32BIT_TIME_T
-                    log_j[i]["time"].asUInt()));
+                    log_j[i]["time"].asUInt()))
 #else
-                    log_j[i]["time"].asUInt64()));
+                log_j[i]["time"].asUInt64());
 #endif
         }
     }
