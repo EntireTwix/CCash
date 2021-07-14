@@ -1,6 +1,6 @@
 #include "log.h"
 
-void Log::AddTrans(const Transaction &t) noexcept
+void Log::AddTrans(const std::string &from, const std::string &to, uint32_t amount, time_t time) noexcept
 {
     log_flag.SetChangesOn();
 #if MAX_LOG_SIZE == 1
@@ -8,14 +8,9 @@ void Log::AddTrans(const Transaction &t) noexcept
 #else
     if (data.size() == MAX_LOG_SIZE) // If we hit the max size
     {
-        for (size_t i = 1; i < data.size(); i++) // Make room at the back
-        {
-            data[i - 1] = std::move(data[i]); // Shifts everything left
-        }
-        data[data.size() - 1] = std::move(t); // Place new in opened spot
-        return;
+        data.pop_back();
     }
-    data.push_back(t); // In either case we have space under max length, move to new spot
+    data.emplace_back(from, to, amount, time); // In either case we have space under max length, move to new spot
 #endif
 }
 
