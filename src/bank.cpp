@@ -156,11 +156,7 @@ void Bank::ChangePassword(const std::string &name, const std::string &new_pass) 
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (!ValidUsername(name) || !users.modify_if(name, [amount](User &u) { u.balance = amount; }))
-    {
-        return {k404NotFound, "\"User not found\""};
-    }
-    else
+    if (ValidUsername(name) && users.modify_if(name, [amount](User &u) { u.balance = amount; }))
     {
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -170,6 +166,10 @@ BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 #endif
 #endif
         return {k204NoContent, std::nullopt}; //returns new balance
+    }
+    else
+    {
+        return {k404NotFound, "\"User not found\""};
     }
 }
 BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
