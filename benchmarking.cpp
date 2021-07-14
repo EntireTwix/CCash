@@ -84,7 +84,7 @@ int main(int argc, char **argv)
     bank.DelUser("abc");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
-    Op(bank.AdminVerifyAccount("twix"), "admin verify pass: ", 1000000);
+    Op(bank.AdminVerifyAccount("twix"), "admin verify account: ", 1000000);
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
@@ -94,8 +94,8 @@ int main(int argc, char **argv)
     Op(bank.Save(), "saving: ", 1);
 
     //GetBal scalining test
-    // std::default_random_engine generator;
-    // std::uniform_real_distribution<double> distribution(0.0, 1.0);
+    //std::default_random_engine generator;
+    //std::uniform_real_distribution<double> distribution(0.0, 1.0);
 
     // for (size_t i = 0; i < 10000000; ++i)
     // {
