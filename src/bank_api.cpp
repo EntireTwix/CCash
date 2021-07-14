@@ -265,7 +265,8 @@ void api::AdminAddUser(req_args) const
 }
 void api::DelUser(req_args) const
 {
-    RESPONSE_PARSE(bank.DelUser(NAME_PARAM));
+    bank.DelSelf(NAME_PARAM);
+    RESPOND_TRUE;
 }
 void api::AdminDelUser(req_args) const
 {
