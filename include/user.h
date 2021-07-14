@@ -11,7 +11,7 @@ struct User
     Log log;
 #endif
 
-    User(uint32_t init_bal, std::string &&init_pass) noexcept;
+    User(uint32_t init_bal, const std::string &init_pass) noexcept;
     User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept;
 #if MAX_LOG_SIZE > 0
     User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) noexcept;
