@@ -119,9 +119,16 @@ void api::AdminChangePassword(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            StrFromSV_Wrapper pass_val(pass.value());
-            bank.ChangePassword(name_val.str, pass_val.str);
-            res = BankResponse{k204NoContent, std::nullopt};
+            if (bank.Contains(name_val.str))
+            {
+                StrFromSV_Wrapper pass_val(pass.value());
+                bank.ChangePassword(name_val.str, pass_val.str);
+                res = BankResponse{k204NoContent, std::nullopt};
+            }
+            else
+            {
+                res = BankResponse{k404NotFound, "\"User not found\""};
+            }
         }
     }
     RESPONSE_PARSE(std::move(res));

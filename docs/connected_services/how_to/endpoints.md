@@ -51,7 +51,7 @@
 | name                |        400         |        401         |           404            |        406         |
 | :------------------ | :----------------: | :----------------: | :----------------------: | :----------------: |
 | ChangePassword      | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: |
-| AdminChangePassword | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: |
+| AdminChangePassword | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark: |
 | SetBal              | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark: |
 
 ### Meta endpoint support
