@@ -341,6 +341,7 @@ void Bank::Load()
     std::ifstream users_load(users_location, std::ios::out | std::ios::binary);
     if (!users_load.is_open())
     {
+        std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
         throw std::invalid_argument("Cannot access loading file\n");
     }
 
