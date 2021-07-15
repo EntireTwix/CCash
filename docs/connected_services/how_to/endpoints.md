@@ -13,6 +13,8 @@
 :heavy_check_mark:
 :heavy_multiplication_x:
 
+## all error responses have JSON string along with them to describe
+
 ### Usage endpoints
 | name           | purpose                                                                        | json input                       | path                            | HTTP Method | correct status |   return type    |                  return value                  |       Jresp        |           Jreq           |            A             |            U             |
 | :------------- | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------------- | :---------: | :------------: | :--------------: | :--------------------------------------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
@@ -21,7 +23,7 @@
 | SendFunds      | sends funds from the authenticated user to the user `{name}` given in the json | {"name":string, "amount":uint32} | api/v1/user/transfer            |   `POST`    |      200       |      uint32      |    the user's balance after the transaction    | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
 | VerifyPassword | verifies the credentials, used for connected services for ease of use          | `N/A`                            | api/v1/user/verify_password     |   `POST`    |      204       |      `N/A`       |                     `N/A`                      | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
 
-### Usage enpoints errors
+### Usage enpoint errors
 | name           |           400            |           401            |           404            |        405         |        406         |
 | :------------- | :----------------------: | :----------------------: | :----------------------: | :----------------: | :----------------: |
 | GetBal         | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_check_mark: |
@@ -29,9 +31,7 @@
 | SendFunds      |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_check_mark: |
 | VerifyPassword | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_check_mark: |
 
-all error responses have JSON string along with them to describe
-
-### Usage endpoints support
+### Usage endpoint support
 `v` denoting the API version
 | name           |         v1         |
 | :------------- | :----------------: |
@@ -39,3 +39,18 @@ all error responses have JSON string along with them to describe
 | GetLog         | :heavy_check_mark: |
 | SendFunds      | :heavy_check_mark: |
 | VerifyPassword | :heavy_check_mark: |
+
+### Meta endpoints
+| name           | purpose                                         | json input      | path                        | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |            A             |         U          |
+| :------------- | ----------------------------------------------- | --------------- | --------------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------: | :----------------------: | :----------------: |
+| ChangePassword | to change the password of of Authenticated user | {"pass":string} | api/v1/user/change_password |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: |
+ 
+### Meta endpoint errors
+| name           |        400         |           401            |           404            |           405            |           406            |
+| :------------- | :----------------: | :----------------------: | :----------------------: | :----------------------: | :----------------------: |
+| ChangePassword | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+
+### Meta endpoint support
+| name           |         v1         |
+| :------------- | :----------------: |
+| ChangePassword | :heavy_check_mark: |

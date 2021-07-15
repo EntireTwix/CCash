@@ -67,7 +67,7 @@ there are multiple flags responsible configuring CCash:
 | RETURN_ON_DEL_NAME     |      `N/A`       | when defined, return on delete will be toggled and any accounts deleted will send their funds to the defined account, this prevent currency destruction | prevents destruction of currency | deleting accounts is made slower                            |
 
 
-simply running 
+EXAMPLE:
 ```
 cmake ..
 ```
