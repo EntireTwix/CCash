@@ -288,9 +288,8 @@ const char *Bank::Save()
     )
     {
 #endif
-    save_start:
         std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
-        if (!users_save)
+        if (!users_save.is_open())
         {
             throw std::invalid_argument("Cannot access saving file\n");
         }
@@ -310,14 +309,16 @@ const char *Bank::Save()
         }
         FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
-        assert(writer.verify());
+        if (!writer.verify())
+        {
+            throw std::invalid_argument("Data is corrupted\n");
+        }
         const FBE::FBEBuffer &write_buffer = writer.buffer();
         users_save.write((char *)write_buffer.data(), write_buffer.size());
         users_save.close();
         if (!users_save.good())
         {
-            goto save_start;
-            return "Error occurred at writing time\n";
+            throw std::invalid_argument("Error occurred at writing\n");
         }
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -337,22 +338,25 @@ const char *Bank::Save()
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
 void Bank::Load()
 {
-    std::ifstream users_save(users_location, std::ios::out | std::ios::binary);
-    if (!users_save)
+    std::ifstream users_load(users_location, std::ios::out | std::ios::binary);
+    if (!users_load.is_open())
     {
-        throw std::invalid_argument("Cannot access saving file\n");
+        throw std::invalid_argument("Cannot access loading file\n");
     }
 
     uint32_t buffer_size;
-    users_save.read((char *)&buffer_size, 4);                    //reading first 32 bits for size
+    users_load.read((char *)&buffer_size, 4);                    //reading first 32 bits for size
     std::vector<uint8_t> buffer(buffer_size);                    //allocating array
-    users_save.read((char *)buffer.data() + 4, buffer_size - 4); //reading rest of file
+    users_load.read((char *)buffer.data() + 4, buffer_size - 4); //reading rest of file
     memcpy((char *)buffer.data(), &buffer_size, 4);              //copying first 32 bits back
 
     FBE::bank_dom::GlobalFinalModel reader;
     reader.attach(buffer);
 
-    assert(reader.verify());
+    if (!reader.verify())
+    {
+        throw std::invalid_argument("Data is corrupted\n");
+    }
     bank_dom::Global users_global;
     reader.deserialize(users_global);
 
