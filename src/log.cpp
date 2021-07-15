@@ -3,15 +3,11 @@
 void Log::AddTrans(const std::string &from, const std::string &to, uint32_t amount, time_t time) noexcept
 {
     log_flag.SetChangesOn();
-#if MAX_LOG_SIZE == 1
-    data = std::move(Transaction(from, to, amount, time));
-#else
     if (data.size() == MAX_LOG_SIZE)
     {
         data.pop_back();
     }
     data.emplace_back(from, to, amount, time);
-#endif
 }
 
 std::string Log::GetLogs() noexcept
@@ -47,15 +43,6 @@ std::string Log::GetLogs() noexcept
 Json::Value Log::Serialize() const
 {
     Json::Value res;
-#if MAX_LOG_SIZE == 1
-    res[0]["to"] = data.to;
-    res[0]["from"] = data.from;
-#ifdef _USE_32BIT_TIME_T
-    res[0]["time"] = (Json::UInt)data.time;
-#else
-    res[0]["time"] = (Json::UInt64)data.time;
-#endif
-#else
     for (uint32_t i = 0; i < data.size(); ++i)
     {
         res[i]["to"] = data[i].to;
@@ -67,6 +54,5 @@ Json::Value Log::Serialize() const
         res[i]["time"] = (Json::Int64)data[i].time;
 #endif
     }
-#endif
     return res;
 }
