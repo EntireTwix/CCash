@@ -289,12 +289,12 @@ const char *Bank::Save()
     )
     {
 #endif
-        static std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
+        std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
         if (!users_save.is_open())
         {
             throw std::invalid_argument("Cannot access saving file\n");
         }
-        static bank_dom::Global users_copy;
+        bank_dom::Global users_copy;
         users_copy.users.clear();
         users_copy.keys.clear();
         users_copy.users.reserve(users.size());
@@ -310,7 +310,7 @@ const char *Bank::Save()
                 });
             }
         }
-        static FBE::bank_dom::GlobalFinalModel writer;
+        FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
         if (!writer.verify())
         {
