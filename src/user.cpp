@@ -15,38 +15,38 @@ User::User(uint32_t init_bal, const std::string &init_pass) noexcept : balance(i
      * @param init_pass 
      */
 User::User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
+
 #if MAX_LOG_SIZE > 0
-User::User(uint32_t init_bal, XXH64_hash_t init_pass, const Json::Value &log_j) noexcept : balance(init_bal), password(init_pass)
+User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.password)
 {
-    if (log_j.size())
+    if (u.logs)
     {
-        for (uint32_t i = (log_j.size() - MAX_LOG_SIZE) * (log_j.size() > MAX_LOG_SIZE); i < log_j.size(); i++)
+        for (uint32_t i = (u.logs.value().data.size() - MAX_LOG_SIZE); i < u.logs.value().data.size(); ++i)
         {
-#if MAX_LOG_SIZE == 1
-            log.data = (
-#else
-            log.data.emplace_back(
-#endif
-                    log_j[i]["from"].asCString(),
-                    log_j[i]["to"].asCString(),
-                    log_j[i]["amount"].asUInt(),
-#ifdef _USE_32BIT_TIME_T
-                    log_j[i]["time"].asUInt()))
-#else
-                log_j[i]["time"].asUInt64());
-#endif
+            const bank_dom::Transaction &temp = u.logs.value().data[i];
+            log.data.emplace_front(temp.from, temp.to, temp.amount, temp.time);
         }
     }
 }
 #endif
-
-Json::Value User::Serialize() const
+bank_dom::User User::Encode() const noexcept
 {
-    Json::Value res;
-    res["balance"] = (Json::UInt)balance;
-    res["password"] = (Json::UInt64)password;
 #if MAX_LOG_SIZE > 0
-    res["log"] = log.Serialize();
+    if (this->log.data.size())
+    {
+        bank_dom::Logs save_log;
+        save_log.data.reserve(this->log.data.size());
+        for (const Transaction &t : this->log.data)
+        {
+            save_log.data.emplace_back(t.from, t.to, t.amount, t.time);
+        }
+        return bank_dom::User(balance, password, save_log);
+    }
+    else
+    {
+        return bank_dom::User(balance, password, std::nullopt);
+    }
+#else
+    return bank_dom::User(balance, password, std::nullopt);
 #endif
-    return res;
 }
