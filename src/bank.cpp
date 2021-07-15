@@ -309,7 +309,7 @@ const char *Bank::Save()
                 });
             }
         }
-        FBE::bank_dom::GlobalFinalModel writer;
+        static thread_local FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
         if (!writer.verify())
         {
