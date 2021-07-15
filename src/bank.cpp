@@ -289,7 +289,7 @@ const char *Bank::Save()
     {
 #endif
     save_start:
-        std::ofstream users_save("users.dat", std::ios::out | std::ios::binary);
+        std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
         if (!users_save)
         {
             throw std::invalid_argument("Cannot access saving file\n");
@@ -337,7 +337,7 @@ const char *Bank::Save()
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
 void Bank::Load()
 {
-    std::ifstream users_save("users.dat", std::ios::out | std::ios::binary);
+    std::ifstream users_save(users_location, std::ios::out | std::ios::binary);
     if (!users_save)
     {
         throw std::invalid_argument("Cannot access saving file\n");
