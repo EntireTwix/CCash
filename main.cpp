@@ -29,7 +29,22 @@ void SaveSig(int s)
 int main(int argc, char **argv)
 {
     {
-
+        if (argc == 1)
+        {
+            std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
+            if (users_save.is_open())
+            {
+                uint8_t temp[16]{16, 0, 0, 0, 4};
+                users_save.write((char *)temp, 16);
+                users_save.close();
+                std::cout << "User save file generated\nUsage: sudo ./bank <admin account> <saving frequency in minutes>\n";
+            }
+            else
+            {
+                std::cerr << "File cannot be created\n";
+            }
+            return 0;
+        }
         if (argc != 3)
         {
             std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes>\n";

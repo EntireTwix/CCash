@@ -341,11 +341,7 @@ void Bank::Load()
     std::ifstream users_load(users_location, std::ios::out | std::ios::binary);
     if (!users_load.is_open())
     {
-        std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
-        uint8_t temp[16]{16, 0, 0, 0, 4};
-        users_save.write((char *)temp, 16);
-        users_save.close();
-        throw std::invalid_argument("Cannot find users.dat, file has been created\n");
+        throw std::invalid_argument("Cannot find save file, to generate a new one run ./bank\n");
     }
 
     uint32_t buffer_size;

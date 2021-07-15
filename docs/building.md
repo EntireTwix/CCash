@@ -82,6 +82,7 @@ lastly type in
 ```
 cmake <flags of your choice or none> ..
 make -j<threads>
+./bank
 ```
 
 ## Certs
