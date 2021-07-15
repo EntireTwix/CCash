@@ -40,13 +40,13 @@ target_sources(${PROJECT_NAME} PRIVATE
 if(DEFINED USER_SAVE_LOC)
 set(USER_SAVE ${USER_SAVE_LOC})
 else()
-set(USER_SAVE "\"../users.json\"")
+set(USER_SAVE "\"users.dat\"")
 endif()
 
 if(DEFINED DROGON_CONFIG_LOC)
 set(DROGON_CONFIG ${DROGON_CONFIG_LOC})
 else()
-set(DROGON_CONFIG "\"../config.json\"")
+set(DROGON_CONFIG "\"config.json\"")
 endif()
 
 if(DEFINED MAX_LOG_SIZE)
