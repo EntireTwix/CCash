@@ -288,12 +288,14 @@ const char *Bank::Save()
     )
     {
 #endif
-        std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
+        static thread_local std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
         if (!users_save.is_open())
         {
             throw std::invalid_argument("Cannot access saving file\n");
         }
-        bank_dom::Global users_copy;
+        static thread_local bank_dom::Global users_copy;
+        users_copy.users.clear();
+        users_copy.keys.clear();
         users_copy.users.reserve(users.size());
         users_copy.keys.reserve(users.size());
         {
@@ -301,13 +303,13 @@ const char *Bank::Save()
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
+                users.if_contains(u.first, [&u](const User &u_val) {
                     users_copy.users.emplace_back(u_val.Encode());
                     users_copy.keys.emplace_back(u.first);
                 });
             }
         }
-        FBE::bank_dom::GlobalFinalModel writer;
+        static thread_local FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
         if (!writer.verify())
         {
