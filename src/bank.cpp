@@ -304,7 +304,7 @@ const char *Bank::Save()
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&u](const User &u_val) {
+                users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
                     users_copy.users.emplace_back(u_val.Encode());
                     users_copy.keys.emplace_back(u.first);
                 });
