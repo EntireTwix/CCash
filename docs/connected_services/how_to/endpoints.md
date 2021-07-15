@@ -41,19 +41,22 @@
 | VerifyPassword | :heavy_check_mark: |
 
 ### Meta endpoints
-| name                | purpose                                         | json input                    | path                              | HTTP Method | correct status | return type | return value |       Jresp        |           Jreq           |            A             |            U             |
-| :------------------ | ----------------------------------------------- | ----------------------------- | --------------------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
-| ChangePassword      | to change the password of of Authenticated user | {"pass":string}               | api/v1/user/change_password       |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
-| AdminChangePassword | to change the password of a given user `{name}` | {"name":string,"pass":string} | api/v1/admin/user/change_password |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: |
+| name                | purpose                                       | json input                      | path                              | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |            A             |            U             |
+| :------------------ | --------------------------------------------- | ------------------------------- | --------------------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------: | :----------------------: | :----------------------: |
+| ChangePassword      | changes the password of of Authenticated user | {"pass":string}                 | api/v1/user/change_password       |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| AdminChangePassword | changes the password of a given user `{name}` | {"name":string,"pass":string}   | api/v1/admin/user/change_password |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: |
+| SetBal              | sets the balance of a give users `{name}`     | {"name":string,"amount":uint32} | api/v1/admin/set_balance          |   `PATCH`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: |    :heavy_check_mark:    |
  
 ### Meta endpoint errors
 | name                |        400         |        401         |           404            |        406         |
 | :------------------ | :----------------: | :----------------: | :----------------------: | :----------------: |
 | ChangePassword      | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: |
 | AdminChangePassword | :heavy_check_mark: | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_check_mark: |
+| SetBal              | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark: |
 
 ### Meta endpoint support
 | name                |         v1         |
 | :------------------ | :----------------: |
 | ChangePassword      | :heavy_check_mark: |
 | AdminChangePassword | :heavy_check_mark: |
+| SetBal              | :heavy_check_mark: |
