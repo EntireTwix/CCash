@@ -276,6 +276,7 @@ void Bank::DelSelf(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{save_lock};
     users.erase(name);
 }
+//ONLY EVER BEING CALLED BY SAVE THREAD OR C-INTERUPT
 const char *Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE
@@ -288,12 +289,12 @@ const char *Bank::Save()
     )
     {
 #endif
-        static thread_local std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
+        static std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
         if (!users_save.is_open())
         {
             throw std::invalid_argument("Cannot access saving file\n");
         }
-        static thread_local bank_dom::Global users_copy;
+        static bank_dom::Global users_copy;
         users_copy.users.clear();
         users_copy.keys.clear();
         users_copy.users.reserve(users.size());
@@ -309,7 +310,7 @@ const char *Bank::Save()
                 });
             }
         }
-        static thread_local FBE::bank_dom::GlobalFinalModel writer;
+        static FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
         if (!writer.verify())
         {
