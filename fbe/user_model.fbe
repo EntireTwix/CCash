@@ -1,0 +1,27 @@
+package bank_dom
+
+struct Transaction
+{
+    string from = "";
+    string to = "";
+    uint32 amount = 0;
+    timestamp time;
+}
+
+struct Logs
+{
+    Transaction[] data;
+}
+
+struct User
+{
+    uint32 balance = 0;
+    uint64 password = 0;
+    Logs? logs = null;
+}
+
+struct Global
+{
+    string[] keys;
+    User[] users;
+}
