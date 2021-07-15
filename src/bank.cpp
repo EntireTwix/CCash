@@ -295,8 +295,6 @@ const char *Bank::Save()
             throw std::invalid_argument("Cannot access saving file\n");
         }
         bank_dom::Global users_copy;
-        users_copy.users.clear();
-        users_copy.keys.clear();
         users_copy.users.reserve(users.size());
         users_copy.keys.reserve(users.size());
         {
