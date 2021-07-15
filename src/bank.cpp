@@ -24,21 +24,16 @@ size_t Bank::NumOfUsers() const noexcept { return users.size(); }
 //NOT THREAD SAFE
 size_t Bank::NumOfLogs() const noexcept
 {
-    size_t res = 0;
 #if MAX_LOG_SIZE > 0
+    size_t res = 0;
     for (const auto &u : users)
     {
-#if MAX_LOG_SIZE == 1
-        if (u.second.log.data.amount)
-        {
-            ++res;
-        }
-#else
         res += u.second.log.data.size();
-#endif
     }
-#endif
     return res;
+#else
+    return 0;
+#endif
 }
 
 //NOT THREAD SAFE
@@ -231,7 +226,8 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 {
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) && bal)
+    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
+        bal)
     {
         users.modify_if(return_account, [bal](User & u))
         {
@@ -261,7 +257,8 @@ void Bank::DelSelf(const std::string &name) noexcept
 {
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) && bal)
+    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
+        bal)
     {
         users.modify_if(return_account, [bal](User & u))
         {
@@ -291,28 +288,36 @@ const char *Bank::Save()
     )
     {
 #endif
-        static thread_local Json::Value temp;
-
-        //loading info into json temp
+    save_start:
+        std::ofstream users_save("users.dat", std::ios::out | std::ios::binary);
+        if (!users_save)
+        {
+            throw std::invalid_argument("Cannot access saving file\n");
+        }
+        bank_dom::Global users_copy;
+        users_copy.users.reserve(users.size());
+        users_copy.keys.reserve(users.size());
         {
             std::unique_lock<std::shared_mutex> lock{save_lock};
             for (const auto &u : users)
             {
                 //we know it contains this key but we call this func to grab mutex
-                users.if_contains(u.first, [&u](const User &u_val) { temp[u.first] = u_val.Serialize(); });
+                users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
+                    users_copy.users.emplace_back(u_val.Encode());
+                    users_copy.keys.emplace_back(u.first);
+                });
             }
         }
-        if (temp.isNull())
+        FBE::bank_dom::GlobalFinalModel writer;
+        writer.serialize(users_copy);
+        assert(writer.verify());
+        const FBE::FBEBuffer &write_buffer = writer.buffer();
+        users_save.write((char *)write_buffer.data(), write_buffer.size());
+        users_save.close();
+        if (!users_save.good())
         {
-            throw std::invalid_argument("Saving Failed\n");
-        }
-        else
-        {
-            static thread_local std::ofstream user_save(users_location);
-            static thread_local Json::StreamWriterBuilder builder;
-            static thread_local const std::unique_ptr<Json::StreamWriter> writer(builder.newStreamWriter());
-            writer->write(temp, &user_save);
-            user_save.close();
+            goto save_start;
+            return "Error occurred at writing time\n";
         }
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
@@ -332,31 +337,27 @@ const char *Bank::Save()
 //NOT THREAD SAFE, BY NO MEANS SHOULD THIS BE CALLED WHILE RECEIEVING REQUESTS
 void Bank::Load()
 {
-    static thread_local Json::CharReaderBuilder builder;
-
-    static thread_local Json::Value temp;
-    static thread_local std::ifstream user_save(users_location);
-    builder["collectComments"] = true;
-    static thread_local JSONCPP_STRING errs;
-    if (!parseFromStream(builder, user_save, &temp, &errs))
+    std::ifstream users_save("users.dat", std::ios::out | std::ios::binary);
+    if (!users_save)
     {
-        std::cerr << errs << '\n';
-        user_save.close();
-        throw std::invalid_argument("Parsing Failed\n");
+        throw std::invalid_argument("Cannot access saving file\n");
     }
-    else
+
+    uint32_t buffer_size;
+    users_save.read((char *)&buffer_size, 4);                    //reading first 32 bits for size
+    std::vector<uint8_t> buffer(buffer_size);                    //allocating array
+    users_save.read((char *)buffer.data() + 4, buffer_size - 4); //reading rest of file
+    memcpy((char *)buffer.data(), &buffer_size, 4);              //copying first 32 bits back
+
+    FBE::bank_dom::GlobalFinalModel reader;
+    reader.attach(buffer);
+
+    assert(reader.verify());
+    bank_dom::Global users_global;
+    reader.deserialize(users_global);
+
+    for (size_t i = 0; i < users_global.users.size(); ++i)
     {
-        user_save.close();
-        for (const auto &u : temp.getMemberNames())
-        {
-            if constexpr (MAX_LOG_SIZE > 0)
-            {
-                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()), temp[u]["log"]);
-            }
-            else
-            {
-                users.try_emplace(u, temp[u]["balance"].asUInt(), std::move(temp[u]["password"].asUInt64()));
-            }
-        }
+        users.try_emplace(users_global.keys[i], users_global.users[i]);
     }
 }
