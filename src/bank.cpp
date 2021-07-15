@@ -345,7 +345,7 @@ void Bank::Load()
         static uint8_t temp[16]{16, 0, 0, 0, 4};
         users_save.write((char *)temp, 16);
         users_save.close();
-        throw std::invalid_argument("Cannot access loading file\n");
+        throw std::invalid_argument("Cannot find users.dat, file has been created\n");
     }
 
     uint32_t buffer_size;
