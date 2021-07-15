@@ -28,6 +28,13 @@ target_sources(${PROJECT_NAME} PRIVATE
     src/user.cpp
     src/xxhash_str.cpp
     src/xxhash.c
+
+    fbe/user_model/bank_dom_final_models.cpp
+    fbe/user_model/bank_dom_models.cpp
+    fbe/user_model/bank_dom.cpp
+    fbe/user_model/fbe_final_models.cpp
+    fbe/user_model/fbe_models.cpp
+    fbe/user_model/fbe.cpp
 )
 
 if(DEFINED USER_SAVE_LOC)
@@ -71,6 +78,7 @@ endif()
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
+target_include_directories(${PROJECT_NAME} PUBLIC fbe/user_model)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party/drogon/lib/inc)
 target_include_directories(${PROJECT_NAME} PUBLIC third_party/base64/include)
