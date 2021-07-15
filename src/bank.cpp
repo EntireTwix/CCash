@@ -342,7 +342,7 @@ void Bank::Load()
     if (!users_load.is_open())
     {
         std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
-        static uint8_t temp[16]{16, 0, 0, 0, 4};
+        uint8_t temp[16]{16, 0, 0, 0, 4};
         users_save.write((char *)temp, 16);
         users_save.close();
         throw std::invalid_argument("Cannot find users.dat, file has been created\n");
