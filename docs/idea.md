@@ -1,7 +1,6 @@
 [PREVIOUS PAGE](../README.md) | [NEXT PAGE](connected_services/how_to/explanation.md)
 
-CCash is an external ledger for in-game economies, running on a webserver with a RESTful API, exceptionally fast and lightweight written in C++17.
-
+CCash is an external ledger for in-game economies, running on a webserver with a RESTful API, exceptionally fast and lightweight written in C++.
 
 While CCash can be used for anything that can interact with its API I think minecraft is a good example:
 
