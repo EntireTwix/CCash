@@ -36,7 +36,7 @@ public:
 
     void AddUser(req_args) const;
     void AdminAddUser(req_args) const;
-    void DelUser(req_args) const;
+    void DelSelf(req_args) const;
     void AdminDelUser(req_args) const;
 
 #endif
@@ -69,7 +69,7 @@ public:
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                                                           //expects ["name"](string) ["pass"](string)
     METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) ["amount"](32 bits) ["pass"](string)
-    METHOD_ADD(api::DelUser, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
+    METHOD_ADD(api::DelSelf, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
 #endif
     METHOD_ADD(api::ApiProperties, "/properties", Get, Options);

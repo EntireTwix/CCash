@@ -270,7 +270,7 @@ void api::AdminAddUser(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::DelUser(req_args) const
+void api::DelSelf(req_args) const
 {
     bank.DelSelf(NAME_PARAM);
     RESPOND_TRUE;
