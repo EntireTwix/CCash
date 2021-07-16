@@ -88,10 +88,30 @@ make -j<threads>
 ## Certs
 make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use [certbot](https://certbot.eff.org/). 
 ```json
+{
+  "listeners": [
+      {
+        "address": "0.0.0.0",
+        "port": 80,
+        "https": false
+      },
+      {
+        "address": "0.0.0.0",
+        "port": 443,
+        "https": true,
+        "cert": "",
+        "key": ""
+      }
+  ]
+}
+```
+editing
+```json
 "cert": "pubkey",
 "key": "privkey"
 ```
-Alternatively you can delete this entire section
+
+Alternatively you can delete this entire section (Disabling HTTPS in the proccess)
 ```json
 {
     "address": "0.0.0.0",
@@ -99,6 +119,18 @@ Alternatively you can delete this entire section
     "https": true,
     "cert": "",
     "key": ""
+}
+```
+leaving
+```json
+{
+  "listeners": [
+      {
+        "address": "0.0.0.0",
+        "port": 80,
+        "https": false
+      }
+  ]
 }
 ```
 **it is Highly recommened you secure your server**
