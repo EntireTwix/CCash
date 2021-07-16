@@ -22,6 +22,7 @@ base64 decoding is required for Basic Auth so I used this clean and fast solutio
 ![image](https://github.com/aklomp/base64/blob/master/base64-benchmarks.png)
 ## [Simdjson](https://github.com/simdjson/simdjson)
 simdjson was the fastest JSON parsing I could find, its used for request parsing.
+![image](https://github.com/simdjson/simdjson/blob/master/doc/rome.png)
 ## [Drogon webframework](https://github.com/an-tao/drogon)
 at the time of making this doc Drogon is the 3rd fastest web framework as per [this](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite) sites metric of measuring web frameworks, it also has multi threading support.
 
