@@ -346,9 +346,9 @@ void Bank::Load()
     }
 
     uint32_t buffer_size;
-    users_load.read((char *)&buffer_size, 4); //reading first 32 bits for size
-    FBE::bank_dom::GlobalFinalModel reader;
-    reader.resize(buffer_size);
+    users_load.read((char *)&buffer_size, 4);                             //reading first 32 bits for size
+    FBE::bank_dom::GlobalFinalModel reader;                               //declaring model
+    reader.resize(buffer_size);                                           //allocating new memory
     users_load.read((char *)reader.buffer().data() + 4, buffer_size - 4); //reading rest of file
     memcpy((char *)reader.buffer().data(), &buffer_size, 4);              //copying first 32 bits back
 
