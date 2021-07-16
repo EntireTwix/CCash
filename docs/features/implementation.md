@@ -13,8 +13,13 @@ below is `GetBal()` being called where `x` axis grows with # of users reaching 1
 as the graph demonstrates, regardless of size `GetBal()` remains consistent at ~39ns on my 3700x single threaded.
 ## [xxHash](https://github.com/Cyan4973/xxHash)
 xxhash is used for both hashing of passwords for storage aswell as the usernames for indexing the phmap, its speed is ridiculous at faster then `memcpy` rates of Gb/s.
+| Hash Name             | Width | Bandwidth (GB/s) | Small Data Velocity | Quality | Comment         |
+| --------------------- | ----- | ---------------- | ------------------- | ------- | --------------- |
+| __XXH3__ (SSE2)       | 64    | 31.5 GB/s        | 133.1               | 10      |
+| _RAM sequential read_ | N/A   | 28.0 GB/s        | N/A                 | N/A     | _for reference_ |
 ## [Base64](https://github.com/aklomp/base64)
-base64 decoding is required for Basic Auth so I used this clean and fast solution found [here](https://github.com/aklomp/base64) which uses SIMD if available.
+base64 decoding is required for Basic Auth so I used this clean and fast solution which uses SIMD.
+![image](https://github.com/aklomp/base64/blob/master/base64-benchmarks.png)
 ## [Simdjson](https://github.com/simdjson/simdjson)
 simdjson was the fastest JSON parsing I could find, its used for request parsing.
 ## [Drogon webframework](https://github.com/an-tao/drogon)
