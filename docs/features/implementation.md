@@ -28,6 +28,13 @@ every `n` minutes, a configurable amount at launch, CCash will save.
 for the above two cases, it will only save to disk if changes have been made since last save.
 #### [Binary Encoding](https://github.com/chronoxor/FastBinaryEncoding)
 saving is done using FBE, this slightly reduces file size compared to JSON and is much faster.
+|                               Protocol                                | Message size | Serialization time | Deserialization time |
+| :-------------------------------------------------------------------: | -----------: | -----------------: | -------------------: |
+|                 [Cap'n'Proto](https://capnproto.org)                  |    208 bytes |             558 ns |               359 ns |
+| [FastBinaryEncoding](https://github.com/chronoxor/FastBinaryEncoding) |    234 bytes |              66 ns |                82 ns |
+|          [FlatBuffers](https://google.github.io/flatbuffers)          |    280 bytes |             830 ns |               290 ns |
+|      [Protobuf](https://developers.google.com/protocol-buffers)       |    120 bytes |             628 ns |               759 ns |
+|                     [JSON](http://rapidjson.org)                      |    301 bytes |             740 ns |               500 ns |
 ## Multi-threading support
 considering phmap and drogon both massively benefit from being multi-threaded it seemed obvious that the entire program should be, this is enabled by default and manually settable at `MULTI_THREADED`. Below are some graphs visualizing the gain of doing so:
 <!-- graph -->
