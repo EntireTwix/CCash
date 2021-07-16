@@ -185,7 +185,7 @@ void api::ImpactBal(req_args) const
 //System Usage
 void api::Help(req_args) const
 {
-    static thread_local auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/README.md");
+    static thread_local auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/README.md", k301MovedPermanently);
     CACHE_FOREVER;
     callback(resp);
 }
