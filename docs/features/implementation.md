@@ -28,7 +28,7 @@ simdjson was the fastest JSON parsing I could find, its used for request parsing
 ## [Drogon webframework](https://github.com/an-tao/drogon)
 at the time of making this doc Drogon is the 3rd fastest web framework as per [this](https://www.techempower.com/benchmarks/#section=data-r20&hw=ph&test=composite) sites metric of measuring web frameworks, it also has multi threading support.
 
-![image](https://user-images.githubusercontent.com/31377881/125890904-36507318-2183-494d-be83-85af8af863c5.png)
+![image](https://user-images.githubusercontent.com/31377881/125891266-570c5154-8ae2-4358-9d7b-ccd82a18b132.png)
 ## Sparse saving
 #### Saving on close
 when the program is interupted with CONTROL + C it will save before closing the webserver, **it will not however save during a crash**.
