@@ -2,6 +2,7 @@
 
 CCash is an external ledger for in-game economies, running on a webserver with a RESTful API, exceptionally fast and lightweight written in C++17.
 
+
 While CCash can be used for anything that can interact with its API I think minecraft is a good example:
 
 the currency model most Minecraft Servers adopt if any, is resource based, usually diamonds, this model is fraught with issues however:
@@ -25,3 +26,5 @@ or on localhost:
 running it local to the game server reduces latency for ComputerCraft connected services, fortunately CCash is sufficiently lightweight as to not impact performance on most setups.
 
 **DISCLAIMER: if you are to run it locally and want to use ComputerCraft with it, make sure to add `127.0.0.1` to ComputerCraft's config section `allowed_domains`**   
+
+as CCash is just a means of keeping track of who has what, the economic system you use is self decided, ideally an admin should manage the instance to lower incentive to manipulate as they concievably already have supreme power over the given game.
