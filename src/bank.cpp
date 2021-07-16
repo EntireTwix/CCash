@@ -346,13 +346,11 @@ void Bank::Load()
     }
 
     uint32_t buffer_size;
-    users_load.read((char *)&buffer_size, 4);                    //reading first 32 bits for size
-    std::vector<uint8_t> buffer(buffer_size);                    //allocating array
-    users_load.read((char *)buffer.data() + 4, buffer_size - 4); //reading rest of file
-    memcpy((char *)buffer.data(), &buffer_size, 4);              //copying first 32 bits back
-
+    users_load.read((char *)&buffer_size, 4); //reading first 32 bits for size
     FBE::bank_dom::GlobalFinalModel reader;
-    reader.attach(buffer);
+    reader.resize(buffer_size);
+    users_load.read((char *)reader.buffer().data() + 4, buffer_size - 4); //reading rest of file
+    memcpy((char *)reader.buffer().data(), &buffer_size, 4);              //copying first 32 bits back
 
     if (!reader.verify())
     {
