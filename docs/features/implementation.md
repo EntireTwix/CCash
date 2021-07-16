@@ -7,6 +7,8 @@
 <!-- phmap vs std hash map -->
 #### STD vs phmap
 this parallel hashmap implementation is the basis of CCash, its where all the user data is stored, compared to the STD's `std::unordered_map<T>` its much faster, this, multi threading support, and more can be found in the [writeup](https://greg7mdp.github.io/parallel-hashmap/).
+![image](https://raw.githubusercontent.com/greg7mdp/parallel-hashmap/master/html/img/stl_flat_both.PNG)
+![image](https://raw.githubusercontent.com/greg7mdp/parallel-hashmap/master/html/img/lock_various_sizes.PNG)
 #### Scalability
 below is `GetBal()` being called where `x` axis grows with # of users reaching 10 million users, `y` axis is time in ns. The name given is random between 0 and max users at that time as to provide more accurate results.
 ![image](GetBal().png)
