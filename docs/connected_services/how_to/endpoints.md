@@ -65,9 +65,9 @@
 | ImpactBal           | :heavy_check_mark: |
 
 ### Sytem Usage endpoints
-| name | purpose                    | json input | path        | HTTP Method | correct status | return type | return value | Jresp | Jreq  |            A             |            U             |
-| :--- | -------------------------- | ---------- | ----------- | :---------: | :------------: | :---------: | :----------: | :---: | :---: | :----------------------: | :----------------------: |
-| Help | help with usage of the API | `N/A`      | api/v1/help |    `GET`    |      301       |    `N/A`    |    `N/A`     | `N/A` | `N/A` | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| name | purpose                           | json input | path        | HTTP Method | correct status | return type | return value | Jresp | Jreq  |            A             |            U             |
+| :--- | --------------------------------- | ---------- | ----------- | :---------: | :------------: | :---------: | :----------: | :---: | :---: | :----------------------: | :----------------------: |
+| Help | redirects to GitHub projects Docs | `N/A`      | api/v1/help |    `GET`    |      301       |    `N/A`    |    `N/A`     | `N/A` | `N/A` | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### System Usage endpoin errors
 | name |           400            |           401            |           404            |           406            |
