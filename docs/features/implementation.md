@@ -27,5 +27,7 @@ every `n` minutes, a configurable amount at launch, CCash will save.
 ### Changes
 for the above two cases, it will only save if changes have been made since last commit.
 ## Multi-threading support
+considering phmap and drogon both massively benefit from multi threaded it seemed obvious that the entire program should aswell, this is enabled by default and manually settable at `MULTI_THREADED`. Below are some graphs visualizing the gain of doing so:
+<!-- graph -->
 ## Backwards Compatible API
 versioning is implemented by the endpoints path, for example `/v1`. Breaking changes will ideally be sparse and backwards compatability will be maintained, for example ideally API `v3` instance can still run `v1` endpoints.
