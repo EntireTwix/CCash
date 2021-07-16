@@ -86,4 +86,13 @@ make -j<threads>
 ```
 
 ## Certs
-make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use [certbot](https://certbot.eff.org/), **it is Highly recommened you secure your server**.
+make sure to edit `config.json` adding the certificate location if you're using HTTPS, I personally use [certbot](https://certbot.eff.org/), **it is Highly recommened you secure your server**. Alternatively you can delete the 
+```json
+{
+    "address": "0.0.0.0",
+    "port": 443,
+    "https": true,
+    "cert": "",
+    "key": ""
+}
+```
