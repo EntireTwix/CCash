@@ -69,6 +69,11 @@
 | :--- | -------------------------- | ---------- | ----------- | :---------: | :------------: | :---------: | :----------: | :---: | :---: | :----------------------: | :----------------------: |
 | Help | help with usage of the API | `N/A`      | api/v1/help |    `GET`    |      301       |    `N/A`    |    `N/A`     | `N/A` | `N/A` | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
+### System Usage endpoin errors
+| name |           400            |           401            |           404            |           406            |
+| :--- | :----------------------: | :----------------------: | :----------------------: | :----------------------: |
+| Help | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+
 ### System Usage endpoint support
 | name |         v1         |
 | :--- | :----------------: |
