@@ -10,9 +10,16 @@ below is `GetBal()` being called where `x` axis grows with # of users reaching 1
 ![image](GetBal().png)
 as the graph demonstrates, regardless of size GetBal remains consistent at around 39ns on my 3700x.
 ## xxHash
-## base64
-## simdjson
-## drogon webframework
-## multi-threading support
-## intelligent saving
+## Base64
+## Simdjson
+## Drogon webframework
+## Multi-threading support
+## Intelligent saving
+### Saving on close
+when the program is interupted with CONTROL + C it will save before closing the webserver, **it will not however save during a crash**.
+### Auto Saving
+every `x` minutes, a configurable amount at launch, CCash will save.
+### Changes
+for the above two cases, it will only save if changes have been made since last commit.
 ## Backwards Compatible API
+versioning is implemented by the endpoints path, for example `/v1`. Breaking changes will ideally be sparse and backwards compatability will be maintained, for example ideally API `v3` instance can still run `v1` endpoints
