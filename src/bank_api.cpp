@@ -197,7 +197,16 @@ void api::Close(req_args) const
 }
 void api::Contains(req_args, const std::string &name) const
 {
-    RESPONSE_PARSE(BankResponse(k200OK, bank.Contains(name) ? "true" : "false"));
+    BankResponse res;
+    if (bank.Contains(name))
+    {
+        res = BankResponse(k204NoContent, std::nullopt);
+    }
+    else
+    {
+        res = BankResponse(k404NotFound, "\"User not found\"");
+    }
+    RESPONSE_PARSE(std::move(res));
 }
 void api::AdminVerifyAccount(req_args) const
 {
