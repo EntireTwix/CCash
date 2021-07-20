@@ -1,9 +1,6 @@
 /build
-/config.json
-/users.json
 /help.md
 /services.md
 /APIs.md
 /README.md
 /benchmarking.cpp
-/.github

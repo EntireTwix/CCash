@@ -1,61 +1,65 @@
 #pragma once
+#include <iostream> //temporary
 #include <fstream>
-#include <iostream>
 #include <shared_mutex>
-#include "error_responses.hpp"
-#include "parallel-hashmap/parallel_hashmap/phmap.h"
+#include <parallel-hashmap/parallel_hashmap/phmap.h>
+#include "bank_resp.h"
 #include "user.h"
+
+#if (CONSERVATIVE_DISK_SAVE && MAX_LOG_SIZE < 0) && !MULTI_THREADED
+#include "change_flag.h"
+#endif
 
 class Bank
 {
-private:
+#if MULTI_THREADED
     phmap::parallel_flat_hash_map<
         std::string, User,
-        phmap::priv::hash_default_hash<std::string>,
+        xxHashStringGen,
         phmap::priv::hash_default_eq<std::string>,
         phmap::priv::Allocator<phmap::priv::Pair<const std::string, User>>,
         4UL,
         std::mutex>
         users;
+#else
+    phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> users;
+#endif
 
-    /**
-     * @brief size_l should be grabbed if the operation MODIFIES the size (shared), this is so that when save claims unique
-     * 
-     */
-    std::shared_mutex size_l;
+private:
+#if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
+    ChangeFlag<false> save_flag;
+#else
+    bool save_flag = false;
+#endif
+#endif
 
-    /**
-     * @brief send_funds_l should be grabbed if balances are being MODIFIED (shared) or if an operation needs to READ without the intermediary states that sendfunds has (unique)
-     * 
-     */
-    std::shared_mutex send_funds_l;
+    std::shared_mutex save_lock;
 
 public:
-    std::string admin_pass;
+    std::string admin_account;
 
-    int_fast8_t AddUser(const std::string &name, const std::string &init_pass) noexcept;
-    int_fast8_t AdminAddUser(const std::string &attempt, std::string &&name, uint32_t init_bal, std::string &&init_pass) noexcept;
+    size_t NumOfUsers() const noexcept;
+    size_t NumOfLogs() const noexcept;
+    size_t SumBal() const noexcept;
 
-    int_fast8_t DelUser(const std::string &name, const std::string &attempt) noexcept;
-    int_fast8_t AdminDelUser(const std::string &name, const std::string &attempt) noexcept;
+    BankResponse GetBal(const std::string &name) const noexcept;
+#if MAX_LOG_SIZE > 0
+    BankResponse GetLogs(const std::string &name) noexcept;
+#endif
+    BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
+    bool VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept;
 
-    int_fast8_t SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount, const std::string &attempt) noexcept;
+    void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
+    BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
+    BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
+    bool Contains(const std::string &name) const noexcept;
+    bool AdminVerifyAccount(const std::string &name) noexcept;
 
-    int_fast8_t Contains(const std::string &name) const noexcept;
-    int_fast8_t AdminVerifyPass(const std::string &attempt) noexcept;
+    BankResponse AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept;
+    BankResponse DelUser(const std::string &name) noexcept;
+    void DelSelf(const std::string &name) noexcept;
 
-    int_fast8_t SetBal(const std::string &name, const std::string &attempt, uint32_t amount) noexcept;
-    int_fast64_t GetBal(const std::string &name) const noexcept;
-
-    int_fast8_t VerifyPassword(const std::string &name, const std::string &attempt) const noexcept;
-    int_fast8_t ChangePassword(const std::string &name, const std::string &attempt, std::string &&new_pass) noexcept;
-
-    Json::Value GetLogs(const std::string &name, const std::string &attempt) noexcept;
-
-    void Save();
-
-    //NOT THREAD SAFE
+    const char *Save();
     void Load();
 };
-
-//TODO make branchless

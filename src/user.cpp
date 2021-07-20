@@ -1,19 +1,12 @@
 #include "user.h"
 
 /**
-     * @brief User constructor
-     * 
-     * @param init_pass initial password
-     */
-User::User(const std::string &init_pass) : password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
-
-/**
      * @brief User Constructor for admins
      * 
      * @param init_bal initial balance
      * @param init_pass initial password 
      */
-User::User(uint32_t init_bal, const std::string &init_pass) : balance(init_bal), password(XXH3_64bits(init_pass.data(), init_pass.size())) {}
+User::User(uint32_t init_bal, const std::string &init_pass) noexcept : balance(init_bal), password(xxHashStringGen{}(init_pass)) {}
 
 /**
      * @brief User Constructor for loading
@@ -21,31 +14,39 @@ User::User(uint32_t init_bal, const std::string &init_pass) : balance(init_bal),
      * @param init_bal 
      * @param init_pass 
      */
-User::User(uint32_t init_bal, uint64_t init_pass) : balance(init_bal), password(init_pass) {}
-User::User(uint32_t init_bal, uint64_t init_pass, const Json::Value &log_j) : balance(init_bal), password(init_pass)
+User::User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
+
+#if MAX_LOG_SIZE > 0
+User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.password)
 {
-    if (log_j.size())
+    if (u.logs)
     {
-        log.data.reserve(std::min(pre_log_size * ((log_j.size() / pre_log_size) + 1), max_log_size));
-        for (uint32_t i = (log_j.size() - max_log_size) * (log_j.size() > max_log_size); i < log_j.size(); i++)
+        for (uint32_t i = (u.logs.value().data.size() - MAX_LOG_SIZE); i < u.logs.value().data.size(); ++i)
         {
-            log.data.push_back(Transaction(
-                log_j[i]["from"].asCString(),
-                log_j[i]["to"].asCString(),
-                log_j[i]["amount"].asUInt(),
-                log_j[i]["time"].asUInt64()));
+            const bank_dom::Transaction &temp = u.logs.value().data[i];
+            log.data.emplace_front(temp.from, temp.to, temp.amount, temp.time);
         }
     }
 }
-
-Json::Value User::Serialize() const
+#endif
+bank_dom::User User::Encode() const noexcept
 {
-    Json::Value res;
-    res["balance"] = (Json::UInt)balance;
-    res["password"] = (Json::UInt64)password;
-    if constexpr (max_log_size > 0)
+#if MAX_LOG_SIZE > 0
+    if (this->log.data.size())
     {
-        res["log"] = log.Serialize();
+        bank_dom::Logs save_log;
+        save_log.data.reserve(this->log.data.size());
+        for (const Transaction &t : this->log.data)
+        {
+            save_log.data.emplace_back(t.from, t.to, t.amount, t.time);
+        }
+        return bank_dom::User(balance, password, save_log);
     }
-    return res;
+    else
+    {
+        return bank_dom::User(balance, password, std::nullopt);
+    }
+#else
+    return bank_dom::User(balance, password, std::nullopt);
+#endif
 }

@@ -4,3 +4,6 @@
 [submodule "drogon"]
 	path = third_party/drogon
 	url = https://github.com/an-tao/drogon
+[submodule "third_party/base64"]
+	path = third_party/base64
+	url = https://github.com/aklomp/base64

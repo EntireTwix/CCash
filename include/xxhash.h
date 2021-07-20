@@ -266,7 +266,7 @@ extern "C" {
 ***************************************/
 #define XXH_VERSION_MAJOR    0
 #define XXH_VERSION_MINOR    8
-#define XXH_VERSION_RELEASE  0
+#define XXH_VERSION_RELEASE  1
 #define XXH_VERSION_NUMBER  (XXH_VERSION_MAJOR *100*100 + XXH_VERSION_MINOR *100 + XXH_VERSION_RELEASE)
 
 /*!
@@ -275,7 +275,7 @@ extern "C" {
  * This is only useful when xxHash is compiled as a shared library, as it is
  * independent of the version defined in the header.
  *
- * @return `XXH_VERSION_NUMBER` as of when the function was compiled.
+ * @return `XXH_VERSION_NUMBER` as of when the libray was compiled.
  */
 XXH_PUBLIC_API unsigned XXH_versionNumber (void);
 
@@ -3341,7 +3341,7 @@ XXH3_len_9to16_64b(const xxh_u8* input, size_t len, const xxh_u8* secret, XXH64_
 {
     XXH_ASSERT(input != NULL);
     XXH_ASSERT(secret != NULL);
-    XXH_ASSERT(8 <= len && len <= 16);
+    XXH_ASSERT(9 <= len && len <= 16);
     {   xxh_u64 const bitflip1 = (XXH_readLE64(secret+24) ^ XXH_readLE64(secret+32)) + seed;
         xxh_u64 const bitflip2 = (XXH_readLE64(secret+40) ^ XXH_readLE64(secret+48)) - seed;
         xxh_u64 const input_lo = XXH_readLE64(input)           ^ bitflip1;
