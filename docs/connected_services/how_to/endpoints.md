@@ -73,12 +73,12 @@
 | AdminVerifyAccount | checks wether a user is the admin  | `N/A`      | api/v1/admin/verify_account    |   `POST`    |      204       |    `N/A`    |    `N/A`     |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: |
 
 ### System Usage endpoin errors
-| name               |           400            |           401            |           404            |           406            |
-| :----------------- | :----------------------: | :----------------------: | :----------------------: | :----------------------: |
-| Help               | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| Close              | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
-| Contains           | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    |
-| AdminVerifyAccount | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| name               |           401            |           404            |           406            |
+| :----------------- | :----------------------: | :----------------------: | :----------------------: |
+| Help               | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| Close              |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| Contains           |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    |
+| AdminVerifyAccount |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
 
 ### System Usage endpoint support
 | name               |         v1         |
@@ -87,3 +87,26 @@
 | Close              | :heavy_check_mark: |
 | Contains           | :heavy_check_mark: |
 | AdminVerifyAccount | :heavy_check_mark: |
+
+### Username Requirements
+Valid
+* lowercase letters
+* numbers
+* _
+* Length must be atleast 3 and at most 16 characters.
+
+### User Management endpoints
+| name         | purpose                                 | json input                                    | path                       | HTTP Method | correct status | return type | return value |       Jresp        |           Jreq           |            A             |            U             |
+| :----------- | --------------------------------------- | --------------------------------------------- | -------------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
+| AddUser      | adding a user with a user of 0          | {"name":string,"pass":string}                 | api/v1/user/register       |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| AdminAddUser | adding a user with an arbitrary balance | {"name":string,"amount":uint32,"pass":string} | api/v1/admin/user/register |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_multiplication_x: |
+| DelSelf      | deletes a user                          | `N/A`                                         | api/v1/user/delete         |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| AdminDelUser | deletes a given user `{name}`           | {"name":string}                               | api/v1/admin/user/delete   |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_multiplication_x: |
+
+### User Management endpoint errors
+| name         |           400            |           401            |           404            |        406         |           409            |
+| :----------- | :----------------------: | :----------------------: | :----------------------: | :----------------: | :----------------------: |
+| AddUser      |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: |    :heavy_check_mark:    |
+| AdminAddUser |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: |    :heavy_check_mark:    |
+| DelSelf      | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
+| AdminDelUser |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
