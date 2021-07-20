@@ -42,7 +42,6 @@ saving is done using FBE, this slightly reduces file size compared to JSON and i
 |      [Protobuf](https://developers.google.com/protocol-buffers)       |    120 bytes |             628 ns |               759 ns |
 |                     [JSON](http://rapidjson.org)                      |    301 bytes |             740 ns |               500 ns |
 ## Multi-threading support
-considering phmap and drogon both massively benefit from being multi-threaded it seemed obvious that the entire program should be, this is enabled by default and manually settable at `MULTI_THREADED`. Below are some graphs visualizing the gain of doing so:
-<!-- graph -->
+considering phmap and drogon both massively benefit from being multi-threaded it seemed obvious that the entire program should be, this is enabled by default and manually settable at `MULTI_THREADED`. 
 ## Backwards Compatible API
 versioning is implemented by the endpoints path, for example `/v1`. Breaking changes will ideally be sparse and backwards compatability will be maintained, for example ideally API `v3` instance can still run `v1` endpoints.
