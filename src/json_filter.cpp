@@ -22,7 +22,7 @@ void JsonFilter<check_content_type>::doFilter(const HttpRequestPtr &req,
             fccb();
             return;
         }
-        const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k406NotAcceptable, "\"Client must Accept and have content-type of JSON\""));
+        const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse{k406NotAcceptable, "\"Client must Accept and have content-type of JSON\""});
         fcb(resp);
     }
     else
@@ -32,7 +32,7 @@ void JsonFilter<check_content_type>::doFilter(const HttpRequestPtr &req,
             fccb();
             return;
         }
-        const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse(k406NotAcceptable, "\"Client must Accept JSON\""));
+        const auto &resp = HttpResponse::newCustomHttpResponse(BankResponse{k406NotAcceptable, "\"Client must Accept JSON\""});
         fcb(resp);
     }
 }

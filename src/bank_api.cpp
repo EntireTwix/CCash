@@ -147,7 +147,7 @@ void api::SetBal(req_args) const
         auto amount = doc.find_field("amount").get_uint64();
         if (name.error() || amount.error())
         {
-            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -171,7 +171,7 @@ void api::ImpactBal(req_args) const
         auto amount = doc.find_field("amount").get_int64();
         if (name.error() || amount.error())
         {
-            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -200,11 +200,11 @@ void api::Contains(req_args, const std::string &name) const
     BankResponse res;
     if (bank.Contains(name))
     {
-        res = BankResponse(k204NoContent, std::nullopt);
+        res = BankResponse{k204NoContent, std::nullopt};
     }
     else
     {
-        res = BankResponse(k404NotFound, "\"User not found\"");
+        res = BankResponse{k404NotFound, "\"User not found\""};
     }
     RESPONSE_PARSE(std::move(res));
 }
@@ -242,7 +242,7 @@ void api::AddUser(req_args) const
         auto pass = doc.find_field("pass").get_string();
         if (name.error() || pass.error())
         {
-            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -268,7 +268,7 @@ void api::AdminAddUser(req_args) const
         auto pass = doc.find_field("pass").get_string();
         if (name.error() || amount.error() || pass.error())
         {
-            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {
@@ -297,7 +297,7 @@ void api::AdminDelUser(req_args) const
         auto name = doc.find_field("name").get_string();
         if (name.error())
         {
-            res = BankResponse(k400BadRequest, "\"Missing JSON arg(s)\"");
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
         }
         else
         {

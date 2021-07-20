@@ -43,7 +43,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                 {
                     if constexpr (require_admin)
                     {
-                        if (bank.AdminVerifyAccount(username.str))
+                        if (bank.admin_account == username.str)
                         {
                             StrFromSV_Wrapper password(results_view.substr(middle + 1));
                             if (bank.VerifyPassword(username.str, password.str))
@@ -70,7 +70,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
             }
         }
     }
-    fcb(HttpResponse::newCustomHttpResponse(BankResponse(k401Unauthorized, "\"Invalid Credentials\"")));
+    fcb(HttpResponse::newCustomHttpResponse(BankResponse{k401Unauthorized, "\"Invalid Credentials\""}));
 }
 
 template class UserFilter<true, false>;  //user default
