@@ -110,3 +110,11 @@ Valid
 | AdminAddUser |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: |    :heavy_check_mark:    |
 | DelSelf      | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
 | AdminDelUser |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
+
+### User Management endpoint support
+| name         |         v1         |
+| :----------- | :----------------: |
+| AddUser      | :heavy_check_mark: |
+| AdminAddUser | :heavy_check_mark: |
+| DelSelf      | :heavy_check_mark: |
+| AdminDelUser | :heavy_check_mark: |
