@@ -1,5 +1,4 @@
 #pragma once
-#include <json/json.h> //to be removed later
 #include "xxhash_str.h"
 #include "bank_dom_final_models.h"
 #include "log.h"
@@ -19,6 +18,4 @@ struct User
 #endif
     User(const bank_dom::User &u) noexcept;
     bank_dom::User Encode() const noexcept;
-
-    Json::Value Serialize() const; //to be removed later
 };

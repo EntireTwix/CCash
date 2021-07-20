@@ -1,5 +1,4 @@
 #pragma once
-#include <json/json.h> // to be removed later
 #include <deque>
 #include "ccash_config.hpp"
 #include "change_flag.h"
@@ -19,5 +18,4 @@ public:
 
     std::string GetLogs() noexcept;
     void AddTrans(const std::string &from, const std::string &to, uint32_t amount, time_t time) noexcept;
-    Json::Value Serialize() const; // to be removed later
 };

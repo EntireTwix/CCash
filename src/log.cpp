@@ -39,20 +39,3 @@ std::string Log::GetLogs() noexcept
     }
     return log_snapshot;
 }
-
-Json::Value Log::Serialize() const
-{
-    Json::Value res;
-    for (uint32_t i = 0; i < data.size(); ++i)
-    {
-        res[i]["to"] = data[i].to;
-        res[i]["from"] = data[i].from;
-        res[i]["amount"] = (Json::UInt)data[i].amount;
-#ifdef _USE_32BIT_TIME_T
-        res[i]["time"] = (Json::Int)data[i].time;
-#else
-        res[i]["time"] = (Json::Int64)data[i].time;
-#endif
-    }
-    return res;
-}
