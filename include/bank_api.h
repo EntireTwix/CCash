@@ -74,7 +74,7 @@ public:
     METHOD_ADD(api::DelSelf, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
 #endif
-    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
+    METHOD_ADD(api::ApiProperties, "/v1/properties", Get, Options);
 
     METHOD_LIST_END
 };
