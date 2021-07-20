@@ -91,7 +91,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     }
 
     BankResponse res;
-    std::shared_lock<std::shared_mutex> lock{save_lock};
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
 #if MAX_LOG_SIZE > 0
     time_t current_time = time(NULL);
 #endif
@@ -203,17 +203,33 @@ bool Bank::Contains(const std::string &name) const noexcept
 {
     return ValidUsername(name) && users.contains(name);
 }
-bool Bank::AdminVerifyAccount(const std::string &name) noexcept
+BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept
 {
-    return (name == admin_account);
+    std::unique_lock<std::shared_mutex> lock{iter_lock};
+    size_t deleted_count = 0;
+    for (const auto &u : users)
+    {
+        users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool {
+            if (u.log.data.back().time < threshold_time && u.balance < threshold_bal)
+            {
+                return ++deleted_count;
+            }
+            else
+            {
+                return false;
+            }
+        });
+    }
+    return {k200OK, std::to_string(deleted_count)};
 }
+
 BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept
 {
     if (!ValidUsername(name))
     {
         return {k400BadRequest, "\"Invalid Username\""};
     }
-    std::shared_lock<std::shared_mutex> lock{save_lock};
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
     if (users.try_emplace_l(
             name, [](User &) {}, init_bal, init_pass))
     {
@@ -245,7 +261,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         }
     }
 #endif
-    std::shared_lock<std::shared_mutex> lock{save_lock};
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
     if (ValidUsername(name) && users.erase(name))
     {
 #if CONSERVATIVE_DISK_SAVE
@@ -284,7 +300,7 @@ void Bank::DelSelf(const std::string &name) noexcept
     save_flag = true;
 #endif
 #endif
-    std::shared_lock<std::shared_mutex> lock{save_lock};
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
     users.erase(name);
 }
 //ONLY EVER BEING CALLED BY SAVE THREAD OR C-INTERUPT
@@ -309,15 +325,22 @@ const char *Bank::Save()
         users_copy.users.reserve(users.size());
         users_copy.keys.reserve(users.size());
         {
-            std::unique_lock<std::shared_mutex> lock{save_lock};
+            std::unique_lock<std::shared_mutex> lock{iter_lock};
             for (const auto &u : users)
             {
+<<<<<<< Updated upstream
                 //we know it contains this key but we call this func to grab mutex
                 users.if_contains(u.first, [&users_copy, &u](const User &u_val)
                                   {
                                       users_copy.users.emplace_back(u_val.Encode());
                                       users_copy.keys.emplace_back(u.first);
                                   });
+=======
+                users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
+                    users_copy.users.emplace_back(u_val.Encode());
+                    users_copy.keys.emplace_back(u.first);
+                });
+>>>>>>> Stashed changes
             }
         }
         FBE::bank_dom::GlobalFinalModel writer;
