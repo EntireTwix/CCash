@@ -2,6 +2,14 @@
 
 using namespace drogon;
 
+#if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
+#define SET_CHANGES_ON save_flag.SetChangesOn()
+#else
+#define SET_CHANGES_ON save_flag = true
+#endif
+#endif
+
 __attribute__((always_inline)) inline bool ValidUsername(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
@@ -124,13 +132,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #else
         users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
 #endif
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
+        SET_CHANGES_ON;
     }
     return res;
 }
@@ -143,26 +145,14 @@ bool Bank::VerifyPassword(const std::string &name, const std::string_view &attem
 
 void Bank::ChangePassword(const std::string &name, const std::string &new_pass) noexcept
 {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-    save_flag.SetChangesOn();
-#else
-    save_flag = true;
-#endif
-#endif
+    SET_CHANGES_ON;
     users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
     if (ValidUsername(name) && users.modify_if(name, [amount](User &u) { u.balance = amount; }))
     {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
+        SET_CHANGES_ON;
         return {k204NoContent, std::nullopt}; //returns new balance
     }
     else
@@ -179,13 +169,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     uint32_t balance;
     if (ValidUsername(name) && users.modify_if(name, [&balance, amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
     {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
+        SET_CHANGES_ON;
         return {k200OK, std::to_string(balance)}; //may return new balance
     }
     else
@@ -210,13 +194,7 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
             if (u.balance < threshold_bal)
 #endif
             {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-                save_flag.SetChangesOn();
-#else
-                save_flag = true;
-#endif
-#endif
+                SET_CHANGES_ON;
                 return ++deleted_count;
             }
             else
@@ -238,13 +216,7 @@ BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, const std
     if (users.try_emplace_l(
             name, [](User &) {}, init_bal, init_pass))
     {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
+        SET_CHANGES_ON;
         return {k204NoContent, std::nullopt};
     }
     else
@@ -267,13 +239,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     std::shared_lock<std::shared_mutex> lock{iter_lock};
     if (ValidUsername(name) && users.erase(name))
     {
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-        save_flag.SetChangesOn();
-#else
-        save_flag = true;
-#endif
-#endif
+        SET_CHANGES_ON;
         return {k204NoContent, std::nullopt};
     }
     else
@@ -294,13 +260,7 @@ void Bank::DelSelf(const std::string &name) noexcept
         });
     }
 #endif
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-    save_flag.SetChangesOn();
-#else
-    save_flag = true;
-#endif
-#endif
+    SET_CHANGES_ON;
     std::shared_lock<std::shared_mutex> lock{iter_lock};
     users.erase(name);
 }
