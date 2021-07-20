@@ -205,7 +205,7 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
     {
         users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool {
 #if MAX_LOG_SIZE > 0
-            if (u.data.back().time < threshold_time && u.balance < threshold_bal)
+            if (u.log.data.back().time < threshold_time && u.balance < threshold_bal)
 #else
             if (u.balance < threshold_bal)
 #endif
