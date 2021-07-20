@@ -29,6 +29,7 @@ void SaveSig(int s)
 int main(int argc, char **argv)
 {
     {
+        static_assert(MAX_LOG_SIZE >= 0);
         if (argc == 1)
         {
             std::ofstream users_save(users_location, std::ios::out | std::ios::binary);
