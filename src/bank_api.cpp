@@ -214,10 +214,10 @@ void api::AdminVerifyAccount(req_args) const
 }
 void api::ApiProperties(req_args) const
 {
-    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"return_on_del\":" + std::to_string((bool)RETURN_ON_DEL);
+    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE);
     if constexpr (RETURN_ON_DEL)
     {
-        info += ",\"" + std::string(return_account) + "\"}";
+        info += ",\"return_on_del\":\"" + std::string(return_account) + "\"}";
     }
     else
     {
