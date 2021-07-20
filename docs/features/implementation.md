@@ -11,10 +11,10 @@ this parallel hashmap implementation is the basis of CCash, its where all the us
 ![image](https://raw.githubusercontent.com/greg7mdp/parallel-hashmap/master/html/img/lock_various_sizes.PNG)
 ## [xxHash](https://github.com/Cyan4973/xxHash)
 xxhash is used for both hashing of passwords for storage aswell as the usernames for indexing the phmap, its speed is ridiculous at faster then `memcpy` rates of Gb/s.
-| Hash Name             | Width | Bandwidth (GB/s) | Small Data Velocity | Quality | Comment         |
-| --------------------- | ----- | ---------------- | ------------------- | ------- | --------------- |
-| __XXH3__ (SSE2)       | 64    | 31.5 GB/s        | 133.1               | 10      |
-| _RAM sequential read_ | N/A   | 28.0 GB/s        | N/A                 | N/A     | _for reference_ |
+| Hash Name             | Width | Bandwidth (GB/s) |
+| --------------------- | ----- | ---------------- |
+| __XXH3__ (SSE2)       | 64    | 31.5 GB/s        |
+| _RAM sequential read_ | N/A   | 28.0 GB/s        |
 ## [Base64](https://github.com/aklomp/base64)
 base64 decoding is required for Basic Auth so I used this clean and fast solution which uses SIMD.
 ![image](https://github.com/aklomp/base64/blob/master/base64-benchmarks.png)
@@ -44,4 +44,4 @@ saving is done using FBE, this slightly reduces file size compared to JSON and i
 ## Multi-threading support
 considering phmap and drogon both massively benefit from being multi-threaded it seemed obvious that the entire program should be, this is enabled by default and manually settable at `MULTI_THREADED`. 
 ## Backwards Compatible API
-versioning is implemented by the endpoints path, for example `/v1`. Breaking changes will ideally be sparse and backwards compatability will be maintained, for example ideally API `v3` instance can still run `v1` endpoints.
+versioning is implemented by the endpoints path, for example `api/v1/`. Breaking changes will ideally be sparse and backwards compatability will be maintained, for example ideally API `v3` instance can still run `v1` endpoints.

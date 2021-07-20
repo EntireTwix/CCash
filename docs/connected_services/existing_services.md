@@ -3,7 +3,7 @@
 ## General
 | name                                                             |            v1            |
 | :--------------------------------------------------------------- | :----------------------: |
-| [Expand's Frontend](https://github.com/Expand-sys/ccashfrontend) | :heavy_multiplication_x: |
+| [Expand's Frontend](https://github.com/Expand-sys/ccashfrontend) |    :heavy_check_mark:    |
 | [Expand's Discord Bot](https://github.com/Expand-sys/ccashbot)   | :heavy_multiplication_x: |
 | [Doggo's CCash CLI](https://github.com/FearlessDoggo21/CCashCMD) | :heavy_multiplication_x: |
 <!-- [Jolly's Market](https://github.com/STBoyden/market-api-2.0)-->

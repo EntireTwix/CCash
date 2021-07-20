@@ -7,7 +7,7 @@
 #### Connected Services
 as explained in earlier docs a ecosystem of connected services allows you many ways to utilize CCash.
 #### APIs
-for devs who wanna make more connected services existing APIs exist in multiple lanaguages enabling faster development/maintenance.
+for devs who wanna make more connected services, existing APIs exist in multiple lanaguages enabling faster development/maintenance.
 #### External
 its game indepedent meaning you dont have to be in-game to use it.
 ## Security
