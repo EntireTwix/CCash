@@ -245,10 +245,9 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
     if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
         bal)
     {
-        users.modify_if(return_account, [bal](User & u))
-        {
+        users.modify_if(return_account, [bal](User &u) {
             u.balance += bal;
-        }
+        });
     }
 #endif
     std::shared_lock<std::shared_mutex> lock{iter_lock};
@@ -276,10 +275,9 @@ void Bank::DelSelf(const std::string &name) noexcept
     if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
         bal)
     {
-        users.modify_if(return_account, [bal](User & u))
-        {
+        users.modify_if(return_account, [bal](User &u) {
             u.balance += bal;
-        }
+        });
     }
 #endif
 #if CONSERVATIVE_DISK_SAVE
