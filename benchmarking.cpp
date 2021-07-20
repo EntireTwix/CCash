@@ -84,7 +84,6 @@ int main(int argc, char **argv)
     bank.DelUser("abc");
 
     Op(bank.Contains("twix"), "contains: ", 1000000);
-    Op(bank.AdminVerifyAccount("twix"), "admin verify account: ", 1000000);
     Op(bank.GetBal("twix"), "get bal: ", 1000000);
     Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
