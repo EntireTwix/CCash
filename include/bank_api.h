@@ -67,6 +67,7 @@ public:
     METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
     METHOD_ADD(api::PruneUsers, "/v1/admin/prune_users", Post, "UserFilter<false, true>", "JsonFilter<true>"); //expects ["time"](int64) and ["amount"](uint32)
+    METHOD_ADD(api::ApiProperties, "/v1/properties", Get, Options);
 
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                                                           //expects ["name"](string) ["pass"](string)
@@ -74,7 +75,6 @@ public:
     METHOD_ADD(api::DelSelf, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
 #endif
-    METHOD_ADD(api::ApiProperties, "/v1/properties", Get, Options);
 
     METHOD_LIST_END
 };
