@@ -92,22 +92,25 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     std::shared_lock<std::shared_mutex> lock{iter_lock};
 #if MAX_LOG_SIZE > 0
     time_t current_time = time(NULL);
+    if (!users.modify_if(a_name, [current_time, &a_name, &b_name, &res, amount](User &a)
+#else
+    if (!users.modify_if(a_name, [&a_name, &b_name, &res, amount](User &a)
 #endif
-    if (!users.modify_if(a_name, [current_time, &a_name, &b_name, &res, amount](User &a) {
-            //if A can afford it
-            if (a.balance < amount)
-            {
-                res = {k400BadRequest, "\"Insufficient funds\""};
-            }
-            else
-            {
-                a.balance -= amount;
+                         {
+                             //if A can afford it
+                             if (a.balance < amount)
+                             {
+                                 res = {k400BadRequest, "\"Insufficient funds\""};
+                             }
+                             else
+                             {
+                                 a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                a.log.AddTrans(a_name, b_name, amount, current_time);
+                                 a.log.AddTrans(a_name, b_name, amount, current_time);
 #endif
-                res = {k200OK, std::to_string(a.balance)};
-            }
-        }))
+                                 res = {k200OK, std::to_string(a.balance)};
+                             }
+                         }))
     {
         return {k404NotFound, "\"Sender does not exist\""};
     }
@@ -201,7 +204,11 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
     for (const auto &u : users)
     {
         users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool {
-            if (u.log.data.back().time < threshold_time && u.balance < threshold_bal)
+#if MAX_LOG_SIZE > 0
+            if (u.data.back().time < threshold_time && u.balance < threshold_bal)
+#else
+            if (u.balance < threshold_bal)
+#endif
             {
                 return ++deleted_count;
             }

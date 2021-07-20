@@ -37,17 +37,14 @@ void api::GetBal(req_args, const std::string &name) const
 }
 void api::GetLogs(req_args)
 {
-    if constexpr (MAX_LOG_SIZE > 0)
-    {
-        RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
-    }
-    else
-    {
-        static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
-        CORS;
-        CACHE_FOREVER;
-        callback(resp);
-    }
+#if MAX_LOG_SIZE > 0
+    RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
+#else
+    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
+    CORS;
+    CACHE_FOREVER;
+    callback(resp);
+#endif
 }
 void api::SendFunds(req_args) const
 {

@@ -16,9 +16,9 @@ User::User(uint32_t init_bal, const std::string &init_pass) noexcept : balance(i
      */
 User::User(uint32_t init_bal, XXH64_hash_t init_pass) noexcept : balance(init_bal), password(init_pass) {}
 
-#if MAX_LOG_SIZE > 0
 User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.password)
 {
+#if MAX_LOG_SIZE > 0
     if (u.logs)
     {
         for (uint32_t i = (u.logs.value().data.size() - MAX_LOG_SIZE); i < u.logs.value().data.size(); ++i)
@@ -27,8 +27,8 @@ User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.pa
             log.data.emplace_front(temp.from, temp.to, temp.amount, temp.time);
         }
     }
-}
 #endif
+}
 bank_dom::User User::Encode() const noexcept
 {
 #if MAX_LOG_SIZE > 0
