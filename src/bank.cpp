@@ -58,7 +58,8 @@ size_t Bank::SumBal() const noexcept
 BankResponse Bank::GetBal(const std::string &name) const noexcept
 {
     uint32_t res = 0;
-    if (!ValidUsername(name) || !users.if_contains(name, [&res](const User &u) { res = u.balance; }))
+    if (!ValidUsername(name) || !users.if_contains(name, [&res](const User &u)
+                                                   { res = u.balance; }))
     {
         return {k404NotFound, "\"User not found\""};
     }
@@ -71,7 +72,8 @@ BankResponse Bank::GetBal(const std::string &name) const noexcept
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
-    if (!users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLogs()}; }))
+    if (!users.modify_if(name, [&res](User &u)
+                         { res = {k200OK, u.log.GetLogs()}; }))
     {
         return {k404NotFound, "\"User not found\""};
     }
@@ -125,12 +127,14 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (res.first == k200OK)
     {
 #if MAX_LOG_SIZE > 0
-        users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b) {
-            b.balance += amount;
-            b.log.AddTrans(a_name, b_name, amount, current_time);
-        });
+        users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b)
+                        {
+                            b.balance += amount;
+                            b.log.AddTrans(a_name, b_name, amount, current_time);
+                        });
 #else
-        users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
+        users.modify_if(b_name, [amount](User &b)
+                        { b.balance += amount; });
 #endif
         SET_CHANGES_ON;
     }
@@ -139,18 +143,21 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 bool Bank::VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept
 {
     bool res = false;
-    users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
+    users.if_contains(name, [&res, &attempt](const User &u)
+                      { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
 
 void Bank::ChangePassword(const std::string &name, const std::string &new_pass) noexcept
 {
     SET_CHANGES_ON;
-    users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
+    users.modify_if(name, [&new_pass](User &u)
+                    { u.password = xxHashStringGen{}(new_pass); });
 }
 BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
 {
-    if (ValidUsername(name) && users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    if (ValidUsername(name) && users.modify_if(name, [amount](User &u)
+                                               { u.balance = amount; }))
     {
         SET_CHANGES_ON;
         return {k204NoContent, std::nullopt}; //returns new balance
@@ -167,7 +174,8 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
     uint32_t balance;
-    if (ValidUsername(name) && users.modify_if(name, [&balance, amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
+    if (ValidUsername(name) && users.modify_if(name, [&balance, amount](User &u)
+                                               { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
     {
         SET_CHANGES_ON;
         return {k200OK, std::to_string(balance)}; //may return new balance
@@ -187,13 +195,14 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
     size_t deleted_count = 0;
     for (const auto &u : users)
     {
-        if (users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool {
+        if (users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool
+                           {
 #if MAX_LOG_SIZE > 0
-                return (u.log.data.back().time < threshold_time && u.balance < threshold_bal);
+                               return (u.log.data.back().time < threshold_time && u.balance < threshold_bal);
 #else
                     return (u.balance < threshold_bal);
 #endif
-            }))
+                           }))
         {
             SET_CHANGES_ON;
             ++deleted_count;
@@ -222,17 +231,17 @@ BankResponse Bank::AddUser(const std::string &name, uint32_t init_bal, const std
 }
 BankResponse Bank::DelUser(const std::string &name) noexcept
 {
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
+    if (users.if_contains(name, [&bal](const User &u)
+                          { bal = u.balance; }) &&
         bal)
     {
-        users.modify_if(return_account, [bal](User &u) {
-            u.balance += bal;
-        });
+        users.modify_if(return_account, [bal](User &u)
+                        { u.balance += bal; });
     }
 #endif
-    std::shared_lock<std::shared_mutex> lock{iter_lock};
     if (ValidUsername(name) && users.erase(name))
     {
         SET_CHANGES_ON;
@@ -246,18 +255,18 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
 //assumes we know name exists, unlike DelUser
 void Bank::DelSelf(const std::string &name) noexcept
 {
+    std::shared_lock<std::shared_mutex> lock{iter_lock};
 #if RETURN_ON_DEL
     uint32_t bal;
-    if (users.if_contains(name, [&bal](const User &u) { bal = u.balance; }) &&
+    if (users.if_contains(name, [&bal](const User &u)
+                          { bal = u.balance; }) &&
         bal)
     {
-        users.modify_if(return_account, [bal](User &u) {
-            u.balance += bal;
-        });
+        users.modify_if(return_account, [bal](User &u)
+                        { u.balance += bal; });
     }
 #endif
     SET_CHANGES_ON;
-    std::shared_lock<std::shared_mutex> lock{iter_lock};
     users.erase(name);
 }
 //ONLY EVER BEING CALLED BY SAVE THREAD OR C-INTERUPT
@@ -285,10 +294,11 @@ const char *Bank::Save()
             std::unique_lock<std::shared_mutex> lock{iter_lock};
             for (const auto &u : users)
             {
-                users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
-                    users_copy.users.emplace_back(u_val.Encode());
-                    users_copy.keys.emplace_back(u.first);
-                });
+                users.if_contains(u.first, [&users_copy, &u](const User &u_val)
+                                  {
+                                      users_copy.users.emplace_back(u_val.Encode());
+                                      users_copy.keys.emplace_back(u.first);
+                                  });
             }
         }
         FBE::bank_dom::GlobalFinalModel writer;
