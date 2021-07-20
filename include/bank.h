@@ -34,7 +34,9 @@ private:
 #endif
 #endif
 
-    std::shared_mutex save_lock;
+    //must grab as shared if the operation is gonna modify "users"'s size or can be caught in a intermediary state such as SendFunds()
+    //must grab as unique if the operation is gonna user iterators
+    std::shared_mutex iter_lock;
 
 public:
     std::string admin_account;
@@ -54,7 +56,7 @@ public:
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
     BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     bool Contains(const std::string &name) const noexcept;
-    bool AdminVerifyAccount(const std::string &name) noexcept;
+    BankResponse PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept;
 
     BankResponse AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
