@@ -228,6 +228,30 @@ void api::ApiProperties(req_args) const
     CACHE_FOREVER;
     callback(resp);
 }
+void api::PruneUsers(req_args) const
+{
+    SIMD_JSON_GEN;
+    BankResponse res;
+    if (doc.error())
+    {
+        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
+    }
+    else
+    {
+        auto time = doc.find_field("time").get_int64();
+        auto amount = doc.find_field("amount").get_uint64();
+        if (time.error() || amount.error())
+        {
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
+        }
+        else
+        {
+            res = bank.PruneUsers(time.value(), amount.value());
+        }
+    }
+    RESPONSE_PARSE(std::move(res));
+}
+
 void api::AddUser(req_args) const
 {
     SIMD_JSON_GEN;
