@@ -195,15 +195,24 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
     size_t deleted_count = 0;
     for (const auto &u : users)
     {
-        if (users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool
-                           {
-#if MAX_LOG_SIZE > 0
-                    return ((!u.log.data.size() || u.log.data.back().time < threshold_time) && u.balance < threshold_bal);
+#if RETURN_ON_DEL
+        uint32_t bal;
+        if (users.erase_if(u.first, [threshold_time, threshold_bal, &bal, &deleted_count](User &u) -> bool {
+                bal = u.balance;
 #else
-                    return (u.balance < threshold_bal);
+        if (users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) -> bool {
 #endif
-                           }))
+#if MAX_LOG_SIZE > 0
+                return ((!u.log.data.size() || u.log.data.back().time < threshold_time) && u.balance < threshold_bal);
+#else
+                return (u.balance < threshold_bal);
+#endif
+            }))
         {
+#if RETURN_ON_DEL
+            users.modify_if(return_account, [bal](User &u) { u.balance += bal; });
+#endif
+
             SET_CHANGES_ON;
             ++deleted_count;
         }
