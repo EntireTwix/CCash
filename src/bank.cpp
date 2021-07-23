@@ -181,7 +181,11 @@ bool Bank::Contains(const std::string &name) const noexcept
 {
     return ValidUsername(name) && users.contains(name);
 }
+#if MAX_LOG_SIZE > 0
 BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept
+#else
+BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
+#endif
 {
     std::unique_lock<std::shared_mutex> lock{iter_lock};
     size_t deleted_count = 0;

@@ -235,6 +235,7 @@ void api::PruneUsers(req_args) const
     }
     else
     {
+#if MAX_LOG_SIZE > 0
         auto time = doc.find_field("time").get_int64();
         auto amount = doc.find_field("amount").get_uint64();
         if (time.error() || amount.error())
@@ -245,6 +246,17 @@ void api::PruneUsers(req_args) const
         {
             res = bank.PruneUsers(time.value(), amount.value());
         }
+#else
+        auto amount = doc.find_field("amount").get_uint64();
+        if (amount.error())
+        {
+            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
+        }
+        else
+        {
+            res = bank.PruneUsers(amount.value());
+        }
+#endif
     }
     RESPONSE_PARSE(std::move(res));
 }

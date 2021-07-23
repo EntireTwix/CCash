@@ -56,7 +56,11 @@ public:
     BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
     BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     bool Contains(const std::string &name) const noexcept;
+#if MAX_LOG_SIZE > 0
     BankResponse PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept;
+#else
+    BankResponse PruneUsers(uint32_t threshold_bal) noexcept;
+#endif
 
     BankResponse AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept;
     BankResponse DelUser(const std::string &name) noexcept;
