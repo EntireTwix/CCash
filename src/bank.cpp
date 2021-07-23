@@ -210,7 +210,10 @@ BankResponse Bank::PruneUsers(time_t threshold_time, uint32_t threshold_bal) noe
             }))
         {
 #if RETURN_ON_DEL
-            users.modify_if(return_account, [bal](User &u) { u.balance += bal; });
+            if(bal) 
+            {
+                users.modify_if(return_account, [bal](User &u) { u.balance += bal; });
+            }
 #endif
 
             SET_CHANGES_ON;
