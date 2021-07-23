@@ -14,7 +14,7 @@ its game indepedent meaning you dont have to be in-game to use it.
 #### HTTPS
 OpenSSL is used to secure the HTTP server.
 #### Hashed Passwords
-if the server's save file is compromised the user passwords will not be derivable.
+if the server's save file is compromised the user passwords will not be derivable. This means you could share save files with no consequence (besides exposing all previously hidden accounts)
 ## Other
 #### Logs
 each transaction is logged and the last `n` logs are stored, if set to 0 logs will be disabled.
