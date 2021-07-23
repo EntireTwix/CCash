@@ -52,7 +52,7 @@ AVX2_CFLAGS=-mavx2 SSSE3_CFLAGS=-mssse3 SSE41_CFLAGS=-msse4.1 SSE42_CFLAGS=-msse
 cd ../..
 mkdir build
 cd build
-mv ../config.json config.json
+cp ../config/config.json config.json
 ```
 
 ### CMake Flags
