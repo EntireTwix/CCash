@@ -106,19 +106,9 @@ int main(int argc, char **argv)
                 .detach();
         }
     } //destroying setup variables
-    static auto user_filter_default = std::make_shared<UserFilter<true, false>>();
-    static auto user_filter_sparse = std::make_shared<UserFilter<false, false>>();
-    static auto admin_filter = std::make_shared<UserFilter<false, true>>();
-    static auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
-    static auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
     app()
         .loadConfigFile(config_location)
-        .registerFilter(user_filter_default)
-        .registerFilter(user_filter_sparse)
-        .registerFilter(admin_filter)
-        .registerFilter(json_resp_and_req_filter)
-        .registerFilter(json_resp_filter)
 #if MULTI_THREADED
         .setThreadNum(get_nprocs())
 #endif

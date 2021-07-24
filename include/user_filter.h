@@ -7,7 +7,7 @@
 using namespace drogon;
 
 template <bool set_body_flag, bool require_admin>
-class UserFilter : public HttpFilter<UserFilter<set_body_flag, require_admin>, false>
+class UserFilter : public HttpFilter<UserFilter<set_body_flag, require_admin>>
 {
 public:
     virtual void doFilter(const HttpRequestPtr &,
