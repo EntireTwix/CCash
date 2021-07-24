@@ -14,8 +14,6 @@
 
 using namespace std::chrono;
 
-static Bank bank;
-
 #include <ctime>
 #include <ratio>
 #include <chrono>
@@ -63,34 +61,35 @@ static Bank bank;
 
 int main(int argc, char **argv)
 {
-
-    bank.AddUser("twix", 0, "root");
-    bank.AddUser("jolly", 0, "root");
-    bank.admin_account = "twix";
+    Bank::AddUser("twix", 0, "root");
+    Bank::AddUser("jolly", 0, "root");
+    Bank::admin_account = "twix";
 
     const std::string data("this string is quite long which is relevant when testing the speed of a hasing function");
     Op(std::hash<std::string>{}(data), "hash<string>: ", 1000000);
     Op(xxHashStringGen{}(data), "xxHashStringGen: ", 1000000);
 
-    Op_a(bank.AddUser("abc", 0, "abc"), "add user: ", 1000000, bank.DelUser("abc"));
-    Op(bank.ImpactBal("twix", 1), "impact bal: ", 1000000);
-    Op(bank.SetBal("twix", 1000000), "set bal: ", 1000000);
-    Op(bank.SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
-    Op(bank.SendFunds("", "", 1), "invalid send funds: ", 1000000);
+    Op_a(Bank::AddUser("abc", 0, "abc"), "add user: ", 1000000, Bank::DelUser("abc"));
+    Op(Bank::ImpactBal("twix", 1), "impact bal: ", 1000000);
+    Op(Bank::SetBal("twix", 1000000), "set bal: ", 1000000);
+    Op(Bank::SendFunds("twix", "jolly", 1), "send funds: ", 1000000);
+    Op(Bank::SendFunds("", "", 1), "invalid send funds: ", 1000000);
 
-    bank.AddUser("abc", 0, "abc");
-    Op_a(bank.DelUser("abc"), "del user: ", 1000000, bank.AddUser("abc", 0, "abc"));
-    Op_a(bank.DelSelf("abc"), "del self: ", 1000000, bank.AddUser("abc", 0, "abc"));
-    bank.DelUser("abc");
+    Bank::AddUser("abc", 0, "abc");
+    Op_a(Bank::DelUser("abc"), "del user: ", 1000000, Bank::AddUser("abc", 0, "abc"));
+    Op_a(Bank::DelSelf("abc"), "del self: ", 1000000, Bank::AddUser("abc", 0, "abc"));
+    Bank::DelUser("abc");
 
-    Op(bank.Contains("twix"), "contains: ", 1000000);
-    Op(bank.GetBal("twix"), "get bal: ", 1000000);
-    Op(bank.VerifyPassword("twix", "root"), "verify pass: ", 1000000);
-    Op(bank.ChangePassword("twix", "root"), "change pass: ", 1000000);
+    Op(Bank::Contains("twix"), "contains: ", 1000000);
+    Op(Bank::GetBal("twix"), "get bal: ", 1000000);
+    Op(Bank::VerifyPassword("twix", "root"), "verify pass: ", 1000000);
+    Op(Bank::ChangePassword("twix", "root"), "change pass: ", 1000000);
 #if MAX_LOG_SIZE > 0
-    Op(bank.GetLogs("twix"), "get logs: ", 1000000);
+    Op(Bank::GetLogs("twix"), "get logs init: ", 1);
+    Op(Bank::GetLogs("twix"), "get logs cached: ", 1000000);
 #endif
-    Op(bank.Save(), "saving: ", 1);
+    Op(Bank::Save(), "saving: ", 1);
+    Op_a(Bank::PruneUsers(0, 0), "prune users: ", 1000000, Bank::AddUser("abc", 0, "abc"));
 
     //GetBal scalining test
     //std::default_random_engine generator;
@@ -98,11 +97,11 @@ int main(int argc, char **argv)
 
     // for (size_t i = 0; i < 10000000; ++i)
     // {
-    //     bank.AddUser(std::to_string(i), 100000, "root");
+    //     Bank::AddUser(std::to_string(i), 100000, "root");
     //     if (i % 10000 == 0)
     //     {
     //         auto u = std::to_string((int)(distribution(generator) * i));
-    //         Op(bank.GetBal(u), std::to_string(i) + ", ", 100000);
+    //         Op(Bank::GetBal(u), std::to_string(i) + ", ", 100000);
     //     }
     // }
 
