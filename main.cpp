@@ -17,12 +17,10 @@
 using namespace std::chrono;
 using namespace drogon;
 
-static Bank bank;
-
 void SaveSig(int s)
 {
     std::cout << "\nSaving on close...\n"
-              << bank.Save();
+              << Bank::Save();
     exit(1);
 }
 
@@ -73,12 +71,12 @@ int main(int argc, char **argv)
 #endif
 
         //Loading users from users.json
-        bank.Load();
-        size_t num_of_logs = bank.NumOfLogs();
-        size_t num_of_users = bank.NumOfUsers();
+        Bank::Load();
+        size_t num_of_logs = Bank::NumOfLogs();
+        size_t num_of_users = Bank::NumOfUsers();
         std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "Mb"
                   << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (90 + 80 + (max_name_size * 2))) / 1048576 << "Mb" //90:string representation(heap), sizeof(Transaction), max_name_size*2:filled to&from(heap)
-                  << "\nLoaded " << bank.SumBal() << " CSH"
+                  << "\nLoaded " << Bank::SumBal() << " CSH"
                   << std::endl; //flushing before EventLoop
 
         //Sig handling
@@ -91,7 +89,7 @@ int main(int argc, char **argv)
         sigaction(SIGINT, &sigIntHandler, NULL);
 
         //Admin account
-        bank.admin_account = argv[1];
+        Bank::admin_account = argv[1];
 
         //Auto Saving
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
@@ -102,16 +100,15 @@ int main(int argc, char **argv)
                 {
                     std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
                     std::cout << "Saving " << std::time(0) << "...\n"
-                              << bank.Save();
+                              << Bank::Save();
                 }
             })
                 .detach();
         }
     } //destroying setup variables
-    static auto API = std::make_shared<api>(bank);
-    static auto user_filter_default = std::make_shared<UserFilter<true, false>>(bank);
-    static auto user_filter_sparse = std::make_shared<UserFilter<false, false>>(bank);
-    static auto admin_filter = std::make_shared<UserFilter<false, true>>(bank);
+    static auto user_filter_default = std::make_shared<UserFilter<true, false>>();
+    static auto user_filter_sparse = std::make_shared<UserFilter<false, false>>();
+    static auto admin_filter = std::make_shared<UserFilter<false, true>>();
     static auto json_resp_and_req_filter = std::make_shared<JsonFilter<true>>();
     static auto json_resp_filter = std::make_shared<JsonFilter<false>>();
 
@@ -122,7 +119,6 @@ int main(int argc, char **argv)
         .registerFilter(admin_filter)
         .registerFilter(json_resp_and_req_filter)
         .registerFilter(json_resp_filter)
-        .registerController(API)
 #if MULTI_THREADED
         .setThreadNum(get_nprocs())
 #endif

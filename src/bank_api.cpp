@@ -49,7 +49,7 @@ static thread_local ondemand::parser parser;
 #if API_VERSION >= 1
 
 //Usage
-void api::GetBal(req_args, const std::string &name) const
+void api::GetBal(req_args, const std::string &name)
 {
     RESPONSE_PARSE(Bank::GetBal(name));
 }
@@ -64,7 +64,7 @@ void api::GetLogs(req_args)
     callback(resp);
 #endif
 }
-void api::SendFunds(req_args) const
+void api::SendFunds(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -88,10 +88,10 @@ void api::SendFunds(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::VerifyPassword(req_args) const { RESPOND_TRUE; }
+void api::VerifyPassword(req_args) { RESPOND_TRUE; }
 
 //Meta Usage
-void api::ChangePassword(req_args) const
+void api::ChangePassword(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -115,7 +115,7 @@ void api::ChangePassword(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::AdminChangePassword(req_args) const
+void api::AdminChangePassword(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -148,7 +148,7 @@ void api::AdminChangePassword(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::SetBal(req_args) const
+void api::SetBal(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -172,7 +172,7 @@ void api::SetBal(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::ImpactBal(req_args) const
+void api::ImpactBal(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -198,19 +198,19 @@ void api::ImpactBal(req_args) const
 }
 
 //System Usage
-void api::Help(req_args) const
+void api::Help(req_args)
 {
     static thread_local auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/README.md", k301MovedPermanently);
     CACHE_FOREVER;
     callback(resp);
 }
-void api::Close(req_args) const
+void api::Close(req_args)
 {
     Bank::Save();
     RESPOND_TRUE; //filter handles admin creds
     app().quit();
 }
-void api::Contains(req_args, const std::string &name) const
+void api::Contains(req_args, const std::string &name)
 {
     BankResponse res;
     if (Bank::Contains(name))
@@ -223,11 +223,11 @@ void api::Contains(req_args, const std::string &name) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::AdminVerifyAccount(req_args) const
+void api::AdminVerifyAccount(req_args)
 {
     RESPOND_TRUE; //filter handles admin creds
 }
-void api::ApiProperties(req_args) const
+void api::ApiProperties(req_args)
 {
     std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE);
     if constexpr (RETURN_ON_DEL)
@@ -243,7 +243,7 @@ void api::ApiProperties(req_args) const
     CACHE_FOREVER;
     callback(resp);
 }
-void api::PruneUsers(req_args) const
+void api::PruneUsers(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -279,7 +279,7 @@ void api::PruneUsers(req_args) const
     RESPONSE_PARSE(std::move(res));
 }
 
-void api::AddUser(req_args) const
+void api::AddUser(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -304,7 +304,7 @@ void api::AddUser(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::AdminAddUser(req_args) const
+void api::AdminAddUser(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;
@@ -330,12 +330,12 @@ void api::AdminAddUser(req_args) const
     }
     RESPONSE_PARSE(std::move(res));
 }
-void api::DelSelf(req_args) const
+void api::DelSelf(req_args)
 {
     Bank::DelSelf(NAME_PARAM);
     RESPOND_TRUE;
 }
-void api::AdminDelUser(req_args) const
+void api::AdminDelUser(req_args)
 {
     SIMD_JSON_GEN;
     BankResponse res;

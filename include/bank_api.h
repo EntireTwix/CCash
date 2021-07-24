@@ -8,34 +8,34 @@ using namespace drogon;
 
 #define req_args const HttpRequestPtr &req, std::function<void(const HttpResponsePtr &)> &&callback
 
-class api : public HttpController<api, false>
+class api : public HttpController<api>
 {
 public:
-    void JsonCpp(req_args) const;
-    void Json(req_args) const;
+    static void JsonCpp(req_args);
+    static void Json(req_args);
 
 #if API_VERSION >= 1
-    void GetBal(req_args, const std::string &name) const;
-    void GetLogs(req_args);
-    void SendFunds(req_args) const;
-    void VerifyPassword(req_args) const;
+    static void GetBal(req_args, const std::string &name);
+    static void GetLogs(req_args);
+    static void SendFunds(req_args);
+    static void VerifyPassword(req_args);
 
-    void ChangePassword(req_args) const;
-    void AdminChangePassword(req_args) const;
-    void SetBal(req_args) const;
-    void ImpactBal(req_args) const;
+    static void ChangePassword(req_args);
+    static void AdminChangePassword(req_args);
+    static void SetBal(req_args);
+    static void ImpactBal(req_args);
 
-    void Help(req_args) const;
-    void Close(req_args) const;
-    void Contains(req_args, const std::string &name) const;
-    void AdminVerifyAccount(req_args) const;
-    void PruneUsers(req_args) const;
-    void ApiProperties(req_args) const;
+    static void Help(req_args);
+    static void Close(req_args);
+    static void Contains(req_args, const std::string &name);
+    static void AdminVerifyAccount(req_args);
+    static void PruneUsers(req_args);
+    static void ApiProperties(req_args);
 
-    void AddUser(req_args) const;
-    void AdminAddUser(req_args) const;
-    void DelSelf(req_args) const;
-    void AdminDelUser(req_args) const;
+    static void AddUser(req_args);
+    static void AdminAddUser(req_args);
+    static void DelSelf(req_args);
+    static void AdminDelUser(req_args);
 
 #endif
 
