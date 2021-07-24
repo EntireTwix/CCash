@@ -1,6 +1,28 @@
 #include "bank_api.h"
 
-//all my homies hate jsoncpp
+#if MULTI_THREADED
+phmap::parallel_flat_hash_map<
+    std::string, User,
+    xxHashStringGen,
+    phmap::priv::hash_default_eq<std::string>,
+    phmap::priv::Allocator<phmap::priv::Pair<const std::string, User>>,
+    4UL,
+    std::mutex>
+    Bank::users;
+#else
+phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> Bank::users;
+#endif
+
+#if CONSERVATIVE_DISK_SAVE
+#if MULTI_THREADED
+ChangeFlag<false> Bank::save_flag;
+#else
+bool Bank::save_flag = false;
+#endif
+#endif
+
+std::shared_mutex Bank::iter_lock;
+std::string Bank::admin_account;
 
 #define CACHE_FOREVER resp->setExpiredTime(0)
 
@@ -24,21 +46,17 @@ static thread_local ondemand::parser parser;
 
 #define NAME_PARAM req->getParameter("name")
 
-api::api(Bank &b) noexcept : bank(b)
-{
-}
-
 #if API_VERSION >= 1
 
 //Usage
 void api::GetBal(req_args, const std::string &name) const
 {
-    RESPONSE_PARSE(bank.GetBal(name));
+    RESPONSE_PARSE(Bank::GetBal(name));
 }
 void api::GetLogs(req_args)
 {
 #if MAX_LOG_SIZE > 0
-    RESPONSE_PARSE(bank.GetLogs(NAME_PARAM));
+    RESPONSE_PARSE(Bank::GetLogs(NAME_PARAM));
 #else
     static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
     CORS;
@@ -65,7 +83,7 @@ void api::SendFunds(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            res = bank.SendFunds(NAME_PARAM, name_val.str, amount.value());
+            res = Bank::SendFunds(NAME_PARAM, name_val.str, amount.value());
         }
     }
     RESPONSE_PARSE(std::move(res));
@@ -91,7 +109,7 @@ void api::ChangePassword(req_args) const
         else
         {
             StrFromSV_Wrapper pass_val(pass.value());
-            bank.ChangePassword(NAME_PARAM, pass_val.str);
+            Bank::ChangePassword(NAME_PARAM, pass_val.str);
             res = BankResponse{k204NoContent, std::nullopt};
         }
     }
@@ -116,10 +134,10 @@ void api::AdminChangePassword(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            if (bank.Contains(name_val.str))
+            if (Bank::Contains(name_val.str))
             {
                 StrFromSV_Wrapper pass_val(pass.value());
-                bank.ChangePassword(name_val.str, pass_val.str);
+                Bank::ChangePassword(name_val.str, pass_val.str);
                 res = BankResponse{k204NoContent, std::nullopt};
             }
             else
@@ -149,7 +167,7 @@ void api::SetBal(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            res = bank.SetBal(name_val.str, amount.value());
+            res = Bank::SetBal(name_val.str, amount.value());
         }
     }
     RESPONSE_PARSE(std::move(res));
@@ -173,7 +191,7 @@ void api::ImpactBal(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            res = bank.ImpactBal(name_val.str, amount.value());
+            res = Bank::ImpactBal(name_val.str, amount.value());
         }
     }
     RESPONSE_PARSE(std::move(res));
@@ -188,14 +206,14 @@ void api::Help(req_args) const
 }
 void api::Close(req_args) const
 {
-    bank.Save();
+    Bank::Save();
     RESPOND_TRUE; //filter handles admin creds
     app().quit();
 }
 void api::Contains(req_args, const std::string &name) const
 {
     BankResponse res;
-    if (bank.Contains(name))
+    if (Bank::Contains(name))
     {
         res = BankResponse{k204NoContent, std::nullopt};
     }
@@ -244,7 +262,7 @@ void api::PruneUsers(req_args) const
         }
         else
         {
-            res = bank.PruneUsers(time.value(), amount.value());
+            res = Bank::PruneUsers(time.value(), amount.value());
         }
 #else
         auto amount = doc.find_field("amount").get_uint64();
@@ -254,7 +272,7 @@ void api::PruneUsers(req_args) const
         }
         else
         {
-            res = bank.PruneUsers(amount.value());
+            res = Bank::PruneUsers(amount.value());
         }
 #endif
     }
@@ -281,7 +299,7 @@ void api::AddUser(req_args) const
         {
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
-            res = bank.AddUser(name_val.str, 0, pass_val.str);
+            res = Bank::AddUser(name_val.str, 0, pass_val.str);
         }
     }
     RESPONSE_PARSE(std::move(res));
@@ -307,14 +325,14 @@ void api::AdminAddUser(req_args) const
         {
             StrFromSV_Wrapper name_val(name.value());
             StrFromSV_Wrapper pass_val(pass.value());
-            res = bank.AddUser(name_val.str, amount.value(), pass_val.str);
+            res = Bank::AddUser(name_val.str, amount.value(), pass_val.str);
         }
     }
     RESPONSE_PARSE(std::move(res));
 }
 void api::DelSelf(req_args) const
 {
-    bank.DelSelf(NAME_PARAM);
+    Bank::DelSelf(NAME_PARAM);
     RESPOND_TRUE;
 }
 void api::AdminDelUser(req_args) const
@@ -335,7 +353,7 @@ void api::AdminDelUser(req_args) const
         else
         {
             StrFromSV_Wrapper name_val(name.value());
-            res = bank.DelUser(name_val.str);
+            res = Bank::DelUser(name_val.str);
         }
     }
     RESPONSE_PARSE(std::move(res));

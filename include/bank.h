@@ -13,7 +13,7 @@
 class Bank
 {
 #if MULTI_THREADED
-    phmap::parallel_flat_hash_map<
+    static phmap::parallel_flat_hash_map<
         std::string, User,
         xxHashStringGen,
         phmap::priv::hash_default_eq<std::string>,
@@ -22,50 +22,50 @@ class Bank
         std::mutex>
         users;
 #else
-    phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> users;
+    static phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> users;
 #endif
 
 private:
 #if CONSERVATIVE_DISK_SAVE
 #if MULTI_THREADED
-    ChangeFlag<false> save_flag;
+    static ChangeFlag<false> save_flag;
 #else
-    bool save_flag = false;
+    static bool save_flag = false;
 #endif
 #endif
 
     //must grab as shared if the operation is gonna modify "users"'s size or can be caught in a intermediary state such as SendFunds()
     //must grab as unique if the operation is gonna user iterators
-    std::shared_mutex iter_lock;
+    static std::shared_mutex iter_lock;
 
 public:
-    std::string admin_account;
+    static std::string admin_account;
 
-    size_t NumOfUsers() const noexcept;
-    size_t NumOfLogs() const noexcept;
-    size_t SumBal() const noexcept;
+    static size_t NumOfUsers() noexcept;
+    static size_t NumOfLogs() noexcept;
+    static size_t SumBal() noexcept;
 
-    BankResponse GetBal(const std::string &name) const noexcept;
+    static BankResponse GetBal(const std::string &name) noexcept;
 #if MAX_LOG_SIZE > 0
-    BankResponse GetLogs(const std::string &name) noexcept;
+    static BankResponse GetLogs(const std::string &name) noexcept;
 #endif
-    BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
-    bool VerifyPassword(const std::string &name, const std::string_view &attempt) const noexcept;
+    static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
+    static bool VerifyPassword(const std::string &name, const std::string_view &attempt) noexcept;
 
-    void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
-    BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
-    BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
-    bool Contains(const std::string &name) const noexcept;
+    static void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
+    static BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
+    static BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
+    static bool Contains(const std::string &name) noexcept;
 #if MAX_LOG_SIZE > 0
-    BankResponse PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept;
+    static BankResponse PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept;
 #else
-    BankResponse PruneUsers(uint32_t threshold_bal) noexcept;
+    static BankResponse PruneUsers(uint32_t threshold_bal) noexcept;
 #endif
 
-    BankResponse AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept;
-    BankResponse DelUser(const std::string &name) noexcept;
-    void DelSelf(const std::string &name) noexcept;
+    static BankResponse AddUser(const std::string &name, uint32_t init_bal, const std::string &init_pass) noexcept;
+    static BankResponse DelUser(const std::string &name) noexcept;
+    static void DelSelf(const std::string &name) noexcept;
 
-    const char *Save();
-    void Load();
+    static const char *Save();
+    static void Load();
 };

@@ -10,10 +10,7 @@ using namespace drogon;
 
 class api : public HttpController<api, false>
 {
-    Bank &bank;
-
 public:
-    api(Bank &b) noexcept;
     void JsonCpp(req_args) const;
     void Json(req_args) const;
 

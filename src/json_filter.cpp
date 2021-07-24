@@ -1,8 +1,5 @@
 #include "json_filter.h"
 
-template <bool check_content_type>
-JsonFilter<check_content_type>::JsonFilter() {}
-
 __attribute__((always_inline)) inline bool Contains(std::string_view str, const std::string &val)
 {
     return str.find(val) != std::string::npos;

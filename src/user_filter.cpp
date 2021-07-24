@@ -17,9 +17,6 @@ __attribute__((always_inline)) inline bool ValidUsername(const std::string &name
 }
 
 template <bool set_body_flag, bool require_admin>
-UserFilter<set_body_flag, require_admin>::UserFilter(Bank &b) : bank(b) {}
-
-template <bool set_body_flag, bool require_admin>
 void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &req,
                                                         FilterCallback &&fcb,
                                                         FilterChainCallback &&fccb)
@@ -43,10 +40,10 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                 {
                     if constexpr (require_admin)
                     {
-                        if (bank.admin_account == username.str)
+                        if (Bank::admin_account == username.str)
                         {
                             StrFromSV_Wrapper password(results_view.substr(middle + 1));
-                            if (bank.VerifyPassword(username.str, password.str))
+                            if (Bank::VerifyPassword(username.str, password.str))
                             {
                                 fccb();
                                 return;
@@ -56,7 +53,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                     else
                     {
                         StrFromSV_Wrapper password(results_view.substr(middle + 1));
-                        if (bank.VerifyPassword(username.str, results_view.substr(middle + 1)))
+                        if (Bank::VerifyPassword(username.str, results_view.substr(middle + 1)))
                         {
                             if constexpr (set_body_flag)
                             {
