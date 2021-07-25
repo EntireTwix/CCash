@@ -184,11 +184,11 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     {
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
-    uint32_t balance;
-    if (ValidUsername(name) && Bank::users.modify_if(name, [&balance, amount](User &u) { balance = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
+    uint32_t bal;
+    if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, amount](User &u) { bal = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
     {
         SET_CHANGES_ON;
-        return {k200OK, std::to_string(balance)}; //may return new balance
+        return {k200OK, std::to_string(bal)}; //may return new balance
     }
     else
     {
@@ -207,7 +207,9 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
 {
     std::unique_lock<std::shared_mutex> lock{iter_lock};
     size_t deleted_count = 0;
+#if RETURN_ON_DEL
     uint32_t bal = 0;
+#endif
     for (const auto &u : users)
     {
 #if RETURN_ON_DEL
