@@ -24,6 +24,8 @@ using namespace drogon;
 
 #if CONSERVATIVE_DISK_SAVE
 #define SET_CHANGES_ON save_flag.SetChangesOn()
+#else
+#define SET_CHANGES_ON
 #endif
 
 __attribute__((always_inline)) inline bool ValidUsername(const std::string &name) noexcept
