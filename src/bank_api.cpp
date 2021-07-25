@@ -1,29 +1,5 @@
 #include "bank_api.h"
 
-#if MULTI_THREADED
-phmap::parallel_flat_hash_map<
-    std::string, User,
-    xxHashStringGen,
-    phmap::priv::hash_default_eq<std::string>,
-    phmap::priv::Allocator<phmap::priv::Pair<const std::string, User>>,
-    4UL,
-    std::mutex>
-    Bank::users;
-#else
-phmap::parallel_flat_hash_map<std::string, User, xxHashStringGen> Bank::users;
-#endif
-
-#if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
-ChangeFlag<false> Bank::save_flag;
-#else
-bool Bank::save_flag = false;
-#endif
-#endif
-
-std::shared_mutex Bank::iter_lock;
-std::string Bank::admin_account;
-
 #define CACHE_FOREVER resp->setExpiredTime(0)
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
@@ -33,9 +9,9 @@ static thread_local ondemand::parser parser;
     static thread_local simdjson::padded_string input(req->getBody()); \
     auto doc = parser.iterate(input);
 
-#define RESPONSE_PARSE(R)                                                   \
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(R); \
-    CORS;                                                                   \
+#define RESPONSE_PARSE(R)                               \
+    auto resp = HttpResponse::newCustomHttpResponse(R); \
+    CORS;                                               \
     callback(resp)
 
 #define RESPOND_TRUE                                                                                                \
