@@ -27,11 +27,7 @@ class Bank
 
 private:
 #if CONSERVATIVE_DISK_SAVE
-#if MULTI_THREADED
     static ChangeFlag<false> save_flag;
-#else
-    static bool save_flag = false;
-#endif
 #endif
 
     //must grab as shared if the operation is gonna modify "users"'s size or can be caught in a intermediary state such as SendFunds()
