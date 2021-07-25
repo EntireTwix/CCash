@@ -6,7 +6,7 @@
 
 static thread_local ondemand::parser parser;
 #define SIMD_JSON_GEN                                                  \
-    static thread_local simdjson::padded_string input(req->getBody()); \
+    simdjson::padded_string input(req->getBody()); \
     auto doc = parser.iterate(input);
 
 #define RESPONSE_PARSE(R)                               \
