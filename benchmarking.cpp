@@ -92,7 +92,7 @@ int main(int argc, char **argv)
     Op(Bank::GetLogs("twix"), "get logs init: ", 1);
     Op(Bank::GetLogs("twix"), "get logs cached: ", 1000000);
 #endif
-    Op_a(Bank::PruneUsers(0, 0), "prune users: ", 1, Bank::AddUser("abc", 0, "abc"));
+    Op(Bank::PruneUsers(0, 0), "prune users: ", 1);
     Op(Bank::Save(), "saving: ", 1);
 
     //GetBal scalining test
