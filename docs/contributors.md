@@ -5,5 +5,5 @@
 | [React](https://github.com/Reactified)      | Logo, ComputerCraft API      |
 | [Doggo](https://github.com/FearlessDoggo21) | HTTP suggestions, Python API |
 | [Expand](https://github.com/Expand-sys)     | Fixed docker package         |
-| [Jolly](https://github.com/STBoyden)        | Rust API                     |
+| [Sam](https://github.com/STBoyden)          | Rust API                     |
 | Caesay                                      | Restful API suggestions      |
