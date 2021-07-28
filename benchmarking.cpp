@@ -61,6 +61,10 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
+    for (size_t i = 0; i < 10000; ++i)
+    {
+        Bank::AddUser(std::to_string(i), 0, "root");
+    }
     Bank::AddUser("twix", 0, "root");
     Bank::AddUser("jolly", 0, "root");
     Bank::admin_account = "twix";
@@ -88,8 +92,8 @@ int main(int argc, char **argv)
     Op(Bank::GetLogs("twix"), "get logs init: ", 1);
     Op(Bank::GetLogs("twix"), "get logs cached: ", 1000000);
 #endif
+    Op_a(Bank::PruneUsers(0, 0), "prune users: ", 1, Bank::AddUser("abc", 0, "abc"));
     Op(Bank::Save(), "saving: ", 1);
-    Op_a(Bank::PruneUsers(0, 0), "prune users: ", 1000000, Bank::AddUser("abc", 0, "abc"));
 
     //GetBal scalining test
     //std::default_random_engine generator;
