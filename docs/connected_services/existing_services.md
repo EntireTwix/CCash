@@ -4,7 +4,7 @@
 | author                                      | name                                                        |            v1            |
 | :------------------------------------------ | ----------------------------------------------------------- | :----------------------: |
 | [Expand](https://github.com/Expand-sys)     | [Web Frontend](https://github.com/Expand-sys/ccashfrontend) |    :heavy_check_mark:    |
-| [Expand](https://github.com/Expand-sys)     | [Discord Bot](https://github.com/Expand-sys/ccashbot)       | :heavy_multiplication_x: |
+| [Expand](https://github.com/Expand-sys)     | [Discord Bot](https://github.com/Expand-sys/ccashbot)       |    :heavy_check_mark:    |
 | [Doggo](https://github.com/FearlessDoggo21) | [CCash CLI](https://github.com/FearlessDoggo21/CCashCMD)    | :heavy_multiplication_x: |
 | [Sam](https://github.com/STBoyden)          | [Market](https://github.com/STBoyden/market-api-2.0)        | :heavy_multiplication_x: |
 
