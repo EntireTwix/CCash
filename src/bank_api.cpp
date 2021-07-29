@@ -5,7 +5,7 @@
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
 static thread_local ondemand::parser parser;
-#define SIMD_JSON_GEN                                                  \
+#define SIMD_JSON_GEN                              \
     simdjson::padded_string input(req->getBody()); \
     auto doc = parser.iterate(input);
 
@@ -50,8 +50,8 @@ void api::SendFunds(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto amount = doc.find_field("amount").get_uint64();
+        auto name = doc["name"].get_string();
+        auto amount = doc["amount"].get_uint64();
         if (name.error() || amount.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -77,7 +77,7 @@ void api::ChangePassword(req_args)
     }
     else
     {
-        auto pass = doc.find_field("pass").get_string();
+        auto pass = doc["pass"].get_string();
         if (pass.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -101,8 +101,8 @@ void api::AdminChangePassword(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto pass = doc.find_field("pass").get_string();
+        auto name = doc["name"].get_string();
+        auto pass = doc["pass"].get_string();
         if (name.error() || pass.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -134,8 +134,8 @@ void api::SetBal(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto amount = doc.find_field("amount").get_uint64();
+        auto name = doc["name"].get_string();
+        auto amount = doc["amount"].get_uint64();
         if (name.error() || amount.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -158,8 +158,8 @@ void api::ImpactBal(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto amount = doc.find_field("amount").get_int64();
+        auto name = doc["name"].get_string();
+        auto amount = doc["amount"].get_int64();
         if (name.error() || amount.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -230,8 +230,8 @@ void api::PruneUsers(req_args)
     else
     {
 #if MAX_LOG_SIZE > 0
-        auto time = doc.find_field("time").get_int64();
-        auto amount = doc.find_field("amount").get_uint64();
+        auto time = doc["time"].get_int64();
+        auto amount = doc["amount"].get_uint64();
         if (time.error() || amount.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -241,7 +241,7 @@ void api::PruneUsers(req_args)
             res = Bank::PruneUsers(time.value(), amount.value());
         }
 #else
-        auto amount = doc.find_field("amount").get_uint64();
+        auto amount = doc["amount"].get_uint64();
         if (amount.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -265,8 +265,8 @@ void api::AddUser(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto pass = doc.find_field("pass").get_string();
+        auto name = doc["name"].get_string();
+        auto pass = doc["pass"].get_string();
         if (name.error() || pass.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -290,9 +290,9 @@ void api::AdminAddUser(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
-        auto amount = doc.find_field("amount").get_uint64();
-        auto pass = doc.find_field("pass").get_string();
+        auto name = doc["name"].get_string();
+        auto amount = doc["amount"].get_uint64();
+        auto pass = doc["pass"].get_string();
         if (name.error() || amount.error() || pass.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
@@ -321,7 +321,7 @@ void api::AdminDelUser(req_args)
     }
     else
     {
-        auto name = doc.find_field("name").get_string();
+        auto name = doc["name"].get_string();
         if (name.error())
         {
             res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
