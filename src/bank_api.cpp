@@ -14,10 +14,10 @@ static thread_local ondemand::parser parser;
     CORS;                                               \
     callback(resp)
 
-#define RESPOND_TRUE                                                                                                \
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k204NoContent, std::nullopt}); \
-    CORS;                                                                                                           \
-    CACHE_FOREVER;                                                                                                  \
+#define RESPOND_TRUE                                                                            \
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k204NoContent, std::nullopt}); \
+    CORS;                                                                                       \
+    CACHE_FOREVER;                                                                              \
     callback(resp)
 
 #define NAME_PARAM req->getParameter("name")
@@ -34,7 +34,7 @@ void api::GetLogs(req_args)
 #if MAX_LOG_SIZE > 0
     RESPONSE_PARSE(Bank::GetLogs(NAME_PARAM));
 #else
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
     CORS;
     CACHE_FOREVER;
     callback(resp);
@@ -176,7 +176,7 @@ void api::ImpactBal(req_args)
 //System Usage
 void api::Help(req_args)
 {
-    static thread_local auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/README.md", k301MovedPermanently);
+    auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/README.md", k301MovedPermanently);
     CACHE_FOREVER;
     callback(resp);
 }
@@ -214,7 +214,7 @@ void api::ApiProperties(req_args)
     {
         info += "}";
     }
-    static thread_local auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k200OK, std::move(info)});
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k200OK, std::move(info)});
     CORS;
     CACHE_FOREVER;
     callback(resp);
