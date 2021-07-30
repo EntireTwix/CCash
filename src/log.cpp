@@ -16,23 +16,23 @@ std::string Log::GetLogs() noexcept
     {
         //re-generate snapshot
         //({\"amount\":1,\"from\":\"\",\"time\":1625943626,\"to\":\"\"}, + (2*max_name_size)+10+10) * # of logs) + 1
-        size_t predicted_size = ((58 + (2 * max_name_size)) * data.size()) + 1;
+        size_t predicted_size = ((60 + (2 * max_name_size)) * data.size()) + 1;
         if (log_snapshot.capacity() < predicted_size)
         {
             log_snapshot.reserve(predicted_size);
         }
-        log_snapshot = '[';
+        log_snapshot = '['; //1
         for (size_t i = 0; i < data.size(); ++i)
         {
-            log_snapshot += "{\"to\":\"";
-            log_snapshot += data[i].to;
-            log_snapshot += "\",\"from\":\"";
-            log_snapshot += data[i].from;
-            log_snapshot += "\",\"amount\":";
-            log_snapshot += std::to_string(data[i].amount);
-            log_snapshot += ",\"time\":";
-            log_snapshot += std::to_string(data[i].time);
-            log_snapshot += "},";
+            log_snapshot += "{\"to\":\"";                   //8
+            log_snapshot += data[i].to;                     //max_name_size?
+            log_snapshot += "\",\"from\":\"";               //10
+            log_snapshot += data[i].from;                   //max_name_size?
+            log_snapshot += "\",\"amount\":";               //12
+            log_snapshot += std::to_string(data[i].amount); //10?
+            log_snapshot += ",\"time\":";                   //8
+            log_snapshot += std::to_string(data[i].time);   //10?
+            log_snapshot += "},";                           //2
         }
         log_snapshot.back() = ']';
         log_flag.SetChangesOff();
