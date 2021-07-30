@@ -14,6 +14,7 @@ std::string Log::GetLogs() noexcept
 {
     if (log_flag.GetChangeState() && data.size()) //if there are changes
     {
+        log_snapshot.resize(0);
         //re-generate snapshot
         size_t predicted_size = ((59 + (2 * max_name_size)) * data.size()) + 1;
         if (log_snapshot.capacity() < predicted_size)
