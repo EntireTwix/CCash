@@ -9,6 +9,9 @@ as CCash is very lightweight it can run on practically any device but here are s
 * with no users memory usage is 8.47 Mb
 * Saving frequency (a runtime argument) being set to 0 will disable frequency saving and only save on close
 
+## Docker
+If you want to use the docker package, deploy information can be found [here](deploy.md)
+
 ## Drogon Depedencies 
 
 ### Linux
