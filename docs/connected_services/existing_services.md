@@ -9,8 +9,8 @@
 | [Sam](https://github.com/STBoyden)          | [Market](https://github.com/STBoyden/market-api-2.0)        | :heavy_multiplication_x: |
 
 ## Minecraft
-| author                                      | name                                                                        |         v1         |
-| :------------------------------------------ | --------------------------------------------------------------------------- | :----------------: |
-| [Reactified](https://github.com/Reactified) | [Shop](https://github.com/Reactified/rpm/tree/main/packages/ccash-shop)     | :heavy_check_mark: |
-| [Reactified](https://github.com/Reactified) | [Wallet](https://github.com/Reactified/rpm/tree/main/packages/ccash-wallet) | :heavy_check_mark: |
-| [Reactified](https://github.com/Reactified) | [ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank)          | :heavy_check_mark: |
+| author                                      | name                                                                        |            v1            |
+| :------------------------------------------ | --------------------------------------------------------------------------- | :----------------------: |
+| [Reactified](https://github.com/Reactified) | [Shop](https://github.com/Reactified/rpm/tree/main/packages/ccash-shop)     |    :heavy_check_mark:    |
+| [Reactified](https://github.com/Reactified) | [Wallet](https://github.com/Reactified/rpm/tree/main/packages/ccash-wallet) |    :heavy_check_mark:    |
+| [Reactified](https://github.com/Reactified) | [ATM](https://github.com/Reactified/misc/tree/main/lua/ccash-bank)          | :heavy_multiplication_x: |
