@@ -2,7 +2,17 @@
 
 # Features
 ## Performance
+#### Speed
 <!-- graphs -->
+Capable of processing thousands of requests per second, with no slow down as user size grows to the millions.
+
+#### Lightweight
+<!-- specs -->
+Low memory usage at 8 Mb baseline, and 203 bytes per new log.
+
+Anecdotally I typically expierenced <1% CPU usage.
+
+Small save files at typically a couple kb.
 ## Accessibility
 #### Connected Services
 as explained in earlier docs a ecosystem of connected services allows you many ways to utilize CCash.
