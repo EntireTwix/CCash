@@ -43,10 +43,6 @@ yum install libuuid-devel openssl-devel zlib-devel
 brew install jsoncpp ossp-uuid openssl zlib
 ```
 
-### Docker
-Docker Package can be found [here](https://github.com/EntireTwix/CCash/packages/851105)
-
-
 ## Actually, building
 ```
 git clone --recurse-submodule https://github.com/EntireTwix/CCash/
