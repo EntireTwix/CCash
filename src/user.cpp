@@ -21,7 +21,12 @@ User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.pa
 #if MAX_LOG_SIZE > 0
     if (u.logs)
     {
-        for (uint32_t i = (u.logs.value().data.size() - MAX_LOG_SIZE); i < u.logs.value().data.size(); ++i)
+        uint32_t i = 0;
+        if (MAX_LOG_SIZE < u.logs.value().data.size())
+        {
+            i = (u.logs.value().data.size() - MAX_LOG_SIZE);
+        }
+        for (; i < u.logs.value().data.size(); ++i)
         {
             const bank_dom::Transaction &temp = u.logs.value().data[i];
             log.data.emplace_front(temp.from, temp.to, temp.amount, temp.time);
