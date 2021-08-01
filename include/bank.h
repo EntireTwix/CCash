@@ -1,5 +1,4 @@
 #pragma once
-#include <iostream> //temporary
 #include <fstream>
 #include <shared_mutex>
 #include <parallel-hashmap/parallel_hashmap/phmap.h>
