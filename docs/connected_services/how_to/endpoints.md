@@ -81,6 +81,8 @@
 | Close              |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
 | Contains           |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    |
 | AdminVerifyAccount |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| PruneUsers         |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| ApiProperties      | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### System Usage endpoint support
 | name               |         v1         |
