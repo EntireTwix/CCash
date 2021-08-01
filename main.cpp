@@ -1,5 +1,4 @@
 #include <iostream>
-#include <chrono>
 #include <thread>
 #include <sys/types.h>
 #include <unistd.h>
@@ -94,15 +93,14 @@ int main(int argc, char **argv)
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
-            std::thread([saving_freq]()
-                        {
-                            while (1)
-                            {
-                                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                                std::cout << "Saving " << std::time(0) << "...\n"
-                                          << Bank::Save();
-                            }
-                        })
+            std::thread([saving_freq]() {
+                while (1)
+                {
+                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                    std::cout << "Saving " << std::time(0) << "...\n"
+                              << Bank::Save();
+                }
+            })
                 .detach();
         }
     } //destroying setup variables
