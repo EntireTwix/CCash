@@ -28,7 +28,7 @@ using namespace drogon;
 #define SET_CHANGES_ON
 #endif
 
-__attribute__((always_inline)) inline bool ValidUsername(const std::string &name) noexcept
+constexpr bool ValidUsername(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
     {
