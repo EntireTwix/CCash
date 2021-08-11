@@ -1,6 +1,6 @@
 #include "json_filter.h"
 
-__attribute__((always_inline)) inline bool Contains(std::string_view str, const std::string &val)
+constexpr bool Contains(std::string_view str, const std::string &val)
 {
     return str.find(val) != std::string::npos;
 }

@@ -1,6 +1,6 @@
 #include "user_filter.h"
 
-inline bool ValidUsername(const std::string &name) noexcept
+constexpr bool ValidUsername(const std::string &name) noexcept
 {
     if (name.size() < min_name_size || name.size() > max_name_size)
     {
