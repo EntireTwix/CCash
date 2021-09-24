@@ -12,7 +12,7 @@ Low memory usage at 8 Mb baseline, and 203 bytes per new log.
 
 Anecdotally I typically expierenced <1% CPU usage.
 
-Small save files at typically a couple kb.
+Small save files at typically a couple kb, easily shareable.
 ## Accessibility
 #### Connected Services
 as explained in earlier docs a ecosystem of connected services allows you many ways to utilize CCash.
@@ -24,7 +24,7 @@ its game indepedent meaning you dont have to be in-game to use it.
 #### HTTPS
 OpenSSL is used to secure the HTTP server.
 #### Hashed Passwords
-if the server's save file is compromised the user passwords will not be derivable. This means you could share save files with no consequence (besides exposing all previously hidden accounts)
+if the server's save file is compromised the user passwords will not be derivable.
 ## Other
 #### Logs
 each transaction is logged and the last `n` logs are stored, if set to 0 logs will be disabled.
