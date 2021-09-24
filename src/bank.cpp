@@ -320,16 +320,13 @@ const char *Bank::Save()
         }
         FBE::bank_dom::GlobalFinalModel writer;
         writer.serialize(users_copy);
-        if (!writer.verify())
-        {
-            throw std::invalid_argument("Data is corrupted\n");
-        }
+        assert(writer.verify() && "Data is corrupted!");
         const FBE::FBEBuffer &write_buffer = writer.buffer();
         users_save.write((char *)write_buffer.data(), write_buffer.size());
         users_save.close();
         if (!users_save.good())
         {
-            throw std::invalid_argument("Error occurred at writing\n");
+            throw std::invalid_argument("Error occurred at writing to save file\n");
         }
 #if CONSERVATIVE_DISK_SAVE
         save_flag.SetChangesOff();
