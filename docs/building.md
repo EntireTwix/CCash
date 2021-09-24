@@ -38,6 +38,15 @@ make
 make install
 yum install libuuid-devel openssl-devel zlib-devel
 ```
+#### Other
+anything that can download the appropriate dependencies
+```
+make & cmake
+jsoncpp
+libuuid
+openssl
+zlib
+```
 ### MacOS
 ```
 brew install jsoncpp ossp-uuid openssl zlib
