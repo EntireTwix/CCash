@@ -17,11 +17,11 @@ If you want to use the docker package, deploy information can be found [here](de
 ### Linux
 #### Debian
 ```
-sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev
+sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev build-essential
 ```
 #### CentOS 7.5
 ```
-yum install git gcc gcc-c++
+yum install git gcc gcc-c++ 
 git clone https://github.com/Kitware/CMake
 cd CMake/
 ./bootstrap
@@ -49,7 +49,7 @@ zlib
 ```
 ### MacOS
 ```
-brew install jsoncpp ossp-uuid openssl zlib
+brew install jsoncpp ossp-uuid openssl zlib 
 ```
 
 ## Actually, building
