@@ -346,7 +346,7 @@ void Bank::Load()
     std::ifstream users_load(users_location, std::ios::out | std::ios::binary);
     if (!users_load.is_open())
     {
-        throw std::invalid_argument("Cannot find save file, to generate a new one run \"./bank\" (warning: will override file if it already exists)\n");
+        throw std::invalid_argument("Cannot find save file, to generate a new one run \"sudo ./bank\" (warning: will override file if it already exists)\n");
     }
 
     uint32_t buffer_size;
