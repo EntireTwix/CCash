@@ -17,7 +17,7 @@ If you want to use the docker package, deploy information can be found [here](de
 ### Linux
 #### Debian
 ```
-sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev build-essential
+sudo apt install libjsoncpp-dev uuid-dev openssl libssl-dev zlib1g-dev make cmake
 ```
 #### CentOS 7.5
 ```
