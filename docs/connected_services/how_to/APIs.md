@@ -32,3 +32,9 @@ print(ccash.delete_self(temp_name, "root123"))
 ```
 
 this particular program obfuscates transactions so that the person receiving it has no way of knowing who it came from 
+
+```
+my_account -> temp_account -> target_account
+          +100            +100
+```
+then temp_account is deleted
