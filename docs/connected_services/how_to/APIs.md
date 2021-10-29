@@ -11,7 +11,7 @@ for example here is a demo program for the lua API by SpaceCat
 
 ```lua
 local ccash = require("ccash.api")
-ccash.meta.set_server_address("https://twix.aosync.me/")
+ccash.meta.set_server_address("https://ccashinstance.net/")
 
 local cred_name = "my_account"
 local cred_pass = "my_pass"
