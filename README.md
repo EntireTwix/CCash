@@ -10,4 +10,4 @@
   * [implementation](docs/features/implementation.md)
 * [building](docs/building.md)
 * [FAQ](docs/FAQ.md)
-* [Librepay](https://en.liberapay.com/EntireTwix/) if you wanna support this and/or future projects
+* [Liberapay](https://en.liberapay.com/EntireTwix/) if you wanna support this and/or future projects
