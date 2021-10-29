@@ -10,5 +10,4 @@
   * [implementation](docs/features/implementation.md)
 * [building](docs/building.md)
 * [FAQ](docs/FAQ.md)
-* [contributors](docs/contributors.md)
-* [Patreon](https://www.patreon.com/twoxx) if you wanna support this and/or future projects.
+[Librepay](https://en.liberapay.com/EntireTwix/) if you wanna support this and/or future projects
