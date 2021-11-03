@@ -1,3 +1,6 @@
+![image](https://user-images.githubusercontent.com/31377881/139971016-9ca428d1-1a17-4c87-85e3-9b7ead0780f5.png)
+
+
 * [problem/solution](docs/idea.md)
 * connected services
   * how to contribute
