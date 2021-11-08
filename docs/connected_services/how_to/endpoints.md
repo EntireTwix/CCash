@@ -112,7 +112,7 @@ Valid
 | :----------- | :----------------------: | :----------------------: | :----------------------: | :----------------: | :----------------------: |
 | AddUser      |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_check_mark: |    :heavy_check_mark:    |
 | AdminAddUser |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: |    :heavy_check_mark:    |
-| DelSelf      | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
+| DelSelf      | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: | :heavy_multiplication_x: |
 | AdminDelUser |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
 
 ### User Management endpoint support
