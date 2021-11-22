@@ -11,9 +11,6 @@ using namespace drogon;
 class api : public HttpController<api>
 {
 public:
-    static void JsonCpp(req_args);
-    static void Json(req_args);
-
 #if API_VERSION >= 1
     static void GetBal(req_args, const std::string &name);
     static void GetLogs(req_args);
@@ -36,7 +33,6 @@ public:
     static void AdminAddUser(req_args);
     static void DelSelf(req_args);
     static void AdminDelUser(req_args);
-
 #endif
 
     METHOD_LIST_BEGIN
