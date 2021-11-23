@@ -79,11 +79,9 @@ int main(int argc, char **argv)
 
         //Sig handling
         struct sigaction sigIntHandler;
-
         sigIntHandler.sa_handler = SaveSig;
         sigemptyset(&sigIntHandler.sa_mask);
         sigIntHandler.sa_flags = 0;
-
         sigaction(SIGINT, &sigIntHandler, NULL);
 
         //Admin account
@@ -93,14 +91,15 @@ int main(int argc, char **argv)
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
-            std::thread([saving_freq]() {
-                while (1)
-                {
-                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                    std::cout << "Saving " << std::time(0) << "...\n"
-                              << Bank::Save();
-                }
-            })
+            std::thread([saving_freq]()
+                        {
+                            while (1)
+                            {
+                                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                                std::cout << "Saving " << std::time(0) << "...\n"
+                                          << Bank::Save();
+                            }
+                        })
                 .detach();
         }
     } //destroying setup variables
@@ -111,6 +110,8 @@ int main(int argc, char **argv)
         .setThreadNum(get_nprocs())
 #endif
         .run();
+
+    SaveSig(0);
 
     return 0;
 }
