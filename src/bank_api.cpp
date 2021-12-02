@@ -205,7 +205,7 @@ void api::AdminVerifyAccount(req_args)
 }
 void api::ApiProperties(req_args)
 {
-    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE);
+    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
     if constexpr (RETURN_ON_DEL)
     {
         info += ",\"return_on_del\":\"" + std::string(return_account) + "\"}";
@@ -257,28 +257,39 @@ void api::PruneUsers(req_args)
 
 void api::AddUser(req_args)
 {
-    SIMD_JSON_GEN;
-    BankResponse res;
-    if (doc.error())
+    if constexpr (ADD_USER_OPEN)
     {
-        res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
-    }
-    else
-    {
-        auto name = doc["name"].get_string();
-        auto pass = doc["pass"].get_string();
-        if (name.error() || pass.error())
+
+        SIMD_JSON_GEN;
+        BankResponse res;
+        if (doc.error())
         {
-            res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
+            res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
         }
         else
         {
-            StrFromSV_Wrapper name_val(name.value());
-            StrFromSV_Wrapper pass_val(pass.value());
-            res = Bank::AddUser(name_val.str, 0, pass_val.str);
+            auto name = doc["name"].get_string();
+            auto pass = doc["pass"].get_string();
+            if (name.error() || pass.error())
+            {
+                res = BankResponse{k400BadRequest, "\"Missing JSON arg(s)\""};
+            }
+            else
+            {
+                StrFromSV_Wrapper name_val(name.value());
+                StrFromSV_Wrapper pass_val(pass.value());
+                res = Bank::AddUser(name_val.str, 0, pass_val.str);
+            }
         }
+        RESPONSE_PARSE(std::move(res));
     }
-    RESPONSE_PARSE(std::move(res));
+    else
+    {
+        auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"AddUser is Disabled\""});
+        CORS;
+        CACHE_FOREVER;
+        callback(resp);
+    }
 }
 void api::AdminAddUser(req_args)
 {

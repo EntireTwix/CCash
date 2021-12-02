@@ -67,6 +67,12 @@ else()
 set(MULTI_THREADED_VAL true)
 endif()
 
+if(DEFINED ADD_USER_OPEN)
+set(ADD_USER_OPEN_VAL ${ADD_USER_OPEN})
+else()
+set(ADD_USER_OPEN_VAL true)
+endif()
+
 if(DEFINED RETURN_ON_DEL_NAME)
 set(RETURN_ON_DEL_VAL true)
 set(RETURN_ON_DEL_NAME_VAL "\"" + ${RETURN_ON_DEL_NAME} + "\"")
