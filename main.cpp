@@ -38,7 +38,7 @@ int main(int argc, char **argv)
             }
             else
             {
-                std::cerr << "File cannot be created\n";
+                std::cerr << "File cannot be created (may already exist)\n";
             }
             return 0;
         }
