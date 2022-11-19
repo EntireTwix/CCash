@@ -1,12 +1,12 @@
 [PREVIOUS PAGE](how_to/endpoints.md) | [NEXT PAGE](../features/user_side.md)
 
 ## General
-| author                                      | name                                                        |            v1            |
-| :------------------------------------------ | ----------------------------------------------------------- | :----------------------: |
-| [Expand](https://github.com/Expand-sys)     | [Web Frontend](https://github.com/Expand-sys/ccashfrontend) |    :heavy_check_mark:    |
-| [Expand](https://github.com/Expand-sys)     | [Discord Bot](https://github.com/Expand-sys/ccashbot)       |    :heavy_check_mark:    |
-| [Doggo](https://github.com/FearlessDoggo21) | [CCash CLI](https://github.com/FearlessDoggo21/ccash_cmd)    | :heavy_check_mark: |
-| [Sam](https://github.com/STBoyden)          | [Market](https://github.com/STBoyden/market-api-2.0)        | :heavy_multiplication_x: |
+| author                                  | name                                                        |            v1            |
+| :-------------------------------------- | ----------------------------------------------------------- | :----------------------: |
+| [Expand](https://github.com/Expand-sys) | [Web Frontend](https://github.com/Expand-sys/ccashfrontend) |    :heavy_check_mark:    |
+| [Expand](https://github.com/Expand-sys) | [Discord Bot](https://github.com/Expand-sys/ccashbot)       |    :heavy_check_mark:    |
+| [ArcNyxx](https://github.com/ArcNyxx)   | [CCash CLI](https://github.com/ArcNyxx/ccash_cmd)           |    :heavy_check_mark:    |
+| [Sam](https://github.com/STBoyden)      | [Market](https://github.com/STBoyden/market-api-2.0)        | :heavy_multiplication_x: |
 
 ## Minecraft
 | author                                      | name                                                                        |         v1         |
