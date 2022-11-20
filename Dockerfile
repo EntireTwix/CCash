@@ -16,6 +16,4 @@ ARG ADMIN_A=admin
 ARG SAVE_FREQ=2
 
 RUN ["chmod", "+x", "/CCash/config/ssl.sh"]
-
-RUN ["sh", "-c", "/CCash/config/ssl.sh && /CCash/build/bank"]
-CMD ["sh", "-c", "/CCash/config/ssl.sh && /CCash/build/bank ${ADMIN_A} ${SAVE_FREQ}"]
+CMD ["sh", "-c", "/CCash/build/bank && /CCash/build/bank ${ADMIN_A} ${SAVE_FREQ}"]
