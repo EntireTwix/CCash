@@ -29,6 +29,6 @@ if the server's save file is compromised the user passwords will not be derivabl
 #### Logs
 each transaction is logged and the last `n` logs are stored, if set to 0 logs will be disabled.
 #### Return On Delete
-by default this feature is off, but when enabled deleted account's fund will be redirected to a specified account rather then "burned"
+by default this feature is off, but when enabled deleted account's funds will be redirected to a specified account rather then "burned"
 #### Configurable
 as you can read in [building.md](../building.md) CCash is highly configurable.
