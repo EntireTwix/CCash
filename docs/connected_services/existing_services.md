@@ -16,9 +16,9 @@
 | [Reactified](https://github.com/Reactified) | [ATM](https://github.com/Reactified/rpm/tree/main/packages/ccash-bank)      | :heavy_check_mark: | ![image](https://user-images.githubusercontent.com/31377881/121277361-4d6b1100-c885-11eb-87c8-cfebcf58da4f.png) |
 
 ## Desired
-|        idea        |                                                                                         description                                                                                         |
-| :----------------: | :-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------: |
-|       Market       |                                                                              a platform to buy and sell items.                                                                              |
+|        idea        | description                                                                                                                                                                                 |
+| :----------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+|       Market       | a platform to buy and sell items.                                                                                                                                                           |
 | Anonymous Payments | a service that allows for sending of funds annoymously, by first sending them to an intermediate account that is receiving and sending from many wallets as to obfuscate the fund's origin. |
-|      Gambling      |                                                                                 physical or digital casino.                                                                                 |
-|      Shipping      |                                                               the infastructure to quickly send items across long distances.                                                                |
+|      Gambling      | physical or digital casino.                                                                                                                                                                 |
+|      Shipping      | the infastructure to quickly send items across long distances.                                                                                                                              |
