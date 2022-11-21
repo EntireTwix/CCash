@@ -1,0 +1,96 @@
+---
+- hosts: all
+  vars:
+  become: true
+  pre_tasks:
+    - name: load variables
+      ansible.builtin.include_vars: '{{ item }}'
+      with_first_found:
+        - "default.yml"
+
+
+  tasks:
+    - name: refresh packages update
+      yum:
+        name: "*"
+        update_cache: true
+        state: latest
+
+    - name: Add repository
+      yum:
+        name: epel-release
+        state: latest
+      when: ansible_os_family == "RedHat"
+
+    - name: install dependencies
+      yum:
+        name: [git, gcc, gcc-c++, libuuid-devel, openssl-devel, zlib-devel, jsoncpp-devel, cmake]
+        state: present
+      when: ansible_os_family == "RedHat"
+
+    - name: clone CCash repository
+      git:
+        repo: https://github.com/EntireTwix/CCash.git
+        dest: '{{BUILD_DIR}}/CCash'
+        recursive: true
+        update: false
+
+    - name: Make lib base64
+      community.general.make:
+        chdir: '{{BUILD_DIR}}/CCash/third_party/base64'
+        params:
+          AVX2_CFLAGS: -mavx2
+          SSSE3_CFLAGS: -mssse3
+          SSE41_CFLAGS: -msse4.1
+          SSE42_CFLAGS: -msse4.2
+          AVX_CFLAGS: -mavx
+
+    - name: create build dir 
+      file:
+        path: '{{BUILD_DIR}}/CCash/build'
+        state: directory
+
+    - name: Cmake CCash
+      ansible.builtin.command:
+        chdir: '{{BUILD_DIR}}/CCash/build'
+        cmd: |
+          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" ..
+    
+    - name: make CCash
+      community.general.make:
+        chdir: '{{BUILD_DIR}}/CCash/build'
+        params:
+          NUM_THREADS: '-j{{ ansible_processor_vcpus }}'
+        
+
+    - name: create users file
+      ansible.builtin.command:
+        chdir: '{{BUILD_DIR}}/CCash/build/'
+        cmd: ./bank
+        creates: '{{ BUILD_DIR }}/CCash/config/users.dat'
+    - name: chmod +x ssl.sh
+      ansible.builtin.file:
+        mode: u+x
+        path: '{{BUILD_DIR}}/CCash/config/ssl.sh'
+    - name: generate default ssl
+      ansible.builtin.command:
+        chdir: '{{BUILD_DIR}}/CCash/config/'
+        cmd: './ssl.sh'
+
+    - name: create service file
+      ansible.builtin.copy:
+        content: |
+          [Unit]
+          Description=CCash API Server
+          After=network.target remote-fs.target nss-lookup.target
+
+          [Service]
+          Type=simple
+          ExecStart={{BUILD_DIR}}/CCash/build/bank {{ADMIN_A}} {{SAVE_FREQ}}
+          ExecStop=/bin/kill -WINCH ${MAINPID}
+          KillSignal=SIGCONT
+          PrivateTmp=true
+
+          [Install]
+          WantedBy=multi-user.target
+        dest: /etc/systemd/system/ccash.service
