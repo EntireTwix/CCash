@@ -75,7 +75,7 @@ endif()
 
 if(DEFINED RETURN_ON_DEL_NAME)
 set(RETURN_ON_DEL_VAL true)
-set(RETURN_ON_DEL_NAME_VAL "\"" + ${RETURN_ON_DEL_NAME} + "\"")
+set(RETURN_ON_DEL_NAME_VAL "\""${RETURN_ON_DEL_NAME}"\"")
 else()
 set(RETURN_ON_DEL_VAL false)
 set(RETURN_ON_DEL_NAME_VAL "\"\"")
