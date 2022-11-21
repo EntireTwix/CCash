@@ -1,0 +1,4 @@
+---
+BUILD_DIR: '/root'
+ADMIN_A: "admin"
+SAVE_FREQ: "2"
