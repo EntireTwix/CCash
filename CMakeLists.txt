@@ -38,13 +38,13 @@ target_sources(${PROJECT_NAME} PRIVATE
 )
 
 if(DEFINED USER_SAVE_LOC)
-set(USER_SAVE "\"" + ${USER_SAVE_LOC} + "\"")
+set(USER_SAVE "\"${USER_SAVE_LOC}\"")
 else()
 set(USER_SAVE "\"../config/users.dat\"")
 endif()
 
 if(DEFINED DROGON_CONFIG_LOC)
-set(DROGON_CONFIG "\"" + ${DROGON_CONFIG_LOC} + "\"")
+set(DROGON_CONFIG "\"${DROGON_CONFIG_LOC}\"")
 else()
 set(DROGON_CONFIG "\"../config/config.json\"")
 endif()
