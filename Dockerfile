@@ -15,5 +15,5 @@ RUN make -j$(nproc)
 ARG ADMIN_A=admin
 ARG SAVE_FREQ=2
 
-RUN ["chmod", "+x", "/CCash/config/ssl.sh"]
-CMD ["sh", "-c", "/CCash/build/bank && /CCash/build/bank ${ADMIN_A} ${SAVE_FREQ}"]
+RUN ["sh", "-c", "/CCash/config/ssl.sh && /CCash/build/bank"]
+CMD ["sh", "-c", "/CCash/config/ssl.sh && /CCash/build/bank ${ADMIN_A} ${SAVE_FREQ}"]
