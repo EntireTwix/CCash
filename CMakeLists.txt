@@ -46,7 +46,7 @@ endif()
 if(DEFINED DROGON_CONFIG_LOC)
 set(DROGON_CONFIG "\"" + ${DROGON_CONFIG_LOC} + "\"")
 else()
-set(DROGON_CONFIG "\"config.json\"")
+set(DROGON_CONFIG "\"../config/config.json\"")
 endif()
 
 if(DEFINED MAX_LOG_SIZE)

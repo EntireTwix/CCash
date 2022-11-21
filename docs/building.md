@@ -61,7 +61,6 @@ AVX2_CFLAGS=-mavx2 SSSE3_CFLAGS=-mssse3 SSE41_CFLAGS=-msse4.1 SSE42_CFLAGS=-msse
 cd ../..
 mkdir build
 cd build
-cp ../config/config.json config.json
 ```
 
 ### CMake Flags
@@ -92,7 +91,7 @@ lastly type in
 ```
 cmake <flags of your choice or none> ..
 make -j<threads>
-./bank
+sudo ./bank
 ```
 
 ## Certs
