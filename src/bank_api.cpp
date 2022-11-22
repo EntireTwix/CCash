@@ -51,8 +51,8 @@ void api::SendFunds(req_args)
     else
     {
         std::string_view name;
-        uint64_t amount; // simdjson lacks .get(uint32_t support)
-        if (doc["name"].get(name) || doc["time"].get(amount))
+        uint64_t amount; // as simdjson lacks .get(uint32_t support)
+        if (doc["name"].get(name) || doc["amount"].get(amount))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -132,10 +132,10 @@ void api::SetBal(req_args)
         res = BankResponse{k400BadRequest, "\"Invalid JSON\""};
     }
     else
-    {
+    {        
         std::string_view name;
         uint64_t amount;
-        if (doc["name"].get(name) || doc["time"].get(amount))
+        if (doc["name"].get(name) || doc["amount"].get(amount))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -159,7 +159,7 @@ void api::ImpactBal(req_args)
     {
         std::string_view name;
         int64_t amount;
-        if (doc["name"].get(name) || doc["time"].get(amount))
+        if (doc["name"].get(name) || doc["amount"].get(amount))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -231,7 +231,7 @@ void api::PruneUsers(req_args)
 #if MAX_LOG_SIZE > 0
         int64_t time;
         uint64_t amount;
-        if (doc["time"].get(time) || doc["time"].get(amount))
+        if (doc["time"].get(time) || doc["amount"].get(amount))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -241,7 +241,7 @@ void api::PruneUsers(req_args)
         }
 #else
         uint64_t amount
-        if (doc["time"].get(amount))
+        if (doc["amount"].get(amount))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -301,7 +301,7 @@ void api::AdminAddUser(req_args)
         std::string_view name;
         uint64_t amount;
         std::string_view pass;
-        if (doc["name"].get(name) || doc["time"].get(amount) || doc["time"].get(pass))
+        if (doc["name"].get(name) || doc["amount"].get(amount) || doc["time"].get(pass))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
