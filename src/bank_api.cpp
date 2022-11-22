@@ -52,7 +52,7 @@ void api::SendFunds(req_args)
     {
         std::string_view name;
         uint64_t amount; // as simdjson lacks .get(uint32_t support)
-        if (doc["name"].get(name) || doc["amount"].get(amount))
+        if (doc["name"].get(name) || doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -135,7 +135,7 @@ void api::SetBal(req_args)
     {        
         std::string_view name;
         uint64_t amount;
-        if (doc["name"].get(name) || doc["amount"].get(amount))
+        if (doc["name"].get(name) || doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -231,7 +231,7 @@ void api::PruneUsers(req_args)
 #if MAX_LOG_SIZE > 0
         int64_t time;
         uint64_t amount;
-        if (doc["time"].get(time) || doc["amount"].get(amount))
+        if (doc["time"].get(time) || doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -241,7 +241,7 @@ void api::PruneUsers(req_args)
         }
 #else
         uint64_t amount
-        if (doc["amount"].get(amount))
+        if (doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
