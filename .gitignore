@@ -2,3 +2,4 @@
 build
 ccash_config.hpp
 deployment/.yamllint
+config
