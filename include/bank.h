@@ -45,6 +45,9 @@ public:
     static BankResponse GetBal(const std::string &name) noexcept;
 #if MAX_LOG_SIZE > 0
     static BankResponse GetLogs(const std::string &name) noexcept;
+#if API_VERSION >= 2
+    static BankResponse GetLogsV2(const std::string &name) noexcept;
+#endif
 #endif
     static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
     static bool VerifyPassword(const std::string &name, const std::string_view &attempt) noexcept;

@@ -11,9 +11,11 @@ using namespace drogon;
 class api : public HttpController<api>
 {
 public:
-#if API_VERSION >= 1
     static void GetBal(req_args, const std::string &name);
     static void GetLogs(req_args);
+#if API_VERSION >= 2
+    static void GetLogsV2(req_args);
+#endif
     static void SendFunds(req_args);
     static void VerifyPassword(req_args);
 
@@ -33,7 +35,6 @@ public:
     static void AdminAddUser(req_args);
     static void DelSelf(req_args);
     static void AdminDelUser(req_args);
-#endif
 
     METHOD_LIST_BEGIN
 
@@ -41,8 +42,14 @@ public:
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
 #if MAX_LOG_SIZE > 0
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
+#if API_VERSION >= 2
+    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
+#endif
 #else
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>");
+#if API_VERSION >= 2
+    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>");
+#endif
 #endif
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "JsonFilter<true>", "UserFilter<true, false>"); //expects ["name"](string) and ["amount"](uint32)
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");

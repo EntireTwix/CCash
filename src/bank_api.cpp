@@ -6,7 +6,7 @@
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
 
-static thread_local ondemand::parser parser;
+thread_local ondemand::parser parser;
 #define SIMD_JSON_GEN                              \
     simdjson::padded_string input(req->getBody()); \
     ondemand::document doc;
@@ -24,8 +24,6 @@ static thread_local ondemand::parser parser;
 
 #define NAME_PARAM req->getParameter("name")
 
-#if API_VERSION >= 1
-
 //Usage
 void api::GetBal(req_args, const std::string &name)
 {
@@ -35,6 +33,17 @@ void api::GetLogs(req_args)
 {
 #if MAX_LOG_SIZE > 0
     RESPONSE_PARSE(Bank::GetLogs(NAME_PARAM));
+#else
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
+    CORS;
+    CACHE_FOREVER;
+    callback(resp);
+#endif
+}
+void api::GetLogsV2(req_args)
+{
+#if MAX_LOG_SIZE > 0
+    RESPONSE_PARSE(Bank::GetLogsV2(NAME_PARAM));
 #else
     auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
     CORS;
@@ -344,4 +353,3 @@ void api::AdminDelUser(req_args)
     }
     RESPONSE_PARSE(std::move(res));
 }
-#endif

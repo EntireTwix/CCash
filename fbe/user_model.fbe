@@ -2,8 +2,8 @@ package bank_dom
 
 struct Transaction
 {
-    string from = "";
-    string to = "";
+    string counterparty = "";
+    bool receiving = false;
     uint32 amount = 0;
     timestamp time;
 }

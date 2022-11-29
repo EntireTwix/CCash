@@ -89,7 +89,19 @@ BankResponse Bank::GetBal(const std::string &name) noexcept
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
-    if (!Bank::users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLogs()}; }))
+    if (!Bank::users.modify_if(name, [&name, &res](User &u) { res = {k200OK, u.log.GetLogs(name)}; }))
+    {
+        return {k404NotFound, "\"User not found\""};
+    }
+    else
+    {
+        return res;
+    }
+}
+BankResponse Bank::GetLogsV2(const std::string &name) noexcept
+{
+    BankResponse res;
+    if (!Bank::users.modify_if(name, [&name, &res](User &u) { res = {k200OK, u.log.GetLogsV2()}; }))
     {
         return {k404NotFound, "\"User not found\""};
     }
@@ -123,7 +135,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (!Bank::users.modify_if(a_name, [&a_name, &b_name, &res, amount](User &a)
 #endif
                                {
-                                   //if A can afford it
+                                   //if "A" can afford it
                                    if (a.balance < amount)
                                    {
                                        res = {k400BadRequest, "\"Insufficient funds\""};
@@ -132,7 +144,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
                                    {
                                        a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                                       a.log.AddTrans(a_name, b_name, amount, current_time);
+                                       a.log.AddTrans(b_name, false, amount, current_time);
 #endif
                                        res = {k200OK, std::to_string(a.balance)};
                                    }
@@ -145,7 +157,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
         Bank::users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(a_name, b_name, amount, current_time);
+            b.log.AddTrans(a_name, true, amount, current_time);
         });
 #else
         Bank::users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
