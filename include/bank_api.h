@@ -37,7 +37,6 @@ public:
 
     METHOD_LIST_BEGIN
 
-#if API_VERSION >= 1
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
 #if MAX_LOG_SIZE > 0
@@ -67,7 +66,6 @@ public:
     METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) ["amount"](uint32) ["pass"](string)
     METHOD_ADD(api::DelSelf, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
-#endif
 
     METHOD_LIST_END
 };
