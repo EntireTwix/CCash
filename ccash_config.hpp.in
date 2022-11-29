@@ -3,7 +3,7 @@
 // Setting to 0 does not compile logging (useful for if disk/memory is very valuable)
 #define MAX_LOG_SIZE @MAX_LOG_SIZE_VAL@
 
-//default to minecraft usernames
+// Default to minecraft usernames
 constexpr unsigned min_name_size = 3;
 constexpr unsigned max_name_size = 16;
 
@@ -29,13 +29,13 @@ if false, when frequency is hit save
 #define CONSERVATIVE_DISK_SAVE @CONSERVATIVE_DISK_SAVE_VAL@
 
 /*
-example, when set to 2
-version 1 will not work
+e.g when set to 2
+version 1 will work
 version 2 will work
-version 3 will work
+version 3 will not work
 etc
 */
-#define API_VERSION 1
+#define API_VERSION 2
 
 #define MULTI_THREADED @MULTI_THREADED_VAL@
 
