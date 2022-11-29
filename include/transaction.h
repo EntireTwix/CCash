@@ -13,12 +13,3 @@ struct Transaction
     Transaction() noexcept;
     Transaction(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept;
 };
-
-/*
-TODO: v1 vs v2 functionality
-TODO: FBE
-
-TODO: v2/api
-TODO: update stats on run (203 bytes)
-TODO: update Docs
-*/
