@@ -16,29 +16,32 @@
 ## all error responses have JSON string along with them to describe
 
 ### Usage endpoints
-| name           | purpose                                                                        | json input                       | path                            | HTTP Method | correct status |   return type    |                         return value                          |       Jresp        |           Jreq           |            A             |            U             |
-| :------------- | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------------- | :---------: | :------------: | :--------------: | :-----------------------------------------------------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
-| GetBal         | retrieving the balance of a given user, `{name}`                               | `N/A`                            | api/v1/user/balance?name={name} |    `GET`    |      200       |      uint32      |                      the user's balance                       | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
-| GetLog         | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | api/v1/user/log                 |    `GET`    |      200       | array of objects | [{"to":string, "from":string, "amount":uint32, "time":int64}] | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
-| SendFunds      | sends funds from the authenticated user to the user `{name}` given in the json | {"name":string, "amount":uint32} | api/v1/user/transfer            |   `POST`    |      200       |      uint32      |           the user's balance after the transaction            | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
-| VerifyPassword | verifies the credentials, used for connected services for ease of use          | `N/A`                            | api/v1/user/verify_password     |   `POST`    |      204       |      `N/A`       |                             `N/A`                             | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| name           | purpose                                                                        | json input                       | path                            | HTTP Method | correct status |   return type    |                                return value                                |       Jresp        |           Jreq           |            A             |            U             |
+| :------------- | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------------- | :---------: | :------------: | :--------------: | :------------------------------------------------------------------------: | :----------------: | :----------------------: | :----------------------: | :----------------------: |
+| GetBal         | retrieving the balance of a given user, `{name}`                               | `N/A`                            | api/v1/user/balance?name={name} |    `GET`    |      200       |      uint32      |                             the user's balance                             | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
+| GetLog         | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | api/v1/user/log                 |    `GET`    |      200       | array of objects |       [{"to":string, "from":string, "amount":uint32, "time":int64}]        | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| GetLogV2       | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | api/v2/user/log                 |    `GET`    |      200       | array of objects | [{"counterparty":string, "receiving":bool, "amount":uint32, "time":int64}] | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| SendFunds      | sends funds from the authenticated user to the user `{name}` given in the json | {"name":string, "amount":uint32} | api/v1/user/transfer            |   `POST`    |      200       |      uint32      |                  the user's balance after the transaction                  | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| VerifyPassword | verifies the credentials, used for connected services for ease of use          | `N/A`                            | api/v1/user/verify_password     |   `POST`    |      204       |      `N/A`       |                                   `N/A`                                    | :heavy_check_mark: | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    |
 
 ### Usage enpoint errors
 | name           |           400            |           401            |           404            |        406         |
 | :------------- | :----------------------: | :----------------------: | :----------------------: | :----------------: |
 | GetBal         | :heavy_multiplication_x: | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_check_mark: |
 | GetLog         | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: |
+| GetLogV2       | :heavy_multiplication_x: |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: |
 | SendFunds      |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: |
 | VerifyPassword | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: |
 
 ### Usage endpoint support
 `v` denoting the API version
-| name           |         v1         |
-| :------------- | :----------------: |
-| GetBal         | :heavy_check_mark: |
-| GetLog         | :heavy_check_mark: |
-| SendFunds      | :heavy_check_mark: |
-| VerifyPassword | :heavy_check_mark: |
+| name           |            v1             |            v2            |
+| :------------- | :-----------------------: | :----------------------: |
+| GetBal         |    :heavy_check_mark:     | :heavy_multiplication_x: |
+| GetLog         |    :heavy_check_mark:     | :heavy_multiplication_x: |
+| GetLogV2       | ::heavy_multiplication_x: | :heavy_multiplication_x: |
+| SendFunds      |    :heavy_check_mark:     | :heavy_multiplication_x: |
+| VerifyPassword |    :heavy_check_mark:     | :heavy_multiplication_x: |
 
 ### Meta Usage endpoints
 | name                | purpose                                                                                            | json input                      | path                              | HTTP Method | correct status | return type |          return value          |       Jresp        |        Jreq        |            A             |            U             |
