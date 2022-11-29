@@ -8,7 +8,7 @@ Capable of processing thousands of requests per second, with no slow down as use
 
 #### Lightweight
 <!-- specs -->
-Low memory usage at 8 Mb baseline, and 203 bytes per new log.
+Low memory usage at 8 Mb baseline, and 157 bytes per new log.
 
 Anecdotally I typically expierenced <1% CPU usage.
 

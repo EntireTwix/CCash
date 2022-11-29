@@ -22,3 +22,4 @@
 | Anonymous Payments | a service that allows for sending of funds annoymously, by first sending them to an intermediate account that is receiving and sending from many wallets as to obfuscate the fund's origin. |
 |      Gambling      | physical or digital casino.                                                                                                                                                                 |
 |      Shipping      | the infastructure to quickly send items across long distances.                                                                                                                              |
+|        Mod         | a server-side mod                                                                                                                                                                           |
