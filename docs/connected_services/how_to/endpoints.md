@@ -35,13 +35,13 @@
 
 ### Usage endpoint support
 `v` denoting the API version
-| name           |            v1             |            v2            |
-| :------------- | :-----------------------: | :----------------------: |
-| GetBal         |    :heavy_check_mark:     | :heavy_multiplication_x: |
-| GetLog         |    :heavy_check_mark:     | :heavy_multiplication_x: |
-| GetLogV2       | ::heavy_multiplication_x: | :heavy_multiplication_x: |
-| SendFunds      |    :heavy_check_mark:     | :heavy_multiplication_x: |
-| VerifyPassword |    :heavy_check_mark:     | :heavy_multiplication_x: |
+| name           |            v1            |         v2         |
+| :------------- | :----------------------: | :----------------: |
+| GetBal         |    :heavy_check_mark:    | :heavy_check_mark: |
+| GetLog         |    :heavy_check_mark:    | :heavy_check_mark: |
+| GetLogV2       | :heavy_multiplication_x: | :heavy_check_mark: |
+| SendFunds      |    :heavy_check_mark:    | :heavy_check_mark: |
+| VerifyPassword |    :heavy_check_mark:    | :heavy_check_mark: |
 
 ### Meta Usage endpoints
 | name                | purpose                                                                                            | json input                      | path                              | HTTP Method | correct status | return type |          return value          |       Jresp        |        Jreq        |            A             |            U             |
@@ -60,12 +60,12 @@
 | ImpactBal           | :heavy_check_mark: | :heavy_check_mark: |    :heavy_check_mark:    | :heavy_check_mark: |
 
 ### Meta Usage endpoint support
-| name                |         v1         |
-| :------------------ | :----------------: |
-| ChangePassword      | :heavy_check_mark: |
-| AdminChangePassword | :heavy_check_mark: |
-| SetBal              | :heavy_check_mark: |
-| ImpactBal           | :heavy_check_mark: |
+| name                |         v1         |         v2         |
+| :------------------ | :----------------: | :----------------: |
+| ChangePassword      | :heavy_check_mark: | :heavy_check_mark: |
+| AdminChangePassword | :heavy_check_mark: | :heavy_check_mark: |
+| SetBal              | :heavy_check_mark: | :heavy_check_mark: |
+| ImpactBal           | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Sytem Usage endpoints
 | name               | purpose                                                                                                                   | json input                                               | path                           | HTTP Method | correct status | return type |                                     return value                                     |          Jresp           |           Jreq           |            A             |            U             |
@@ -88,12 +88,12 @@
 | ApiProperties      | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### System Usage endpoint support
-| name               |         v1         |
-| :----------------- | :----------------: |
-| Help               | :heavy_check_mark: |
-| Close              | :heavy_check_mark: |
-| Contains           | :heavy_check_mark: |
-| AdminVerifyAccount | :heavy_check_mark: |
+| name               |         v1         |         v2         |
+| :----------------- | :----------------: | :----------------: |
+| Help               | :heavy_check_mark: | :heavy_check_mark: |
+| Close              | :heavy_check_mark: | :heavy_check_mark: |
+| Contains           | :heavy_check_mark: | :heavy_check_mark: |
+| AdminVerifyAccount | :heavy_check_mark: | :heavy_check_mark: |
 
 ### Username Requirements
 Valid
@@ -119,9 +119,9 @@ Valid
 | AdminDelUser |    :heavy_check_mark:    |    :heavy_check_mark:    |    :heavy_check_mark:    | :heavy_check_mark: | :heavy_multiplication_x: |
 
 ### User Management endpoint support
-| name         |         v1         |
-| :----------- | :----------------: |
-| AddUser      | :heavy_check_mark: |
-| AdminAddUser | :heavy_check_mark: |
-| DelSelf      | :heavy_check_mark: |
-| AdminDelUser | :heavy_check_mark: |
+| name         |         v1         |         v2         |
+| :----------- | :----------------: | :----------------: |
+| AddUser      | :heavy_check_mark: | :heavy_check_mark: |
+| AdminAddUser | :heavy_check_mark: | :heavy_check_mark: |
+| DelSelf      | :heavy_check_mark: | :heavy_check_mark: |
+| AdminDelUser | :heavy_check_mark: | :heavy_check_mark: |
