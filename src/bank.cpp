@@ -98,6 +98,7 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
         return res;
     }
 }
+#if API_VERSION >= 2
 BankResponse Bank::GetLogsV2(const std::string &name) noexcept
 {
     BankResponse res;
@@ -110,6 +111,7 @@ BankResponse Bank::GetLogsV2(const std::string &name) noexcept
         return res;
     }
 }
+#endif
 #endif
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {

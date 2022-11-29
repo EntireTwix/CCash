@@ -40,6 +40,7 @@ void api::GetLogs(req_args)
     callback(resp);
 #endif
 }
+#if API_VERSION >= 2
 void api::GetLogsV2(req_args)
 {
 #if MAX_LOG_SIZE > 0
@@ -51,6 +52,7 @@ void api::GetLogsV2(req_args)
     callback(resp);
 #endif
 }
+#endif
 void api::SendFunds(req_args)
 {
     SIMD_JSON_GEN;
