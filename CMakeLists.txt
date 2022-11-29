@@ -81,6 +81,14 @@ set(RETURN_ON_DEL_VAL false)
 set(RETURN_ON_DEL_NAME_VAL "\"\"")
 endif()
 
+if(DEFINED API_VERSION)
+set(RETURN_ON_DEL_VAL true)
+set(RETURN_ON_DEL_NAME_VAL API_VERSION)
+else()
+set(RETURN_ON_DEL_VAL false)
+set(RETURN_ON_DEL_NAME_VAL 2)
+endif()
+
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)
 
 target_include_directories(${PROJECT_NAME} PUBLIC include)
