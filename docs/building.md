@@ -10,7 +10,7 @@ as CCash is very lightweight it can run on practically any device but here are s
 * Saving frequency (a runtime argument) being set to 0 will disable frequency saving and only save on close
 * make backups of your save files
 
-## Docker
+## Docker & Ansible
 If you want to use the docker package, deploy information can be found [here](deploy.md)
 
 ## Drogon Depedencies 
