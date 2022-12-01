@@ -1,5 +1,6 @@
 [PREVIOUS PAGE](explanation.md) | [NEXT PAGE](endpoints.md)
 
+note: all CCash version's API are backwards compatible, so while an API may not support the newest CCash release it can still call the old endpoints.
 | author                                                    | language |                                                                           |            v1            |            v2            |
 | :-------------------------------------------------------- | :------: | ------------------------------------------------------------------------- | :----------------------: | :----------------------: |
 | [SpaceCat](https://github.com/SpaceCat-Chan)              |  CCLua   | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi)       |    :heavy_check_mark:    | :heavy_multiplication_x: |
