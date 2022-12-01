@@ -61,7 +61,7 @@ using namespace std::chrono;
 
 int main(int argc, char **argv)
 {
-    for (size_t i = 0; i < 10000; ++i)
+    for (size_t i = 100; i < 10100; ++i)
     {
         Bank::AddUser(std::to_string(i), 0, "root");
     }
