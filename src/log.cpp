@@ -54,15 +54,15 @@ std::string Log::GetLogsV2() noexcept
         log_snapshot_v2 = '['; //1
         for (size_t i = 0; i < data.size(); ++i)
         {
-            log_snapshot += "{\"counterparty\":\"";                                             //17
-            log_snapshot += data[i].counterparty;                                               //max_name_size?
-            log_snapshot += "\",\"receiving\":\"";                                              //15
-            log_snapshot += std::to_string(data[i].receiving);                                  //4
-            log_snapshot += "\",\"amount\":";                                                   //11
-            log_snapshot += std::to_string(data[i].amount);                                     //10?
-            log_snapshot += ",\"time\":";                                                       //8
-            log_snapshot += std::to_string(data[i].time);                                       //10?
-            log_snapshot += "},";                                                               //2
+            log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
+            log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
+            log_snapshot_v2 += "\",\"receiving\":\"";                                              //15
+            log_snapshot_v2 += std::to_string(data[i].receiving);                                  //4
+            log_snapshot_v2 += "\",\"amount\":";                                                   //11
+            log_snapshot_v2 += std::to_string(data[i].amount);                                     //10?
+            log_snapshot_v2 += ",\"time\":";                                                       //8
+            log_snapshot_v2 += std::to_string(data[i].time);                                       //10?
+            log_snapshot_v2 += "},";                                                               //2
         }
         log_snapshot_v2.back() = ']';
         log_flag.SetChangesOff();
