@@ -42,7 +42,7 @@ std::string Log::GetLogs(const std::string& name) noexcept
 }
 std::string Log::GetLogsV2() noexcept
 {
-    if (log_flag.GetChangeState() && data.size()) //if there are changes
+    if (log_flag_v2.GetChangeState() && data.size()) //if there are changes
     {
         log_snapshot_v2.resize(0);
         //re-generate snapshot
@@ -65,7 +65,7 @@ std::string Log::GetLogsV2() noexcept
             log_snapshot_v2 += "},";                                                               //2
         }
         log_snapshot_v2.back() = ']';
-        log_flag.SetChangesOff();
+        log_flag_v2.SetChangesOff();
     }
 
     return log_snapshot_v2;
