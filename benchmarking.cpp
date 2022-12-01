@@ -65,6 +65,7 @@ int main(int argc, char **argv)
     {
         Bank::AddUser(std::to_string(i), 0, "root");
     }
+    std::cout << "added " << Bank::NumOfUsers() << " users\n";
     Bank::AddUser("twix", 0, "root");
     Bank::AddUser("jolly", 0, "root");
     Bank::admin_account = "twix";
@@ -91,6 +92,10 @@ int main(int argc, char **argv)
 #if MAX_LOG_SIZE > 0
     Op(Bank::GetLogs("twix"), "get logs init: ", 1);
     Op(Bank::GetLogs("twix"), "get logs cached: ", 1000000);
+#if API_VERSION >= 2
+    Op(Bank::GetLogsV2("twix"), "get logs init (v2): ", 1);
+    Op(Bank::GetLogsV2("twix"), "get logs cached (v2): ", 1000000);
+#endif
 #endif
     Op(Bank::PruneUsers(0, 0), "prune users: ", 1);
     Op(Bank::Save(), "saving: ", 1);
