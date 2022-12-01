@@ -13,6 +13,7 @@ private:
     ChangeFlag<true> log_flag;
     std::string log_snapshot = "null";
 #if API_VERSION >= 2
+    ChangeFlag<true> log_flag_v2;
     std::string log_snapshot_v2 = "null";
 #endif
 
