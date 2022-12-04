@@ -43,12 +43,17 @@ public:
     static size_t SumBal() noexcept;
 
     static BankResponse GetBal(const std::string &name) noexcept;
+
 #if MAX_LOG_SIZE > 0
+#if MIN_API_SUPPORT == 1
     static BankResponse GetLogs(const std::string &name) noexcept;
-#if API_VERSION >= 2
+#endif
+
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
     static BankResponse GetLogsV2(const std::string &name) noexcept;
 #endif
 #endif
+
     static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
     static bool VerifyPassword(const std::string &name, const std::string_view &attempt) noexcept;
 
@@ -56,6 +61,7 @@ public:
     static BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
     static BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     static bool Contains(const std::string &name) noexcept;
+
 #if MAX_LOG_SIZE > 0
     static BankResponse PruneUsers(time_t threshold_time, uint32_t threshold_bal) noexcept;
 #else

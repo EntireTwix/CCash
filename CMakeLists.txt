@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(Threads REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp )
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/bank_api.cpp
@@ -85,6 +85,12 @@ if(DEFINED API_VERSION)
 set(API_VERSION_VAL API_VERSION)
 else()
 set(API_VERSION_VAL 2)
+endif()
+
+if(DEFINED MIN_API_SUPPORT)
+set(MIN_API_SUPPORT_VAL MIN_API_SUPPORT)
+else()
+set(MIN_API_SUPPORT_VAL 1)
 endif()
 
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)

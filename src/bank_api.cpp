@@ -29,6 +29,8 @@ void api::GetBal(req_args, const std::string &name)
 {
     RESPONSE_PARSE(Bank::GetBal(name));
 }
+
+#if MIN_API_SUPPORT == 1
 void api::GetLogs(req_args)
 {
 #if MAX_LOG_SIZE > 0
@@ -40,7 +42,9 @@ void api::GetLogs(req_args)
     callback(resp);
 #endif
 }
-#if API_VERSION >= 2
+#endif
+
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
 void api::GetLogsV2(req_args)
 {
 #if MAX_LOG_SIZE > 0
@@ -53,6 +57,7 @@ void api::GetLogsV2(req_args)
 #endif
 }
 #endif
+
 void api::SendFunds(req_args)
 {
     SIMD_JSON_GEN;

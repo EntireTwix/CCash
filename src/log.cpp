@@ -10,6 +10,7 @@ void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t
     data.emplace_back(counterparty_str, receiving, amount, time);
 }
 
+#if MIN_API_SUPPORT == 1
 std::string Log::GetLogs(const std::string& name) noexcept
 {
     if (log_flag.GetChangeState() && data.size()) //if there are changes
@@ -40,6 +41,9 @@ std::string Log::GetLogs(const std::string& name) noexcept
 
     return log_snapshot;
 }
+#endif
+
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
 std::string Log::GetLogsV2() noexcept
 {
     if (log_flag_v2.GetChangeState() && data.size()) //if there are changes
@@ -70,3 +74,4 @@ std::string Log::GetLogsV2() noexcept
 
     return log_snapshot_v2;
 }
+#endif

@@ -37,6 +37,9 @@ etc
 */
 #define API_VERSION @API_VERSION_VAL@
 
+// doesnt compile api endpoints below MIN_API_SUPPORT
+#define MIN_API_SUPPORT @MIN_API_SUPPORT_VAL@
+
 #define MULTI_THREADED @MULTI_THREADED_VAL@
 
 #define ADD_USER_OPEN @ADD_USER_OPEN_VAL@

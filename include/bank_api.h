@@ -13,7 +13,7 @@ class api : public HttpController<api>
 public:
     static void GetBal(req_args, const std::string &name);
     static void GetLogs(req_args);
-#if API_VERSION >= 2
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
     static void GetLogsV2(req_args);
 #endif
     static void SendFunds(req_args);
@@ -38,18 +38,13 @@ public:
 
     METHOD_LIST_BEGIN
 
+#if MIN_API_SUPPORT == 1
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
 #if MAX_LOG_SIZE > 0
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
-#if API_VERSION >= 2
-    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
-#endif
 #else
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>");
-#if API_VERSION >= 2
-    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>");
-#endif
 #endif
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "JsonFilter<true>", "UserFilter<true, false>"); //expects ["name"](string) and ["amount"](uint32)
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");
@@ -73,6 +68,39 @@ public:
     METHOD_ADD(api::AdminAddUser, "/v1/admin/user/register", Post, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) ["amount"](uint32) ["pass"](string)
     METHOD_ADD(api::DelSelf, "/v1/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
     METHOD_ADD(api::AdminDelUser, "/v1/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
+#endif
+
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
+    //Usage
+    METHOD_ADD(api::GetBal, "/v2/user/balance?name={name}", Get, Options, "JsonFilter<false>");
+#if MAX_LOG_SIZE > 0
+    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
+#else
+    METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>");
+#endif
+    METHOD_ADD(api::SendFunds, "/v2/user/transfer", Post, Options, "JsonFilter<true>", "UserFilter<true, false>"); //expects ["name"](string) and ["amount"](uint32)
+    METHOD_ADD(api::VerifyPassword, "/v2/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");
+
+    //Meta Usage
+    METHOD_ADD(api::ChangePassword, "/v2/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<true, false>");            //expects ["pass"](string)
+    METHOD_ADD(api::AdminChangePassword, "/v2/admin/user/change_password", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) and ["pass"](string)
+    METHOD_ADD(api::SetBal, "/v2/admin/set_balance", Patch, Options, "JsonFilter<true>", "UserFilter<false, true>");                       //expects ["name"](string) and ["amount"](uint32)
+    METHOD_ADD(api::ImpactBal, "/v2/admin/impact_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](uint32)
+
+    //System Usage
+    METHOD_ADD(api::Help, "/v2/help", Get, Options);
+    METHOD_ADD(api::Close, "/v2/admin/shutdown", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
+    METHOD_ADD(api::Contains, "/v2/user/exists?name={name}", Get, Options, "JsonFilter<false>");
+    METHOD_ADD(api::AdminVerifyAccount, "/v2/admin/verify_account", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
+    METHOD_ADD(api::PruneUsers, "/v2/admin/prune_users", Post, "UserFilter<false, true>", "JsonFilter<true>"); //expects ["time"](int64) and ["amount"](uint32)
+    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
+
+    //User Managment
+    METHOD_ADD(api::AddUser, "/v2/user/register", Post, Options);                                                           //expects ["name"](string) ["pass"](string)
+    METHOD_ADD(api::AdminAddUser, "/v2/admin/user/register", Post, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string) ["amount"](uint32) ["pass"](string)
+    METHOD_ADD(api::DelSelf, "/v2/user/delete", Delete, Options, "UserFilter<true, false>", "JsonFilter<false>");
+    METHOD_ADD(api::AdminDelUser, "/v2/admin/user/delete", Delete, Options, "JsonFilter<true>", "UserFilter<false, true>"); //expects ["name"](string)
+#endif
 
     METHOD_LIST_END
 };
