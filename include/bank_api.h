@@ -38,6 +38,9 @@ public:
 
     METHOD_LIST_BEGIN
 
+    METHOD_ADD(api::Help, "/help", Get, Options);
+    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
+
 #if MIN_API_SUPPORT == 1
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
@@ -56,12 +59,10 @@ public:
     METHOD_ADD(api::ImpactBal, "/v1/admin/impact_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](uint32)
 
     //System Usage
-    METHOD_ADD(api::Help, "/v1/help", Get, Options);
     METHOD_ADD(api::Close, "/v1/admin/shutdown", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
     METHOD_ADD(api::Contains, "/v1/user/exists?name={name}", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::AdminVerifyAccount, "/v1/admin/verify_account", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
     METHOD_ADD(api::PruneUsers, "/v1/admin/prune_users", Post, "UserFilter<false, true>", "JsonFilter<true>"); //expects ["time"](int64) and ["amount"](uint32)
-    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
 
     //User Managment
     METHOD_ADD(api::AddUser, "/v1/user/register", Post, Options);                                                           //expects ["name"](string) ["pass"](string)
@@ -88,12 +89,10 @@ public:
     METHOD_ADD(api::ImpactBal, "/v2/admin/impact_balance", Post, Options, "JsonFilter<true>", "UserFilter<false, true>");                  //expects ["name"](string) and ["amount"](uint32)
 
     //System Usage
-    METHOD_ADD(api::Help, "/v2/help", Get, Options);
     METHOD_ADD(api::Close, "/v2/admin/shutdown", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
     METHOD_ADD(api::Contains, "/v2/user/exists?name={name}", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::AdminVerifyAccount, "/v2/admin/verify_account", Post, Options, "UserFilter<false, true>", "JsonFilter<false>");
     METHOD_ADD(api::PruneUsers, "/v2/admin/prune_users", Post, "UserFilter<false, true>", "JsonFilter<true>"); //expects ["time"](int64) and ["amount"](uint32)
-    METHOD_ADD(api::ApiProperties, "/properties", Get, Options);
 
     //User Managment
     METHOD_ADD(api::AddUser, "/v2/user/register", Post, Options);                                                           //expects ["name"](string) ["pass"](string)
