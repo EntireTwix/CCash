@@ -2,7 +2,15 @@
 
 void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept
 {
+    
+#if MIN_API_SUPPORT == 1
     log_flag.SetChangesOn();
+#endif
+
+#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
+    log_flag_v2.SetChangesOn();
+#endif
+
     if (data.size() == MAX_LOG_SIZE)
     {
         data.pop_back();
