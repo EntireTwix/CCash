@@ -222,7 +222,7 @@ void api::AdminVerifyAccount(req_args)
 }
 void api::ApiProperties(req_args)
 {
-    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
+    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"min_version\":" + std::to_string(MIN_API_SUPPORT) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
     if constexpr (RETURN_ON_DEL)
     {
         info += ",\"return_on_del\":\"" + std::string(return_account) + "\"}";
