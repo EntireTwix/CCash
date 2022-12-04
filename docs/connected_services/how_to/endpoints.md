@@ -88,12 +88,14 @@
 | ApiProperties      | :heavy_multiplication_x: | :heavy_multiplication_x: | :heavy_multiplication_x: |
 
 ### System Usage endpoint support
-| name               |         v1         |         v2         |
-| :----------------- | :----------------: | :----------------: |
-| Help               | :heavy_check_mark: | :heavy_check_mark: |
-| Close              | :heavy_check_mark: | :heavy_check_mark: |
-| Contains           | :heavy_check_mark: | :heavy_check_mark: |
-| AdminVerifyAccount | :heavy_check_mark: | :heavy_check_mark: |
+| name               |         v1         |            v2            |
+| :----------------- | :----------------: | :----------------------: |
+| Help               |       `N/A`        |          `N/A`           |
+| Close              | :heavy_check_mark: |    :heavy_check_mark:    |
+| Contains           | :heavy_check_mark: |    :heavy_check_mark:    |
+| AdminVerifyAccount | :heavy_check_mark: |    :heavy_check_mark:    |
+| PruneUsers         | :heavy_check_mark: | :heavy_multiplication_x: |
+| ApiProperties      |       `N/A`        |          `N/A`           |
 
 ### Username Requirements
 Valid
