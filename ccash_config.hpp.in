@@ -28,13 +28,7 @@ if false, when frequency is hit save
 */
 #define CONSERVATIVE_DISK_SAVE @CONSERVATIVE_DISK_SAVE_VAL@
 
-/*
-e.g when set to 2
-version 1 will work
-version 2 will work
-version 3 will not work
-etc
-*/
+// doesnt compile api endpoints above API_VERSION
 #define API_VERSION @API_VERSION_VAL@
 
 // doesnt compile api endpoints below MIN_API_SUPPORT
