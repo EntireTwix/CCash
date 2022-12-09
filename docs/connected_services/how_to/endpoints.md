@@ -36,14 +36,13 @@
 | VerifyPassword | :heavy_multiplication_x: |    :heavy_check_mark:    | :heavy_multiplication_x: | :heavy_check_mark: |
 
 ### Usage endpoint support
-`v` denoting the API version
-| name           |            v1            |         v2         |
-| :------------- | :----------------------: | :----------------: |
-| GetBal         |    :heavy_check_mark:    | :heavy_check_mark: |
-| GetLog         |    :heavy_check_mark:    | :heavy_check_mark: |
-| GetLogV2       | :heavy_multiplication_x: | :heavy_check_mark: |
-| SendFunds      |    :heavy_check_mark:    | :heavy_check_mark: |
-| VerifyPassword |    :heavy_check_mark:    | :heavy_check_mark: |
+| name           |            v1            |            v2            |
+| :------------- | :----------------------: | :----------------------: |
+| GetBal         |    :heavy_check_mark:    |    :heavy_check_mark:    |
+| GetLog         |    :heavy_check_mark:    | :heavy_multiplication_x: |
+| GetLogV2       | :heavy_multiplication_x: |    :heavy_check_mark:    |
+| SendFunds      |    :heavy_check_mark:    |    :heavy_check_mark:    |
+| VerifyPassword |    :heavy_check_mark:    |    :heavy_check_mark:    |
 
 ### Meta Usage endpoints
 | name                | purpose                                                                                            | json input                      | path                       | HTTP Method | correct status | return type |          return value          |       Jresp        |        Jreq        |            A             |            U             |
