@@ -54,7 +54,7 @@
       ansible.builtin.command:
         chdir: '{{BUILD_DIR}}/CCash/build'
         cmd: |
-          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" ..
+          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" -DAPI_VERSION="{{ API_VERSION }}" -DMIN_API_SUPPORT="{{ MIN_API_SUPPORT }}" ..
     
     - name: make CCash
       community.general.make:
