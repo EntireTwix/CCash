@@ -8,6 +8,7 @@ as CCash is very lightweight it can run on practically any device but here are s
 * `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage of the ledger's features at ~203 bytes in memory and ~104 bytes in disk at default settings, so 5165 logs per Mb of RAM. Setting to 0 will disable logs
 * with no users memory usage is 8.47 Mb
 * Saving frequency (a runtime argument) being set to 0 will disable frequency saving and only save on close
+* make backups of your save files
 
 ## Docker
 If you want to use the docker package, deploy information can be found [here](deploy.md)

@@ -20,16 +20,20 @@
 #### A : Because this usecase requires none of the features a database would offer. 
 
 
-#### Q : People are making too many accounts/transactions maliciously to fill up space on my server!
+#### Q : People are making too many accounts maliciously to fill up space on my server!
 #### A : Consider disabling `ADD_USER_OPEN` in the [build proccess](https://github.com/EntireTwix/CCash/blob/main/docs/building.md).
 
 
+#### Q : People are making too many transactions filling up space on my server!
+#### A : Consider setting the variable `MAX_LOG_SIZE` to 0 in the [build proccess](https://github.com/EntireTwix/CCash/blob/main/docs/building.md).
+
+
 #### Q : My instance is taking up too much RAM
-#### A : If your memory usage is too high I would reduce log size.
+#### A : Reduce log size.
 
 
 #### Q : My instance is taking up too much disk spac
-#### A : Use the purge users endpoint to delete old or superfluous accounts or reducing log size will reduce disk space but should be a last resort.
+#### A : Use the prune users endpoint to dead accounts or you can reduce log size but should be a last resort.
 
 
 #### Q : My instance is slow
