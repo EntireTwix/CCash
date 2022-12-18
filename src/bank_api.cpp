@@ -1,7 +1,5 @@
 #include "bank_api.h"
 
-// TODO: parser iterate(input).get(doc) error handling might be superfulous
-
 #define CACHE_FOREVER resp->setExpiredTime(0)
 
 #define CORS resp->addHeader("Access-Control-Allow-Origin", "*")
@@ -96,7 +94,7 @@ void api::ChangePassword(req_args)
     else
     {
         std::string_view pass;
-        if (doc["time"].get(pass))
+        if (doc["pass"].get(pass))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -120,7 +118,7 @@ void api::AdminChangePassword(req_args)
     else
     {
         std::string_view name, pass;
-        if (doc["name"].get(name) || doc["time"].get(pass))
+        if (doc["name"].get(name) || doc["pass"].get(pass))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
@@ -319,7 +317,7 @@ void api::AdminAddUser(req_args)
         std::string_view name;
         uint64_t amount;
         std::string_view pass;
-        if (doc["name"].get(name) || doc["amount"].get(amount) || doc["time"].get(pass) || (amount > std::numeric_limits<uint32_t>::max()))
+        if (doc["name"].get(name) || doc["amount"].get(amount) || doc["pass"].get(pass) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
         }
