@@ -90,14 +90,12 @@ int main(int argc, char **argv)
     Op(Bank::VerifyPassword("twix", "root"), "verify pass: ", 1000000);
     Op(Bank::ChangePassword("twix", "root"), "change pass: ", 1000000);
 #if MAX_LOG_SIZE > 0
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
     Op(Bank::GetLogs("twix"), "get logs init: ", 1);
     Op(Bank::GetLogs("twix"), "get logs cached: ", 1000000);
 #endif
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
     Op(Bank::GetLogsV2("twix"), "get logs init (v2): ", 1);
     Op(Bank::GetLogsV2("twix"), "get logs cached (v2): ", 1000000);
-#endif
 #endif
     Op(Bank::PruneUsers(0, 0), "prune users: ", 1);
     Op(Bank::Save(), "saving: ", 1);

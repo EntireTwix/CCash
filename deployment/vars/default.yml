@@ -1,6 +1,5 @@
 ---
-BUILD_DIR: '/root'
+BUILD_DIR: "/root"
 ADMIN_A: "admin"
 SAVE_FREQ: "2"
-API_VERSION: "2"
-MIN_API_SUPPORT: "1"
+USE_DEPRECATED_ENDPOINTS: "true"

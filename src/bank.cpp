@@ -85,9 +85,10 @@ BankResponse Bank::GetBal(const std::string &name) noexcept
         return {k200OK, std::to_string(res)};
     }
 }
+
 #if MAX_LOG_SIZE > 0
 
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
@@ -102,7 +103,6 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
 }
 #endif
 
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
 BankResponse Bank::GetLogsV2(const std::string &name) noexcept
 {
     BankResponse res;
@@ -115,7 +115,6 @@ BankResponse Bank::GetLogsV2(const std::string &name) noexcept
         return res;
     }
 }
-#endif
 
 #endif
 
@@ -241,6 +240,7 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
 #else
         if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) {
 #endif
+
                 return ((!u.log.data.size() || u.log.data.back().time < threshold_time) && u.balance < threshold_bal);
 #else
 
@@ -250,8 +250,8 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
 #else
         if (Bank::users.erase_if(u.first, [threshold_bal, &deleted_count](User &u) {
 #endif
-                return (u.balance < threshold_bal);
 
+                return (u.balance < threshold_bal);
 #endif
             }))
         {

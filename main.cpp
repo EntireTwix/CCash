@@ -34,7 +34,7 @@ int main(int argc, char **argv)
                 uint8_t temp[16]{16, 0, 0, 0, 4};
                 users_save.write((char *)temp, 16);
                 users_save.close();
-                std::cout << "User save file generated\nUsage: sudo ./bank <admin account name> <saving frequency in minutes> [daemon flag]\n";
+                std::cout << "User save file generated\nUsage: sudo ./bank <admin account name> <saving frequency in minutes> [daemon flag {default: false}]\n";
             }
             else
             {
@@ -44,7 +44,7 @@ int main(int argc, char **argv)
         }
         if (argc < 3)
         {
-            std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes> [daemon flag]\n";
+            std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes> [daemon flag {default: false}]\n";
             return 0;
         }
         if (geteuid() != 0)
@@ -54,7 +54,6 @@ int main(int argc, char **argv)
         }
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         std::cout
-            << "\nAPI Version     : " << API_VERSION
             << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
             << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
             << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")

@@ -28,12 +28,8 @@ if false, when frequency is hit save
 */
 #define CONSERVATIVE_DISK_SAVE @CONSERVATIVE_DISK_SAVE_VAL@
 
-// doesnt compile api endpoints above API_VERSION
-#define API_VERSION @API_VERSION_VAL@
-
-// doesnt compile api endpoints below MIN_API_SUPPORT
-#define MIN_API_SUPPORT @MIN_API_SUPPORT_VAL@
-
 #define MULTI_THREADED @MULTI_THREADED_VAL@
 
 #define ADD_USER_OPEN @ADD_USER_OPEN_VAL@
+
+#define USE_DEPRECATED_ENDPOINTS @USE_DEPRECATED_ENDPOINTS_VAL@

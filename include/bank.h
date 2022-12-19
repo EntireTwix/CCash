@@ -45,13 +45,10 @@ public:
     static BankResponse GetBal(const std::string &name) noexcept;
 
 #if MAX_LOG_SIZE > 0
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
     static BankResponse GetLogs(const std::string &name) noexcept;
 #endif
-
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
     static BankResponse GetLogsV2(const std::string &name) noexcept;
-#endif
 #endif
 
     static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;

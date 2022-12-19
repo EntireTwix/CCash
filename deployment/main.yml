@@ -4,10 +4,9 @@
   become: true
   pre_tasks:
     - name: load variables
-      ansible.builtin.include_vars: '{{ item }}'
+      ansible.builtin.include_vars: "{{ item }}"
       with_first_found:
         - "default.yml"
-
 
   tasks:
     - name: refresh packages update
@@ -24,20 +23,30 @@
 
     - name: install dependencies
       yum:
-        name: [git, gcc, gcc-c++, libuuid-devel, openssl-devel, zlib-devel, jsoncpp-devel, cmake]
+        name:
+          [
+            git,
+            gcc,
+            gcc-c++,
+            libuuid-devel,
+            openssl-devel,
+            zlib-devel,
+            jsoncpp-devel,
+            cmake,
+          ]
         state: present
       when: ansible_os_family == "RedHat"
 
     - name: clone CCash repository
       git:
         repo: https://github.com/EntireTwix/CCash.git
-        dest: '{{BUILD_DIR}}/CCash'
+        dest: "{{BUILD_DIR}}/CCash"
         recursive: true
         update: false
 
     - name: Make lib base64
       community.general.make:
-        chdir: '{{BUILD_DIR}}/CCash/third_party/base64'
+        chdir: "{{BUILD_DIR}}/CCash/third_party/base64"
         params:
           AVX2_CFLAGS: -mavx2
           SSSE3_CFLAGS: -mssse3
@@ -45,37 +54,36 @@
           SSE42_CFLAGS: -msse4.2
           AVX_CFLAGS: -mavx
 
-    - name: create build dir 
+    - name: create build dir
       file:
-        path: '{{BUILD_DIR}}/CCash/build'
+        path: "{{BUILD_DIR}}/CCash/build"
         state: directory
 
     - name: Cmake CCash
       ansible.builtin.command:
-        chdir: '{{BUILD_DIR}}/CCash/build'
+        chdir: "{{BUILD_DIR}}/CCash/build"
         cmd: |
-          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" -DAPI_VERSION="{{ API_VERSION }}" -DMIN_API_SUPPORT="{{ MIN_API_SUPPORT }}" ..
-    
+          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" -DUSE_DEPRECATED_ENDPOINTS="{{ USE_DEPRECATED_ENDPOINTS }}" ..
+
     - name: make CCash
       community.general.make:
-        chdir: '{{BUILD_DIR}}/CCash/build'
+        chdir: "{{BUILD_DIR}}/CCash/build"
         params:
-          NUM_THREADS: '-j{{ ansible_processor_vcpus }}'
-        
+          NUM_THREADS: "-j{{ ansible_processor_vcpus }}"
 
     - name: create users file
       ansible.builtin.command:
-        chdir: '{{BUILD_DIR}}/CCash/build/'
+        chdir: "{{BUILD_DIR}}/CCash/build/"
         cmd: ./bank
-        creates: '{{ BUILD_DIR }}/CCash/config/users.dat'
+        creates: "{{ BUILD_DIR }}/CCash/config/users.dat"
     - name: chmod +x ssl.sh
       ansible.builtin.file:
         mode: u+x
-        path: '{{BUILD_DIR}}/CCash/config/ssl.sh'
+        path: "{{BUILD_DIR}}/CCash/config/ssl.sh"
     - name: generate default ssl
       ansible.builtin.command:
-        chdir: '{{BUILD_DIR}}/CCash/config/'
-        cmd: './ssl.sh'
+        chdir: "{{BUILD_DIR}}/CCash/config/"
+        cmd: "./ssl.sh"
 
     - name: create service file
       ansible.builtin.copy:

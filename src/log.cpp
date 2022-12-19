@@ -2,14 +2,10 @@
 
 void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept
 {
-    
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
     log_flag.SetChangesOn();
 #endif
-
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
     log_flag_v2.SetChangesOn();
-#endif
 
     if (data.size() == MAX_LOG_SIZE)
     {
@@ -18,7 +14,7 @@ void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t
     data.emplace_back(counterparty_str, receiving, amount, time);
 }
 
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
 std::string Log::GetLogs(const std::string& name) noexcept
 {
     if (log_flag.GetChangeState() && data.size()) //if there are changes
@@ -51,7 +47,6 @@ std::string Log::GetLogs(const std::string& name) noexcept
 }
 #endif
 
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
 std::string Log::GetLogsV2() noexcept
 {
     if (log_flag_v2.GetChangeState() && data.size()) //if there are changes
@@ -68,9 +63,9 @@ std::string Log::GetLogsV2() noexcept
         {
             log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
             log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
-            log_snapshot_v2 += "\",\"receiving\":";                                              //15
+            log_snapshot_v2 += "\",\"receiving\":";                                                //15
             log_snapshot_v2 += std::to_string(data[i].receiving);                                  //4
-            log_snapshot_v2 += ",\"amount\":";                                                   //11
+            log_snapshot_v2 += ",\"amount\":";                                                     //11
             log_snapshot_v2 += std::to_string(data[i].amount);                                     //10?
             log_snapshot_v2 += ",\"time\":";                                                       //8
             log_snapshot_v2 += std::to_string(data[i].time);                                       //10?
@@ -82,4 +77,3 @@ std::string Log::GetLogsV2() noexcept
 
     return log_snapshot_v2;
 }
-#endif

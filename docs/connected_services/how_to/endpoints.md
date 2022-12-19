@@ -10,21 +10,20 @@
 
 `A` - Admin, same as `U` but in addition requires username supplied be equal to the admin account username
 
-:heavy_check_mark:
-:x:
+⚠ - Deprecated endpoint
+
+:no_entry: - Defunct endpoint
 
 ## all error responses have JSON string along with them to describe
 
-## all endpoint paths start with api/v{n} where n is whatever version you're requesting e.g api/v2
-
 ### Usage endpoints
-| name           | purpose                                                                        | json input                       | path                     | HTTP Method | correct status |   return type    |                                return value                                |       Jresp        |        Jreq        |   A   |         U          |
-| :------------- | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------ | :---------: | :------------: | :--------------: | :------------------------------------------------------------------------: | :----------------: | :----------------: | :---: | :----------------: |
-| GetBal         | retrieving the balance of a given user, `{name}`                               | `N/A`                            | user/balance?name={name} |    `GET`    |      200       |      uint32      |                             the user's balance                             | :heavy_check_mark: |        :x:         |  :x:  |        :x:         |
-| GetLog         | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | user/log                 |    `GET`    |      200       | array of objects |       [{"to":string, "from":string, "amount":uint32, "time":int64}]        | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
-| GetLogV2       | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | user/log                 |    `GET`    |      200       | array of objects | [{"counterparty":string, "receiving":bool, "amount":uint32, "time":int64}] | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
-| SendFunds      | sends funds from the authenticated user to the user `{name}` given in the json | {"name":string, "amount":uint32} | user/transfer            |   `POST`    |      200       |      uint32      |                  the user's balance after the transaction                  | :heavy_check_mark: | :heavy_check_mark: |  :x:  | :heavy_check_mark: |
-| VerifyPassword | verifies the credentials, used for connected services for ease of use          | `N/A`                            | user/verify_password     |   `POST`    |      204       |      `N/A`       |                                   `N/A`                                    | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
+| name           | added on | purpose                                                                        | json input                       | path                            | HTTP Method | correct status |   return type    |                                return value                                |       Jresp        |        Jreq        |   A   |         U          |
+| :------------- | :------: | ------------------------------------------------------------------------------ | -------------------------------- | ------------------------------- | :---------: | :------------: | :--------------: | :------------------------------------------------------------------------: | :----------------: | :----------------: | :---: | :----------------: |
+| GetBal         | `v1.2.3` | retrieving the balance of a given user, `{name}`                               | `N/A`                            | api/v1/user/balance?name={name} |    `GET`    |      200       |      uint32      |                             the user's balance                             | :heavy_check_mark: |        :x:         |  :x:  |        :x:         |
+| GetLog         | `v1.2.3` | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | ⚠ api/v1/user/log               |    `GET`    |      200       | array of objects |       [{"to":string, "from":string, "amount":uint32, "time":int64}]        | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
+| GetLogV2       | `v1.5.3` | retrieves the logs of a given user, length varies by server configuration      | `N/A`                            | api/v2/user/log                 |    `GET`    |      200       | array of objects | [{"counterparty":string, "receiving":bool, "amount":uint32, "time":int64}] | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
+| SendFunds      | `v1.2.3` | sends funds from the authenticated user to the user `{name}` given in the json | {"name":string, "amount":uint32} | api/v1/user/transfer            |   `POST`    |      200       |      uint32      |                  the user's balance after the transaction                  | :heavy_check_mark: | :heavy_check_mark: |  :x:  | :heavy_check_mark: |
+| VerifyPassword | `v1.2.3` | verifies the credentials, used for connected services for ease of use          | `N/A`                            | api/v1/user/verify_password     |   `POST`    |      204       |      `N/A`       |                                   `N/A`                                    | :heavy_check_mark: |        :x:         |  :x:  | :heavy_check_mark: |
 
 ### Usage enpoint errors
 | name           |        400         |        401         |        404         |        406         |
@@ -35,22 +34,13 @@
 | SendFunds      | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | VerifyPassword |        :x:         | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
 
-### Usage endpoint support
-| name           |         v1         |         v2         |
-| :------------- | :----------------: | :----------------: |
-| GetBal         | :heavy_check_mark: | :heavy_check_mark: |
-| GetLog         | :heavy_check_mark: |        :x:         |
-| GetLogV2       |        :x:         | :heavy_check_mark: |
-| SendFunds      | :heavy_check_mark: | :heavy_check_mark: |
-| VerifyPassword | :heavy_check_mark: | :heavy_check_mark: |
-
 ### Meta Usage endpoints
-| name                | purpose                                                                                            | json input                      | path                       | HTTP Method | correct status | return type |          return value          |       Jresp        |        Jreq        |         A          |         U          |
-| :------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------- | -------------------------- | :---------: | :------------: | :---------: | :----------------------------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| ChangePassword      | changes the password of the Authenticated user                                                     | {"pass":string}                 | user/change_password       |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
-| AdminChangePassword | changes the password of a given user `{name}`                                                      | {"name":string,"pass":string}   | admin/user/change_password |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
-| SetBal              | sets the balance of a given user `{name}`                                                          | {"name":string,"amount":uint32} | admin/set_balance          |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
-| ImpactBal           | modifies the user `{name}`'s balance by `{amount}` if positive itll add, if negative itll subtract | {"name":string,"amount":int64}  | admin/impact_balance       |   `POST`    |      200       |   uint32    | new balance after modification | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| name                | added on | purpose                                                                                            | json input                      | path                              | HTTP Method | correct status | return type |          return value          |       Jresp        |        Jreq        |         A          |         U          |
+| :------------------ | :------: | -------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------- | :---------: | :------------: | :---------: | :----------------------------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| ChangePassword      | `v1.2.3` | changes the password of the Authenticated user                                                     | {"pass":string}                 | api/v1/user/change_password       |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
+| AdminChangePassword | `v1.2.3` | changes the password of a given user `{name}`                                                      | {"name":string,"pass":string}   | api/v1/admin/user/change_password |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| SetBal              | `v1.2.3` | sets the balance of a given user `{name}`                                                          | {"name":string,"amount":uint32} | api/v1/admin/set_balance          |   `PATCH`   |      204       |    `N/A`    |             `N/A`              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| ImpactBal           | `v1.2.3` | modifies the user `{name}`'s balance by `{amount}` if positive itll add, if negative itll subtract | {"name":string,"amount":int64}  | api/v1/admin/impact_balance       |   `POST`    |      200       |   uint32    | new balance after modification | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
 
 ### Meta Usage endpoint errors
 | name                |        400         |        401         |        404         |        406         |
@@ -60,23 +50,15 @@
 | SetBal              | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 | ImpactBal           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |
 
-### Meta Usage endpoint support
-| name                |         v1         |         v2         |
-| :------------------ | :----------------: | :----------------: |
-| ChangePassword      | :heavy_check_mark: | :heavy_check_mark: |
-| AdminChangePassword | :heavy_check_mark: | :heavy_check_mark: |
-| SetBal              | :heavy_check_mark: | :heavy_check_mark: |
-| ImpactBal           | :heavy_check_mark: | :heavy_check_mark: |
-
 ### Sytem Usage endpoints
-| name               | purpose                                                                                                                   | json input                                               | path                    | HTTP Method | correct status | return type |                                                return value                                                 |       Jresp        |        Jreq        |         A          |   U   |
-| :----------------- | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ----------------------- | :---------: | :------------: | :---------: | :---------------------------------------------------------------------------------------------------------: | :----------------: | :----------------: | :----------------: | :---: |
-| Help               | redirects to GitHub projects Docs                                                                                         | `N/A`                                                    | help                    |    `GET`    |      301       |    `N/A`    |                                                    `N/A`                                                    |        :x:         |        :x:         |        :x:         |  :x:  |
-| Close              | saves & closes the CCash webserver                                                                                        | `N/A`                                                    | admin/shutdown          |   `POST`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         | :heavy_check_mark: |  :x:  |
-| Contains           | checks wether a user exists                                                                                               | `N/A`                                                    | user/exists?name={name} |    `GET`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
-| AdminVerifyAccount | checks wether a user is the admin                                                                                         | `N/A`                                                    | admin/verify_account    |   `POST`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         | :heavy_check_mark: |  :x:  |
-| PruneUsers         | deletes users with most recent transactions older then `{time}` (if logs are enabled) and have less money then `{amount}` | {"time":int64,"amount":uint32} or just {"amount":uint32} | admin/prune_users       |   `POST`    |      200       |   uint64    |                                           number of users deleted                                           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |  :x:  |
-| ApiProperties      | properties of the given instance                                                                                          | `N/A`                                                    | api/properties          |    `GET`    |      200       | json object | {"version":uint64,"min_version":uint64_t,"max_log":uint64} and "return_on_del":string if feature is enabled | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
+| name               | added on | purpose                                                                                                                   | json input                                               | path                           | HTTP Method | correct status | return type |                                                return value                                                 |       Jresp        |        Jreq        |         A          |   U   |
+| :----------------- | :------: | ------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------ | :---------: | :------------: | :---------: | :---------------------------------------------------------------------------------------------------------: | :----------------: | :----------------: | :----------------: | :---: |
+| Help               |  `v0.1`  | redirects to GitHub projects Docs                                                                                         | `N/A`                                                    | api/help                       |    `GET`    |      301       |    `N/A`    |                                                    `N/A`                                                    |        :x:         |        :x:         |        :x:         |  :x:  |
+| Close              | `v1.2.3` | saves & closes the CCash webserver                                                                                        | `N/A`                                                    | api/v1/admin/shutdown          |   `POST`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         | :heavy_check_mark: |  :x:  |
+| Contains           | `v1.2.3` | checks wether a user exists                                                                                               | `N/A`                                                    | api/v1/user/exists?name={name} |    `GET`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
+| AdminVerifyAccount | `v1.2.3` | checks wether a user is the admin                                                                                         | `N/A`                                                    | api/v1/admin/verify_account    |   `POST`    |      204       |    `N/A`    |                                                    `N/A`                                                    | :heavy_check_mark: |        :x:         | :heavy_check_mark: |  :x:  |
+| PruneUsers         | `v1.2.3` | deletes users with most recent transactions older then `{time}` (if logs are enabled) and have less money then `{amount}` | {"time":int64,"amount":uint32} or just {"amount":uint32} | api/v1/admin/prune_users       |   `POST`    |      200       |   uint64    |                                           number of users deleted                                           | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |  :x:  |
+| ApiProperties      | `v1.2.3` | properties of the given instance                                                                                          | `N/A`                                                    | api/properties                 |    `GET`    |      200       | json object | {"version":uint64,"min_version":uint64_t,"max_log":uint64} and "return_on_del":string if feature is enabled | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
 
 ### System Usage endpoin errors
 | name               |        401         |        404         |        406         |
@@ -88,16 +70,6 @@
 | PruneUsers         | :heavy_check_mark: |        :x:         | :heavy_check_mark: |
 | ApiProperties      |        :x:         |        :x:         |        :x:         |
 
-### System Usage endpoint support
-| name               |         v1         |         v2         |
-| :----------------- | :----------------: | :----------------: |
-| Help               |       `N/A`        |       `N/A`        |
-| Close              | :heavy_check_mark: | :heavy_check_mark: |
-| Contains           | :heavy_check_mark: | :heavy_check_mark: |
-| AdminVerifyAccount | :heavy_check_mark: | :heavy_check_mark: |
-| PruneUsers         | :heavy_check_mark: | :heavy_check_mark: |
-| ApiProperties      |       `N/A`        |       `N/A`        |
-
 ### Username Requirements
 Valid
 * lowercase letters
@@ -106,12 +78,12 @@ Valid
 * Length must be atleast 3 and at most 16 characters.
 
 ### User Management endpoints
-| name         | purpose                                 | json input                                    | path                | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |         A          |         U          |
-| :----------- | --------------------------------------- | --------------------------------------------- | ------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------: | :----------------: | :----------------: |
-| AddUser      | adding a user with a balance of 0       | {"name":string,"pass":string}                 | user/register       |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: |        :x:         |        :x:         |
-| AdminAddUser | adding a user with an arbitrary balance | {"name":string,"amount":uint32,"pass":string} | admin/user/register |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
-| DelSelf      | deletes a user                          | `N/A`                                         | user/delete         |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |        :x:         |        :x:         | :heavy_check_mark: |
-| AdminDelUser | deletes a given user `{name}`           | {"name":string}                               | admin/user/delete   |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| name         | added on | purpose                                 | json input                                    | path                       | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |         A          |         U          |
+| :----------- | :------: | --------------------------------------- | --------------------------------------------- | -------------------------- | :---------: | :------------: | :---------: | :----------: | :----------------: | :----------------: | :----------------: | :----------------: |
+| AddUser      | `v1.2.3` | adding a user with a balance of 0       | {"name":string,"pass":string}                 | api/v1/user/register       |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: |        :x:         |        :x:         |
+| AdminAddUser | `v1.2.3` | adding a user with an arbitrary balance | {"name":string,"amount":uint32,"pass":string} | api/v1/admin/user/register |   `POST`    |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
+| DelSelf      | `v1.2.3` | deletes a user                          | `N/A`                                         | api/v1/user/delete         |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: |        :x:         |        :x:         | :heavy_check_mark: |
+| AdminDelUser | `v1.2.3` | deletes a given user `{name}`           | {"name":string}                               | api/v1/admin/user/delete   |  `DELETE`   |      204       |    `N/A`    |    `N/A`     | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
 
 ### User Management endpoint errors
 | name         |        400         |        401         |        404         |        406         |        409         |
@@ -120,11 +92,3 @@ Valid
 | AdminAddUser | :heavy_check_mark: | :heavy_check_mark: |        :x:         | :heavy_check_mark: | :heavy_check_mark: |
 | DelSelf      |        :x:         | :heavy_check_mark: |        :x:         | :heavy_check_mark: |        :x:         |
 | AdminDelUser | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |        :x:         |
-
-### User Management endpoint support
-| name         |         v1         |         v2         |
-| :----------- | :----------------: | :----------------: |
-| AddUser      | :heavy_check_mark: | :heavy_check_mark: |
-| AdminAddUser | :heavy_check_mark: | :heavy_check_mark: |
-| DelSelf      | :heavy_check_mark: | :heavy_check_mark: |
-| AdminDelUser | :heavy_check_mark: | :heavy_check_mark: |

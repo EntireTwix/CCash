@@ -28,7 +28,7 @@ void api::GetBal(req_args, const std::string &name)
     RESPONSE_PARSE(Bank::GetBal(name));
 }
 
-#if MIN_API_SUPPORT == 1
+#if USE_DEPRECATED_ENDPOINTS
 void api::GetLogs(req_args)
 {
 #if MAX_LOG_SIZE > 0
@@ -42,7 +42,6 @@ void api::GetLogs(req_args)
 }
 #endif
 
-#if (API_VERSION >= 2) && (MIN_API_SUPPORT <= 2)
 void api::GetLogsV2(req_args)
 {
 #if MAX_LOG_SIZE > 0
@@ -54,7 +53,6 @@ void api::GetLogsV2(req_args)
     callback(resp);
 #endif
 }
-#endif
 
 void api::SendFunds(req_args)
 {
@@ -220,7 +218,7 @@ void api::AdminVerifyAccount(req_args)
 }
 void api::ApiProperties(req_args)
 {
-    std::string info = "{\"version\":" + std::to_string(API_VERSION) + ",\"min_version\":" + std::to_string(MIN_API_SUPPORT) + ",\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
+    std::string info = "{\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
     if constexpr (RETURN_ON_DEL)
     {
         info += ",\"return_on_del\":\"" + std::string(return_account) + "\"}";
