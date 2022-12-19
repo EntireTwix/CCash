@@ -146,6 +146,7 @@ leaving
 }
 ```
 
+## Usage
 You can now run the program from the build location. For example
 ```
 sudo ./bank admin 5

@@ -7,7 +7,7 @@
 | calls older endpoints | ⚠                  |
 | calls newer endpoints | :x:                |
 
-Just because a service calls old endpoints, doesn't mean the service will not work under that version of CCash. As long as the `MIN_API_SUPPORT` is less than or equal to the required version's endpoints, then the connected service can call the old CCash endpoints. By default `MIN_API_SUPPORT` is 1 (complete backwards compatibility) making all ⚠ effectively :heavy_check_mark:.
+Just because a service calls old endpoints, doesn't mean the service will not work under that version of CCash. As long as the `MIN_API_SUPPORT` is less than or equal to the required version's endpoints, then the connected service can call the old CCash endpoints. **By default `MIN_API_SUPPORT` is 1 (complete backwards compatibility) making all ⚠ effectively :heavy_check_mark:**.
 
 ## General
 | author                                  | name                                                        |         v1         |  v2   |                                                      image                                                      |
