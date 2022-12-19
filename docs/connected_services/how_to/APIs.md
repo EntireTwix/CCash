@@ -1,11 +1,11 @@
 [PREVIOUS PAGE](explanation.md) | [NEXT PAGE](endpoints.md)
 
 note: all CCash version's API are backwards compatible, so while a language's API may not support the newest CCash release it can still use the old endpoints.
-| author                                       | language |                                                                     |    v1 endpoints    |       v2 endpoints       |
-| :------------------------------------------- | :------: | ------------------------------------------------------------------- | :----------------: | :----------------------: |
-| [SpaceCat](https://github.com/SpaceCat-Chan) |  CCLua   | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi) | :heavy_check_mark: | :heavy_multiplication_x: |
-| [Doggo](https://github.com/ArcNyxx)          |  Python  | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client) | :heavy_check_mark: | :heavy_multiplication_x: |
-| [Sam](https://github.com/STBoyden)           |   Rust   | [ccash rs](https://github.com/STBoyden/ccash-rs)                    | :heavy_check_mark: | :heavy_multiplication_x: |
+| author                                       | language |                                                                     |    v1 endpoints    | v2 endpoints |
+| :------------------------------------------- | :------: | ------------------------------------------------------------------- | :----------------: | :----------: |
+| [SpaceCat](https://github.com/SpaceCat-Chan) |  CCLua   | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi) | :heavy_check_mark: |     :x:      |
+| [Doggo](https://github.com/ArcNyxx)          |  Python  | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client) | :heavy_check_mark: |     :x:      |
+| [Sam](https://github.com/STBoyden)           |   Rust   | [ccash rs](https://github.com/STBoyden/ccash-rs)                    | :heavy_check_mark: |     :x:      |
 
 for example here is a demo program for the lua API by SpaceCat
 
