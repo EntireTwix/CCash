@@ -52,6 +52,7 @@ int main(int argc, char **argv)
             std::cerr << "ERROR: CCash MUST be ran as root\n";
             return 0;
         }
+        const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         std::cout
             << "\nAPI Version     : " << API_VERSION
             << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
@@ -88,7 +89,6 @@ int main(int argc, char **argv)
         Bank::admin_account = argv[1];
 
         //Auto Saving
-        const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
             std::thread([saving_freq]()
