@@ -7,7 +7,7 @@ Usernames are restricted by minecraft's requirements
 * lowercase letters
 * numbers
 * _
-* Length must be atleast 3 and at most 16 characters.
+* length must be atleast 3 and at most 16 characters.
 ### Is this crypto like krist?
 CCash isn't a crypto, simply a ledger keeping track of who owns what.
 ### Why isnt this on a database?
