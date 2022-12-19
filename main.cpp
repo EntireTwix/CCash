@@ -34,7 +34,7 @@ int main(int argc, char **argv)
                 uint8_t temp[16]{16, 0, 0, 0, 4};
                 users_save.write((char *)temp, 16);
                 users_save.close();
-                std::cout << "User save file generated\nUsage: sudo ./bank <admin account> <saving frequency in minutes>\n";
+                std::cout << "User save file generated\nUsage: sudo ./bank <admin account name> <saving frequency in minutes> [daemon flag]\n";
             }
             else
             {
@@ -42,9 +42,9 @@ int main(int argc, char **argv)
             }
             return 0;
         }
-        if (argc != 3)
+        if (argc < 3)
         {
-            std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes>\n";
+            std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes> [daemon flag]\n";
             return 0;
         }
         if (geteuid() != 0)
@@ -65,16 +65,16 @@ int main(int argc, char **argv)
             << "\n\nThreads         : " << get_nprocs() + saving_freq
             << "\nMulti threading : enabled";
 #else
-            << "\n\nThreads         : " << 2
+            << "\n\nThreads         : " << 1 + saving_freq
             << "\nMulti threading : disabled";
 #endif
 
-        //Loading users from users.json
+        //Loading users from users.dat
         Bank::Load();
         size_t num_of_logs = Bank::NumOfLogs();
         size_t num_of_users = Bank::NumOfUsers();
-        std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "Mb"
-                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (93 + sizeof(Transaction) + max_name_size)) / 1048576 << "Mb" //93:cached response per log(heap), sizeof(Transaction), max_name_size:counterparty(heap)
+        std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "MB"
+                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (93 + sizeof(Transaction) + max_name_size)) / 1048576 << "MB" //93:cached response per log(heap), sizeof(Transaction), max_name_size:counterparty(heap)
                   << "\nLoaded " << Bank::SumBal() << " C$H"
                   << std::endl; //flushing before EventLoop
 
@@ -102,6 +102,8 @@ int main(int argc, char **argv)
                         })
                 .detach();
         }
+
+        if (argc == 4 && !strcmp(argv[3], "true")) { app().enableRunAsDaemon(); }
     } //destroying setup variables
 
     app()
