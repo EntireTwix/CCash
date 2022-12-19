@@ -232,16 +232,26 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
 #endif
     for (const auto &u : users)
     {
+    
+#if MAX_LOG_SIZE > 0
+
 #if RETURN_ON_DEL
-        if (Bank::users.erase_if(u.first, [threshold_bal, &bal, &deleted_count](User &u) {
+        if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &bal, &deleted_count](User &u) {
                 bal += u.balance;
 #else
         if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) {
 #endif
-#if MAX_LOG_SIZE > 0
                 return ((!u.log.data.size() || u.log.data.back().time < threshold_time) && u.balance < threshold_bal);
 #else
+
+#if RETURN_ON_DEL
+        if (Bank::users.erase_if(u.first, [threshold_bal, &bal, &deleted_count](User &u) {
+                bal += u.balance;
+#else
+        if (Bank::users.erase_if(u.first, [threshold_bal, &deleted_count](User &u) {
+#endif
                 return (u.balance < threshold_bal);
+
 #endif
             }))
         {
