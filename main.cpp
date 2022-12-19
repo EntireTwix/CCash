@@ -61,7 +61,7 @@ int main(int argc, char **argv)
             << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
             << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
 #if MULTI_THREADED
-            << "\n\nThreads         : " << get_nprocs() + 1
+            << "\n\nThreads         : " << get_nprocs() + saving_freq
             << "\nMulti threading : enabled";
 #else
             << "\n\nThreads         : " << 2
