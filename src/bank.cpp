@@ -86,6 +86,7 @@ BankResponse Bank::GetBal(const std::string &name) noexcept
     }
 }
 #if MAX_LOG_SIZE > 0
+
 #if MIN_API_SUPPORT == 1
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
@@ -115,6 +116,7 @@ BankResponse Bank::GetLogsV2(const std::string &name) noexcept
     }
 }
 #endif
+
 #endif
 
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
@@ -231,7 +233,7 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
     for (const auto &u : users)
     {
 #if RETURN_ON_DEL
-        if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &bal, &deleted_count](User &u) {
+        if (Bank::users.erase_if(u.first, [threshold_bal, &bal, &deleted_count](User &u) {
                 bal += u.balance;
 #else
         if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) {

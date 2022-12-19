@@ -244,9 +244,9 @@ void api::PruneUsers(req_args)
     }
     else
     {
+        uint64_t amount;
 #if MAX_LOG_SIZE > 0
         int64_t time;
-        uint64_t amount;
         if (doc["time"].get(time) || doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
@@ -256,7 +256,6 @@ void api::PruneUsers(req_args)
             res = Bank::PruneUsers(time, amount);
         }
 #else
-        uint64_t amount
         if (doc["amount"].get(amount) || (amount > std::numeric_limits<uint32_t>::max()))
         {
             res = BankResponse{k400BadRequest, "\"Missing/Invalid JSON arg(s)\""};
