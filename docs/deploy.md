@@ -15,8 +15,9 @@ Additionally CCash can be deployed to any infrastructure able to run Rocky/Alma 
 
 As CCash is intended to be run as root, the playbook is run also as root. The playbook also builds CCash from the latest github push, so there may be bugs.
 
-In order to use the ansible playbook, clone the playbook to any pc with the ability to access the server through SSH and with Ansible installed, edit the inventory file to contain the IP address of the target server and run the following command:
-```ansible-playbook -i inventory main.yml -k```
+In order to use the ansible playbook, clone the playbook to any pc with the ability to access the server through SSH and with Ansible installed, edit the inventory file to contain the IP address of the target server and run the following commands:
+```ansible-galaxy install -r deployment/requirements.yml
+```ansible-playbook -i deployment/inventory deployment/main.yml -k```
 When this is complete the server will have ccash installed to the user dir, this is customizable in the vars/default.yml file along with the admin username and save frequency.
 To start CCash run:
 ```systemctl start ccash```
