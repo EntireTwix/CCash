@@ -54,6 +54,7 @@ int main(int argc, char **argv)
         }
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         std::cout
+            << "\nAPI             : v2.5.1"
             << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
             << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
             << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
