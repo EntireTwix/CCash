@@ -29,7 +29,7 @@ User::User(const bank_dom::User &u) noexcept : balance(u.balance), password(u.pa
         for (; i < u.logs.value().data.size(); ++i)
         {
             const bank_dom::Transaction &temp = u.logs.value().data[i];
-            log.data.emplace_front(temp.from, temp.to, temp.amount, temp.time);
+            log.data.emplace_front(temp.counterparty, temp.receiving, temp.amount, temp.time);
         }
     }
 #endif
@@ -43,7 +43,7 @@ bank_dom::User User::Encode() const noexcept
         save_log.data.reserve(this->log.data.size());
         for (const Transaction &t : this->log.data)
         {
-            save_log.data.emplace_back(t.from, t.to, t.amount, t.time);
+            save_log.data.emplace_back(t.counterparty, t.receiving, t.amount, t.time);
         }
         return bank_dom::User(balance, password, save_log);
     }

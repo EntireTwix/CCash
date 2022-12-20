@@ -10,12 +10,21 @@ using namespace simdjson;
 struct Log
 {
 private:
+
+#if USE_DEPRECATED_ENDPOINTS
     ChangeFlag<true> log_flag;
     std::string log_snapshot = "null";
+#endif
+
+    ChangeFlag<true> log_flag_v2;
+    std::string log_snapshot_v2 = "null";
 
 public:
     std::deque<Transaction> data;
 
-    std::string GetLogs() noexcept;
-    void AddTrans(const std::string &from, const std::string &to, uint32_t amount, time_t time) noexcept;
+#if USE_DEPRECATED_ENDPOINTS
+    std::string GetLogs(const std::string& name) noexcept;
+#endif
+    std::string GetLogsV2() noexcept;
+    void AddTrans(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept;
 };

@@ -85,11 +85,14 @@ BankResponse Bank::GetBal(const std::string &name) noexcept
         return {k200OK, std::to_string(res)};
     }
 }
+
 #if MAX_LOG_SIZE > 0
+
+#if USE_DEPRECATED_ENDPOINTS
 BankResponse Bank::GetLogs(const std::string &name) noexcept
 {
     BankResponse res;
-    if (!Bank::users.modify_if(name, [&res](User &u) { res = {k200OK, u.log.GetLogs()}; }))
+    if (!Bank::users.modify_if(name, [&name, &res](User &u) { res = {k200OK, u.log.GetLogs(name)}; }))
     {
         return {k404NotFound, "\"User not found\""};
     }
@@ -99,6 +102,22 @@ BankResponse Bank::GetLogs(const std::string &name) noexcept
     }
 }
 #endif
+
+BankResponse Bank::GetLogsV2(const std::string &name) noexcept
+{
+    BankResponse res;
+    if (!Bank::users.modify_if(name, [&name, &res](User &u) { res = {k200OK, u.log.GetLogsV2()}; }))
+    {
+        return {k404NotFound, "\"User not found\""};
+    }
+    else
+    {
+        return res;
+    }
+}
+
+#endif
+
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
 {
     if (!amount)
@@ -123,7 +142,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (!Bank::users.modify_if(a_name, [&a_name, &b_name, &res, amount](User &a)
 #endif
                                {
-                                   //if A can afford it
+                                   //if "A" can afford it
                                    if (a.balance < amount)
                                    {
                                        res = {k400BadRequest, "\"Insufficient funds\""};
@@ -132,7 +151,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
                                    {
                                        a.balance -= amount;
 #if MAX_LOG_SIZE > 0
-                                       a.log.AddTrans(a_name, b_name, amount, current_time);
+                                       a.log.AddTrans(b_name, false, amount, current_time);
 #endif
                                        res = {k200OK, std::to_string(a.balance)};
                                    }
@@ -145,7 +164,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
 #if MAX_LOG_SIZE > 0
         Bank::users.modify_if(b_name, [current_time, &a_name, &b_name, amount](User &b) {
             b.balance += amount;
-            b.log.AddTrans(a_name, b_name, amount, current_time);
+            b.log.AddTrans(a_name, true, amount, current_time);
         });
 #else
         Bank::users.modify_if(b_name, [amount](User &b) { b.balance += amount; });
@@ -212,15 +231,26 @@ BankResponse Bank::PruneUsers(uint32_t threshold_bal) noexcept
 #endif
     for (const auto &u : users)
     {
+    
+#if MAX_LOG_SIZE > 0
+
 #if RETURN_ON_DEL
         if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &bal, &deleted_count](User &u) {
                 bal += u.balance;
 #else
         if (Bank::users.erase_if(u.first, [threshold_time, threshold_bal, &deleted_count](User &u) {
 #endif
-#if MAX_LOG_SIZE > 0
+
                 return ((!u.log.data.size() || u.log.data.back().time < threshold_time) && u.balance < threshold_bal);
 #else
+
+#if RETURN_ON_DEL
+        if (Bank::users.erase_if(u.first, [threshold_bal, &bal, &deleted_count](User &u) {
+                bal += u.balance;
+#else
+        if (Bank::users.erase_if(u.first, [threshold_bal, &deleted_count](User &u) {
+#endif
+
                 return (u.balance < threshold_bal);
 #endif
             }))

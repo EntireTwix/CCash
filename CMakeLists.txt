@@ -12,7 +12,7 @@ set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 find_package(Threads REQUIRED)
 
-add_executable(${PROJECT_NAME} main.cpp )
+add_executable(${PROJECT_NAME} main.cpp)
 
 target_sources(${PROJECT_NAME} PRIVATE
     src/bank_api.cpp
@@ -75,10 +75,16 @@ endif()
 
 if(DEFINED RETURN_ON_DEL_NAME)
 set(RETURN_ON_DEL_VAL true)
-set(RETURN_ON_DEL_NAME_VAL "\""${RETURN_ON_DEL_NAME}"\"")
+set(RETURN_ON_DEL_NAME_VAL "\"${RETURN_ON_DEL_NAME}\"")
 else()
 set(RETURN_ON_DEL_VAL false)
 set(RETURN_ON_DEL_NAME_VAL "\"\"")
+endif()
+
+if(DEFINED USE_DEPRECATED_ENDPOINTS)
+set(USE_DEPRECATED_ENDPOINTS_VAL ${USE_DEPRECATED_ENDPOINTS})
+else()
+set(USE_DEPRECATED_ENDPOINTS_VAL true)
 endif()
 
 configure_file(ccash_config.hpp.in ${CMAKE_CURRENT_SOURCE_DIR}/include/ccash_config.hpp)

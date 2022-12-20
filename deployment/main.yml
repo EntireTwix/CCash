@@ -6,7 +6,7 @@
     - name: load variables
       ansible.builtin.include_vars: '{{ item }}'
       with_first_found:
-        - "default.yml"
+        - "vars/default.yml"
 
 
   tasks:
@@ -33,7 +33,9 @@
         repo: https://github.com/EntireTwix/CCash.git
         dest: '{{BUILD_DIR}}/CCash'
         recursive: true
-        update: false
+        update: true
+        force: true
+        version: "{{ BRANCH }}"
 
     - name: Make lib base64
       community.general.make:
@@ -54,7 +56,7 @@
       ansible.builtin.command:
         chdir: '{{BUILD_DIR}}/CCash/build'
         cmd: |
-          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" ..
+          cmake -DDROGON_CONFIG_LOC="{{ BUILD_DIR }}/CCash/config/config.json" -DUSER_SAVE_LOC="{{ BUILD_DIR }}/CCash/config/users.dat" -DUSE_DEPRECATED_ENDPOINTS="{{ USE_DEPRECATED_ENDPOINTS }}" ..
     
     - name: make CCash
       community.general.make:
@@ -72,25 +74,136 @@
       ansible.builtin.file:
         mode: u+x
         path: '{{BUILD_DIR}}/CCash/config/ssl.sh'
+    - name: create ssl gen file
+      ansible.builtin.copy:
+        content: |
+          {
+            "listeners": [
+              {
+                "address": "0.0.0.0",
+                "port": 80,
+                "https": false
+              },
+              {
+                "address": "0.0.0.0",
+                "port": 443,
+                "https": true,
+                "cert": "{{ BUILD_DIR }}/CCash/config/cert.cert",
+                "key": "{{ BUILD_DIR }}/CCash/config/key.key"
+              }
+            ]
+          }
+        dest: "{{ BUILD_DIR }}/CCash/config/config.json"
+
+
+    - name: create ssl gen file
+      ansible.builtin.copy:
+        content: |
+          #!/bin/bash
+
+
+          openssl genrsa -out server.pass.key 2048
+          openssl rsa -in server.pass.key -out {{ BUILD_DIR }}/CCash/config/key.key
+          rm server.pass.key
+          openssl req -new -key {{ BUILD_DIR }}/CCash/config/key.key -out server.csr \
+              -subj "/C=US/ST=CCashland/L=NEW CCASH/O=CCash/OU=Devs/CN=localhost"
+          openssl x509 -req -days 365 -in server.csr -signkey {{ BUILD_DIR }}/CCash/config/key.key -out {{ BUILD_DIR }}/CCash/config/cert.cert
+        dest: "{{ BUILD_DIR }}/CCash/config/ssl.sh"
+
     - name: generate default ssl
       ansible.builtin.command:
         chdir: '{{BUILD_DIR}}/CCash/config/'
         cmd: './ssl.sh'
 
-    - name: create service file
+    - name: Start CCash Api Server
+      ansible.builtin.command:
+        chdir: '{{ BUILD_DIR }}/CCash/build'
+        cmd: './bank {{ ADMIN_A }} {{ SAVE_FREQ }} true'
+
+    - name: Clone Web 
+      git:
+        repo: https://github.com/Expand-sys/ccashfrontend.git
+        dest: '{{BUILD_DIR}}/CCash/web'
+        recursive: true
+        update: true
+        force: true
+
+      when: WEB_ENABLED == true
+    
+    - name: "Install Nodejs 18 module"
+      command: dnf module install -y nodejs:18/common
+      register: result
+      changed_when:
+        - '"Enabling module streams" in result.stdout'
+      when: ansible_os_family == "RedHat" and WEB_ENABLED == true
+      
+
+    - name: install pm2
+      community.general.npm:
+        path: '{{ BUILD_DIR }}/CCash/web'
+        name: pm2
+        global: true
+      when: WEB_ENABLED == true
+
+    - name: install web dependencies
+      community.general.npm:
+        path: '{{ BUILD_DIR }}/CCash/web'
+      when: WEB_ENABLED == true
+
+    - name: create .env file
       ansible.builtin.copy:
         content: |
-          [Unit]
-          Description=CCash API Server
-          After=network.target remote-fs.target nss-lookup.target
+          BANKAPIURL={{ ansible_facts["all_ipv4_addresses"][0] }}
+          SECURE=true
+          SETUP=true
+          PORT={{ WEB_PORT }}
+        dest: '{{ BUILD_DIR }}/CCash/web/.env'
+      when: WEB_ENABLED == true
 
-          [Service]
-          Type=simple
-          ExecStart={{BUILD_DIR}}/CCash/build/bank {{ADMIN_A}} {{SAVE_FREQ}}
-          ExecStop=/bin/kill -WINCH ${MAINPID}
-          KillSignal=SIGCONT
-          PrivateTmp=true
+    - name: create pm2 file
+      ansible.builtin.copy:
+        content: |
+          {
+            "name": "ccashfrontend",
+            "script": "{{ BUILD_DIR }}/ccash/web/index.js",
+            "watch": "{{ BUILD_DIR }}/ccash/web/tmp/restart.txt",
+            "instances": "1"
+          }
+        dest: "{{ BUILD_DIR }}/CCash/web/pm2.json"
+      when: WEB_ENABLED == true
 
-          [Install]
-          WantedBy=multi-user.target
-        dest: /etc/systemd/system/ccash.service
+
+    - name: start webapp service
+      ansible.builtin.command:
+        chdir: "{{ BUILD_DIR }}/CCash/web"
+        cmd: |
+          pm2 start index.js --update-env --name 'CCashFrontend' -f
+      when: START_SERVICES == true and WEB_ENABLED == true
+
+    - name: enable web app on boot
+      ansible.builtin.command:
+        chdir: "{{ BUILD_DIR }}/CCash/web"
+        cmd: |
+          pm2 startup
+      when: START_ON_BOOT == true and START_SERVICES == true and WEB_ENABLED == true
+    - name: enable ccash on boot
+      ansible.builtin.cron:
+        name: CCash enable on boot
+        special_time: reboot
+        state: present
+        job: '{{ BUILD_DIR }}/CCash/build/bank {{ ADMIN_A }} {{ SAVE_FREQ }} true'
+      when: START_ON_BOOT == true
+
+    - name: allow firewalld ports
+      ansible.posix.firewalld:
+        permanent: true
+        port: 443/tcp
+        state: enabled
+    
+    - name: allow firewalld ports
+      ansible.posix.firewalld:
+        permanent: true
+        port: 3000/tcp
+        state: enabled
+      when: WEB_ENABLED == true
+    

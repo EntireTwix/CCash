@@ -4,15 +4,12 @@
 ## Performance
 #### Speed
 <!-- graphs -->
-Capable of processing thousands of requests per second, with no slow down as user size grows to the millions.
-
+Capable of processing hundreds of requests per second, with little slow down as user size grows to the millions.
 #### Lightweight
 <!-- specs -->
-Low memory usage at 8 Mb baseline, and 203 bytes per new log.
-
-Anecdotally I typically expierenced <1% CPU usage.
-
-Small save files at typically a couple kb, easily shareable.
+* Low memory usage at 8 MB baseline, and 157 bytes per new log.
+* Extremely low CPU usage in the single digits of %.
+* Small save files at typically a couple kb, easily shareable.
 ## Accessibility
 #### Connected Services
 as explained in earlier docs a ecosystem of connected services allows you many ways to utilize CCash.
@@ -32,3 +29,5 @@ each transaction is logged and the last `n` logs are stored, if set to 0 logs wi
 by default this feature is off, but when enabled deleted account's funds will be redirected to a specified account rather then "burned"
 #### Configurable
 as you can read in [building.md](../building.md) CCash is highly configurable.
+#### Game Independent
+As CCash does not require an addition to the game in the form of a mod or plugin, it can be ran on any server.
