@@ -11,7 +11,7 @@ The currency model most Minecraft Servers adopt if any, is resource based, usual
 * Locality is required for transactions.
 * Theft is possible; ownership is physical possession based.
 
-CCash solves these issues and adds a level of abstraction. The main philosophy of CCash is to have fast core operations which other services build on, CCash can proccess hundreds of requests per second.
+CCash solves these issues and adds a level of abstraction. The main philosophy of CCash is to have fast core operations which other services build on, CCash can proccess over a thousand requests per second.
 
 The CCash instance can be external to the game server:
 

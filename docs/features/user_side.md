@@ -4,7 +4,7 @@
 ## Performance
 #### Speed
 <!-- graphs -->
-Capable of processing hundreds of requests per second, with little slow down as user size grows to the millions.
+Capable of processing over a thousand requests per second, with little slow down as user size grows to the millions.
 #### Lightweight
 <!-- specs -->
 * Low memory usage at 8 MB baseline, and 157 bytes per new log.
