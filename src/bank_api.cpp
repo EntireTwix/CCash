@@ -218,7 +218,7 @@ void api::AdminVerifyAccount(req_args)
 }
 void api::ApiProperties(req_args)
 {
-    std::string info = "{\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + std::to_string(ADD_USER_OPEN);
+    std::string info = "{\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + (ADD_USER_OPEN?"true":"false");
     if constexpr (RETURN_ON_DEL)
     {
         info += ",\"return_on_del\":\"" + std::string(return_account) + "\"}";
