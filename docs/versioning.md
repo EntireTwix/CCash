@@ -9,4 +9,4 @@ Major changes (e.g `v1.0.0` -> `v2.0.0`) denote a breaking change as all previou
 
 Minor changes (e.g `v1.0.0` -> `v1.1.0`) denote a non-breaking change that adds or changes something about CCash.
 
-Patches (e.g `v1.0.0` -> `v1.0.1`) denote bug fixes.
+Patches (e.g `v1.0.0` -> `v1.0.1`) denote bug fixes or docs changes.

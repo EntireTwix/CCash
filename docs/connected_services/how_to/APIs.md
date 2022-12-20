@@ -3,9 +3,9 @@
 CCash is backwards compatible, so even if a language API does not support the newester version it can still call the old endpoints. Only when the major version increments are deprecated features made defunct (e.g `v1.0.0 -> v2.0.0`), check the [endpoint docs](endpoints.md) to avoid using deprecated endpoints. For more information about versioning check out [versioning docs](../../versioning.md)
 | author                                       | language |                                                                     | newest CCash supported version |
 | :------------------------------------------- | :------: | ------------------------------------------------------------------- | :----------------------------: |
-| [SpaceCat](https://github.com/SpaceCat-Chan) |  CCLua   | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi) |            `v1.4.3`            |
-| [Doggo](https://github.com/ArcNyxx)          |  Python  | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client) |            `v1.4.3`            |
-| [Sam](https://github.com/STBoyden)           |   Rust   | [ccash rs](https://github.com/STBoyden/ccash-rs)                    |            `v1.4.3`            |
+| [SpaceCat](https://github.com/SpaceCat-Chan) |  CCLua   | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi) |            `v2.4.0`            |
+| [Doggo](https://github.com/ArcNyxx)          |  Python  | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client) |            `v2.4.0`            |
+| [Sam](https://github.com/STBoyden)           |   Rust   | [ccash rs](https://github.com/STBoyden/ccash-rs)                    |            `v2.4.0`            |
 
 for example here is a demo program for the lua API by SpaceCat
 
