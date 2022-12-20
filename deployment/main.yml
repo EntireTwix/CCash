@@ -186,6 +186,13 @@
         cmd: |
           pm2 startup
       when: START_ON_BOOT == true and START_SERVICES == true and WEB_ENABLED == true
+    - name: enable ccash on boot
+      ansible.builtin.cron:
+        name: CCash enable on boot
+        special_time: reboot
+        state: present
+        job: '{{ BUILD_DIR }}/CCash/build/bank {{ ADMIN_A }} {{ SAVE_FREQ }} true'
+      when: START_ON_BOOT == true
 
     - name: allow firewalld ports
       ansible.posix.firewalld:
