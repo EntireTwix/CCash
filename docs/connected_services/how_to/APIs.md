@@ -5,7 +5,7 @@ CCash is backwards compatible, so even if a language API does not support the ne
 | :-------------------------------------------------------- | :--------: | -------------------------------------------------------------------- | :----------------------------: |
 | [SpaceCat](https://github.com/SpaceCat-Chan)              |   CCLua    | [CatsCCashLuaApi](https://github.com/SpaceCat-Chan/CatsCCashLuaApi)  |            `v2.5.1`            |
 | [Sam](https://github.com/STBoyden)                        |    Rust    | [ccash rs](https://github.com/STBoyden/ccash-rs)                     |            `v2.5.1`            |
-| [Doggo](https://github.com/ArcNyxx)                       |   Python   | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client)  |            `v2.4.1`            |
+| [Doggo](https://github.com/ArcNyxx)                       |   Python   | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client)  |            `v2.5.1`            |
 | [Luke](https://github.com/LukeeeeBennett/ccash-client-js) | TypeScript | [ccash client js](https://github.com/LukeeeeBennett/ccash-client-js) |            `v1.3.0`            |
     
 here is a demo program for the lua API by SpaceCat
