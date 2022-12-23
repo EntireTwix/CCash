@@ -23,8 +23,8 @@
 | [STBoyden](https://github.com/STBoyden)     | Commodities Exchange (in-development)                                       | :heavy_check_mark: |                                                                                                                 |
 
 ## Desired
-|   idea   | description                                                    |
-| :------: | :------------------------------------------------------------- |
-| Gambling | physical or digital casino.                                    |
-| Shipping | the infastructure to quickly send items across long distances. |
-|   Mod    | a server-side mod                                              |
+|     idea      | description                                                    |
+| :-----------: | :------------------------------------------------------------- |
+|   Gambling    | physical or digital casino.                                    |
+|   Shipping    | the infastructure to quickly send items across long distances. |
+| Mod or Plugin | a server-side mod                                              |
