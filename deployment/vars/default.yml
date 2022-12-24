@@ -7,4 +7,4 @@ WEB_ENABLED: true
 WEB_PORT: "3000"
 START_SERVICES: true
 START_ON_BOOT: true
-BRANCH: "v2.5.1"
+BRANCH: "main"
