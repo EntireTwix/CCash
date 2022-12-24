@@ -7,7 +7,7 @@
 Capable of processing thousands of requests per second, with little slow down as user size grows to the millions.
 #### Lightweight
 <!-- specs -->
-* Low memory usage at 8 MB baseline, and 157 bytes per new log.
+* Low memory usage at 8 MB baseline, and 139 bytes per new log.
 * Extremely low CPU usage in the single digits of %.
 * Small save files at typically a couple kb, easily shareable.
 ## Accessibility
