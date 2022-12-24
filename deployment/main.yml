@@ -70,6 +70,7 @@
         chdir: '{{BUILD_DIR}}/CCash/build/'
         cmd: ./bank
         creates: '{{ BUILD_DIR }}/CCash/config/users.dat'
+
     - name: chmod +x ssl.sh
       ansible.builtin.file:
         mode: u+x
@@ -81,12 +82,12 @@
             "listeners": [
               {
                 "address": "0.0.0.0",
-                "port": 80,
+                "port": {{ CCASH_PORT }},
                 "https": false
               },
               {
                 "address": "0.0.0.0",
-                "port": 443,
+                "port": {{ CCASH_PORT_S }},
                 "https": true,
                 "cert": "{{ BUILD_DIR }}/CCash/config/cert.cert",
                 "key": "{{ BUILD_DIR }}/CCash/config/key.key"
@@ -119,6 +120,7 @@
       ansible.builtin.command:
         chdir: '{{ BUILD_DIR }}/CCash/build'
         cmd: './bank {{ ADMIN_A }} {{ SAVE_FREQ }} true'
+      when: START_SERVICES == true
 
     - name: Clone Web 
       git:
@@ -186,6 +188,7 @@
         cmd: |
           pm2 startup
       when: START_ON_BOOT == true and START_SERVICES == true and WEB_ENABLED == true
+
     - name: enable ccash on boot
       ansible.builtin.cron:
         name: CCash enable on boot
@@ -206,4 +209,3 @@
         port: 3000/tcp
         state: enabled
       when: WEB_ENABLED == true
-    
