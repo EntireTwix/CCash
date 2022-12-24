@@ -74,7 +74,7 @@ int main(int argc, char **argv)
         size_t num_of_logs = Bank::NumOfLogs();
         size_t num_of_users = Bank::NumOfUsers();
         std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "MB"
-                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (93 + sizeof(Transaction) + max_name_size)) / 1048576 << "MB" //93:cached response per log(heap), sizeof(Transaction), max_name_size:counterparty(heap)
+                  << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (75 + sizeof(Transaction) + max_name_size)) / 1048576 << "MB" //75:cached response per log(heap), sizeof(Transaction), max_name_size:counterparty(heap)
                   << "\nLoaded " << Bank::SumBal() << " C$H"
                   << std::endl; //flushing before EventLoop
 

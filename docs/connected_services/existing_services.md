@@ -10,7 +10,7 @@
 ## General
 | author                                  | name                                                        |      support       |                                                      image                                                      |
 | :-------------------------------------- | ----------------------------------------------------------- | :----------------: | :-------------------------------------------------------------------------------------------------------------: |
-| [Expand](https://github.com/Expand-sys) | [Web Frontend](https://github.com/Expand-sys/ccashfrontend) |         ⚠          | ![image](https://user-images.githubusercontent.com/31377881/121337724-afe9fe80-c8d1-11eb-8851-23ec5e74cd26.png) |
+| [Expand](https://github.com/Expand-sys) | [Web Frontend](https://github.com/Expand-sys/ccashfrontend) | :heavy_check_mark: | ![image](https://user-images.githubusercontent.com/31377881/121337724-afe9fe80-c8d1-11eb-8851-23ec5e74cd26.png) |
 | [Expand](https://github.com/Expand-sys) | [Discord Bot](https://github.com/Expand-sys/ccashbot)       | :heavy_check_mark: |                                                                                                                 |
 | [ArcNyxx](https://github.com/ArcNyxx)   | [CCash CLI](https://github.com/ArcNyxx/ccash_cmd)           |         ⚠          |                                                                                                                 |
 
