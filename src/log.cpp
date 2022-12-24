@@ -63,7 +63,7 @@ std::string Log::GetLogsV2() noexcept
         {
             log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
             log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
-            log_snapshot_v2 += ",\"amount\":";                                                     //11
+            log_snapshot_v2 += "\",\"amount\":";                                                     //11
             if (!data[i].receiving) { log_snapshot_v2 += '-'; }                                    //1
             log_snapshot_v2 += std::to_string(data[i].amount);                                     //10?
             log_snapshot_v2 += ",\"time\":";                                                       //8
