@@ -5,7 +5,7 @@
 as CCash is very lightweight it can run on practically any device but here are some tips:
 * single core machines should toggle `MULTI_THREADED` to `false`
 * if your server is sufficiently active, such that each time save frequency is met, changes having been made is highly likely then `CONSERVATIVE_DISK_SAVE` should be toggled to `false`
-* `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage of the ledger's features at 139 bytes in memory and 43 bytes in disk at default settings on the current version, so 6678 logs per MB of RAM. Setting to 0 will disable logs
+* `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage of the ledger's features at 139 bytes in memory and 43 bytes in disk at default settings on the current version, so 7543 logs per MB of RAM. Setting to 0 will disable logs
 * with no users memory usage is ~8.47 MB
 * saving frequency being set to 0 will disable frequency saving and only save on close
 * make backups of your save files!
