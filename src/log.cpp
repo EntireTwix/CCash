@@ -53,7 +53,7 @@ std::string Log::GetLogsV2() noexcept
     {
         log_snapshot_v2.resize(0);
         //re-generate snapshot
-        size_t predicted_size = ((77 + max_name_size) * data.size()) + 1;
+        size_t predicted_size = ((59 + max_name_size) * data.size()) + 1;
         if (log_snapshot_v2.capacity() < predicted_size)
         {
             log_snapshot_v2.reserve(predicted_size);
@@ -63,9 +63,8 @@ std::string Log::GetLogsV2() noexcept
         {
             log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
             log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
-            log_snapshot_v2 += "\",\"receiving\":";                                                //15
-            log_snapshot_v2 += (data[i].receiving)?"true":"false";                                  //4
             log_snapshot_v2 += ",\"amount\":";                                                     //11
+            if (!data[i].receiving) { log_snapshot_v2 += '-'; }                                    //1
             log_snapshot_v2 += std::to_string(data[i].amount);                                     //10?
             log_snapshot_v2 += ",\"time\":";                                                       //8
             log_snapshot_v2 += std::to_string(data[i].time);                                       //10?
