@@ -185,9 +185,15 @@ void Bank::ChangePassword(const std::string &name, const std::string &new_pass) 
     SET_CHANGES_ON;
     Bank::users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 }
-BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
+BankResponse Bank::SetBal(const std::string &name, int64_t amount) noexcept
 {
-    if (ValidUsername(name) && Bank::users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    if (ValidUsername(name) && Bank::users.modify_if(name, [&amount](User &u) { 
+        amount -= u.balance;
+        u.balance -= amount;
+#if MAX_LOG_SIZE > 0
+        u.log.AddTrans(nullptr, (amount > 0), amount, time(NULL));
+#endif
+    }))
     {
         SET_CHANGES_ON;
         return {k204NoContent, std::nullopt}; //returns new balance
@@ -204,7 +210,13 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
     uint32_t bal;
-    if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, amount](User &u) { bal = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
+    if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, &amount](User &u) { 
+        amount += (u.balance < (amount * -1)) * (amount + u.balance);
+        bal = u.balance -= amount;
+#if MAX_LOG_SIZE > 0
+        u.log.AddTrans(nullptr, (amount > 0), amount, time(NULL));
+#endif
+    }))
     {
         SET_CHANGES_ON;
         return {k200OK, std::to_string(bal)}; //may return new balance

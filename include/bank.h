@@ -55,7 +55,7 @@ public:
     static bool VerifyPassword(const std::string &name, const std::string_view &attempt) noexcept;
 
     static void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
-    static BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
+    static BankResponse SetBal(const std::string &name, int64_t amount) noexcept;
     static BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     static bool Contains(const std::string &name) noexcept;
 
