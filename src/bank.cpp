@@ -191,7 +191,7 @@ BankResponse Bank::SetBal(const std::string &name, int64_t amount) noexcept
         amount -= u.balance;
         u.balance += amount;
 #if MAX_LOG_SIZE > 0
-        u.log.AddTrans("$", (amount > 0), amount, time(NULL));
+        u.log.AddTrans("Ω", (amount > 0), amount, time(NULL));
 #endif
     }))
     {
@@ -214,7 +214,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         amount += (u.balance < (amount * -1)) * (amount + u.balance);
         bal = u.balance += amount;
 #if MAX_LOG_SIZE > 0
-        u.log.AddTrans("$", (amount > 0), amount, time(NULL));
+        u.log.AddTrans("Ω", (amount > 0), amount, time(NULL));
 #endif
     }))
     {
