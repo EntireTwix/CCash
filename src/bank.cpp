@@ -189,9 +189,9 @@ BankResponse Bank::SetBal(const std::string &name, int64_t amount) noexcept
 {
     if (ValidUsername(name) && Bank::users.modify_if(name, [&amount](User &u) { 
         amount -= u.balance;
-        u.balance -= amount;
+        u.balance += amount;
 #if MAX_LOG_SIZE > 0
-        u.log.AddTrans(nullptr, (amount > 0), amount, time(NULL));
+        u.log.AddTrans("$", (amount > 0), amount, time(NULL));
 #endif
     }))
     {
@@ -212,9 +212,9 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     uint32_t bal;
     if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, &amount](User &u) { 
         amount += (u.balance < (amount * -1)) * (amount + u.balance);
-        bal = u.balance -= amount;
+        bal = u.balance += amount;
 #if MAX_LOG_SIZE > 0
-        u.log.AddTrans(nullptr, (amount > 0), amount, time(NULL));
+        u.log.AddTrans("$", (amount > 0), amount, time(NULL));
 #endif
     }))
     {
