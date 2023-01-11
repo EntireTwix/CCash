@@ -179,7 +179,6 @@ bool Bank::VerifyPassword(const std::string &name, const std::string_view &attem
     Bank::users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
-
 void Bank::ChangePassword(const std::string &name, const std::string &new_pass) noexcept
 {
     SET_CHANGES_ON;
@@ -211,7 +210,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     }
     uint32_t bal;
     if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, &amount](User &u) { 
-        if (u.balance < (amount * -1)) { amount = -u.balance; };
+        if (u.balance < (amount * -1)) { amount = -int64_t(u.balance); };
         bal = u.balance += amount;
 #if MAX_LOG_SIZE > 0
         u.log.AddTrans("Ω", (amount > 0), std::abs(amount), time(NULL));
