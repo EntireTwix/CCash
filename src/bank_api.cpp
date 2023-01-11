@@ -54,6 +54,18 @@ void api::GetLogsV2(req_args)
 #endif
 }
 
+void api::AdminGetLogs(req_args, const std::string& name)
+{
+#if MAX_LOG_SIZE > 0
+    RESPONSE_PARSE(Bank::GetLogsV2(name));
+#else
+    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
+    CORS;
+    CACHE_FOREVER;
+    callback(resp);
+#endif
+}
+
 void api::SendFunds(req_args)
 {
     SIMD_JSON_GEN;

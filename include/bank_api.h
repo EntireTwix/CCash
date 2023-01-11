@@ -16,6 +16,7 @@ public:
     static void GetLogs(req_args);
 #endif
     static void GetLogsV2(req_args);
+    static void AdminGetLogs(req_args, const std::string& name);
     static void SendFunds(req_args);
     static void VerifyPassword(req_args);
 
@@ -43,17 +44,25 @@ public:
 
     //Usage
     METHOD_ADD(api::GetBal, "/v1/user/balance?name={name}", Get, Options, "JsonFilter<false>");
+
 #if MAX_LOG_SIZE > 0
+
 #if USE_DEPRECATED_ENDPOINTS
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
 #endif
+
     METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
+    METHOD_ADD(api::AdminGetLogs, "/v1/admin/user/log?name={name}", Get, Options, "JsonFilter<false>", "UserFilter<false, true>");
 #else
+
 #if USE_DEPRECATED_ENDPOINTS
     METHOD_ADD(api::GetLogs, "/v1/user/log", Get, Options, "JsonFilter<false>");
 #endif
+
     METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>");
+    METHOD_ADD(api::AdminGetLogs, "/v1/admin/user/log?name={name}", Get, Options, "JsonFilter<false>");
 #endif
+
     METHOD_ADD(api::SendFunds, "/v1/user/transfer", Post, Options, "JsonFilter<true>", "UserFilter<true, false>"); //expects ["name"](string) and ["amount"](uint32)
     METHOD_ADD(api::VerifyPassword, "/v1/user/verify_password", Post, Options, "UserFilter<false, false>", "JsonFilter<false>");
 
