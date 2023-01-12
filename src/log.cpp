@@ -96,7 +96,7 @@ std::string Log::GetLogsRange(size_t start, size_t length) noexcept
         ++log_index_n;
     }
     size_t log_index_m = log_snapshot_v2.size() - log_index_n;
-    if (length != MAX_LOG_SIZE)
+    if ((start + length + 1) != MAX_LOG_SIZE)
     {
         log_index_m = 0;
         while(i < log_snapshot_v2.size())
