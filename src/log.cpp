@@ -82,7 +82,7 @@ std::string Log::GetLogsRange(size_t start, size_t length) noexcept
     if (start > data.size()) { return "[]"; }
     if (start == 0 && length == MAX_LOG_SIZE) { return log_snapshot_v2; }
     if (log_flag_v2.GetChangeState() && data.size()) { GetLogsV2(); }
-    if (length > data.size()) { length = data.size(); }
+    if (length > data.size()) { length = data.size() - start; }
 
     size_t log_index_n = 0, i = 0;
     while(i < log_snapshot_v2.size())
