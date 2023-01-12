@@ -17,7 +17,7 @@ void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t
 #if USE_DEPRECATED_ENDPOINTS
 std::string Log::GetLogs(const std::string& name) noexcept
 {
-    if (log_flag.GetChangeState() && data.size()) //if there are changes
+    if (log_flag.GetChangeState() && data.size()) // if there are changes
     {
         log_snapshot.resize(0);
         //re-generate snapshot
@@ -49,7 +49,7 @@ std::string Log::GetLogs(const std::string& name) noexcept
 
 std::string Log::GetLogsV2() noexcept
 {
-    if (log_flag_v2.GetChangeState() && data.size()) //if there are changes
+    if (log_flag_v2.GetChangeState() && data.size()) // if there are changes
     {
         log_snapshot_v2.resize(0);
         //re-generate snapshot
@@ -63,7 +63,7 @@ std::string Log::GetLogsV2() noexcept
         {
             log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
             log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
-            log_snapshot_v2 += "\",\"amount\":";                                                     //11
+            log_snapshot_v2 += "\",\"amount\":";                                                   //11
             if (!data[i].receiving) { log_snapshot_v2 += '-'; }                                    //1
             log_snapshot_v2 += std::to_string(data[i].amount);                                     //10?
             log_snapshot_v2 += ",\"time\":";                                                       //8
@@ -75,4 +75,46 @@ std::string Log::GetLogsV2() noexcept
     }
 
     return log_snapshot_v2;
+}
+
+std::string Log::GetLogsRange(size_t start, size_t length) noexcept
+{
+    if (start > data.size()) { return "[]"; }
+    if (start == 0 && length == MAX_LOG_SIZE) { return log_snapshot_v2; }
+    if (log_flag_v2.GetChangeState() && data.size()) { GetLogsV2(); }
+
+    size_t log_index_n = 0, i = 0;
+    while(i < log_snapshot_v2.size())
+    {
+        if (log_index_n == start)
+        {
+            log_index_n = i;
+            break;
+        }
+        i += (41 + min_name_size);
+        while (log_snapshot_v2[i] != ',') { ++i; }
+        ++log_index_n;
+    }
+    size_t log_index_m = log_snapshot_v2.size() - log_index_n;
+    if (length != MAX_LOG_SIZE)
+    {
+        log_index_m = 0;
+        while(i < log_snapshot_v2.size())
+        {
+            if (log_index_m == length)
+            {
+                log_index_m = i + 1;
+                break;
+            }
+            i += (41 + min_name_size);
+            while (log_snapshot_v2[i] != ',') { ++i; }
+            ++log_index_m;
+        }
+    }
+
+    std::string res(log_snapshot_v2.substr(log_index_n, log_index_m - log_index_n));
+    res[0] = '[';
+    res[log_index_m - log_index_n - 1] = ']';
+    
+    return res;
 }

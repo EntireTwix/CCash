@@ -96,23 +96,10 @@ int main(int argc, char **argv)
 #endif
     Op(Bank::GetLogsV2("twix"), "get logs init (v2): ", 1);
     Op(Bank::GetLogsV2("twix"), "get logs cached (v2): ", 1000000);
+    Op(Bank::GetLogsRange("twix", 0, 100), "get logs range: ", 1000000);
 #endif
     Op(Bank::PruneUsers(0, 0), "prune users: ", 1);
     Op(Bank::Save(), "saving: ", 1);
-
-    //GetBal scalining test
-    //std::default_random_engine generator;
-    //std::uniform_real_distribution<double> distribution(0.0, 1.0);
-
-    // for (size_t i = 0; i < 10000000; ++i)
-    // {
-    //     Bank::AddUser(std::to_string(i), 100000, "root");
-    //     if (i % 10000 == 0)
-    //     {
-    //         auto u = std::to_string((int)(distribution(generator) * i));
-    //         Op(Bank::GetBal(u), std::to_string(i) + ", ", 100000);
-    //     }
-    // }
 
     return 0;
 }
