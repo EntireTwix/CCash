@@ -59,7 +59,7 @@ std::string Log::GetLogsV2() noexcept
             log_snapshot_v2.reserve(predicted_size);
         }
         log_snapshot_v2 = '['; //1
-        for (size_t i = 0; i < data.size(); ++i)
+        for (size_t i = data.size(); i --> 0;)
         {
             log_snapshot_v2 += "{\"counterparty\":\"";                                             //17
             log_snapshot_v2 += data[i].counterparty;                                               //max_name_size?
