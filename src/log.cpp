@@ -9,7 +9,7 @@ void Log::AddTrans(const std::string &counterparty_str, bool receiving, uint32_t
 
     if (data.size() == MAX_LOG_SIZE)
     {
-        data.pop_back();
+        data.pop_front();
     }
     data.emplace_back(counterparty_str, receiving, amount, time);
 }
