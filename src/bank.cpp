@@ -121,11 +121,11 @@ BankResponse Bank::GetLogsRange(const std::string &name, size_t start, size_t le
     BankResponse res;
     if (start >= MAX_LOG_SIZE)
     {
-        return {k400BadRequest, "\"Invalid starting index\""};
+        return {k400BadRequest, "\"Invalid {start} index\""};
     }
-    if (length == 0 || (length + start) > MAX_LOG_SIZE)
+    if (!length)
     {
-        return {k400BadRequest, "\"Invalid length\""};
+        return {k400BadRequest, "\"Invalid {length}\""};
     }
 
     if (!Bank::users.modify_if(name, [&name, &res, start, length](User &u) { res = {k200OK, u.log.GetLogsRange(start, length)}; }))
