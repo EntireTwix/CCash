@@ -82,40 +82,87 @@ std::string Log::GetLogsRange(size_t start, size_t length) noexcept
     if (start > data.size()) { return "[]"; }
     if (start == 0 && length == MAX_LOG_SIZE) { return log_snapshot_v2; }
     if (log_flag_v2.GetChangeState() && data.size()) { GetLogsV2(); }
-    if ((start + length + 1) >= data.size()) { length = data.size() - start; }
 
-    size_t log_index_n = 0, i = 0;
-    while(i < log_snapshot_v2.size())
+    size_t log_index_n, i;
+    if (start < (0.5 * MAX_LOG_SIZE))
     {
-        if (log_index_n == start)
-        {
-            log_index_n = i;
-            break;
-        }
-        i += (41 + min_name_size);
-        while (log_snapshot_v2[i] != ',') { ++i; }
-        ++log_index_n;
-    }
-    size_t log_index_m = log_snapshot_v2.size() - log_index_n;
-    if ((start + length + 1) != data.size())
-    {
-        log_index_m = 0;
+        // std::cout << "a\n";
+        i = 0;
+        log_index_n = 0;
         while(i < log_snapshot_v2.size())
         {
-            if (log_index_m == length)
+            if (log_index_n == start)
             {
-                log_index_m = i + 1;
+                log_index_n = i;
                 break;
             }
             i += (41 + min_name_size);
             while (log_snapshot_v2[i] != ',') { ++i; }
-            ++log_index_m;
+            ++log_index_n;
+        }
+    }
+    else
+    {
+        // std::cout << "b\n";
+        i = log_snapshot_v2.size();
+        log_index_n = data.size();
+        while(i --> 0)
+        {
+            if (log_index_n == start)
+            {
+                log_index_n = i + 1;
+                break;
+            }
+            i -= (41 + min_name_size);
+            while (log_snapshot_v2[i] != ',') { --i; }
+            --log_index_n;
         }
     }
 
-    std::string res(log_snapshot_v2.substr(log_index_n, log_index_m - log_index_n));
+    size_t log_index_m = std::string::npos;
+    if ((start + length) < data.size())
+    {
+        if (length < (0.5 * MAX_LOG_SIZE))
+        {
+            // std::cout << "c\n";
+            log_index_m = 0;
+            while(i < log_snapshot_v2.size())
+            {
+                if (log_index_m == length)
+                {
+                    log_index_m = i + 1;
+                    break;
+                }
+                i += (41 + min_name_size);
+                while (log_snapshot_v2[i] != ',') { ++i; }
+                ++log_index_m;
+            }
+        }
+        else
+        {
+            // std::cout << "d\n";
+            i = log_snapshot_v2.size();
+            log_index_m = data.size();
+            while(i --> 0)
+            {
+                if (log_index_m == length)
+                {
+                    log_index_m = i + 1;
+                    break;
+                }
+                i -= (41 + min_name_size);
+                while (log_snapshot_v2[i] != ',') { --i; }
+                --log_index_m;
+            }
+        }
+        
+        log_index_m -= log_index_n;
+    }
+
+    std::string res(log_snapshot_v2.substr(log_index_n, log_index_m));
     res[0] = '[';
-    res[log_index_m - log_index_n - 1] = ']';
+    res[res.size() - 1] = ']';
+    // std::cout << res << '\n';
     
     return res;
 }
