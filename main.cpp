@@ -40,17 +40,17 @@ int main(int argc, char **argv)
             {
                 std::cerr << "File cannot be created (may already exist)\n";
             }
-            return 0;
+            return -1;
         }
         if (argc < 3)
         {
             std::cerr << "Usage: sudo ./bank <admin account> <saving frequency in minutes> [daemon flag {default: false}]\n";
-            return 0;
+            return -1;
         }
         if (geteuid() != 0)
         {
             std::cerr << "ERROR: CCash MUST be ran as root\n";
-            return 0;
+            return -1;
         }
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         std::cout
@@ -104,6 +104,11 @@ int main(int argc, char **argv)
         }
 
         if (argc == 4 && !strcmp(argv[3], "true")) { app().enableRunAsDaemon(); }
+        else if (argc == 4 && strcmp(argv[3], "false")) 
+        { 
+            std::cerr << "daemon flag must be \"true\" or \"false\"\n"; 
+            return -1;
+        }
     } //destroying setup variables
 
     app()
