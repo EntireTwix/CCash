@@ -34,13 +34,13 @@ int main(int argc, char **argv)
                 uint8_t temp[16]{16, 0, 0, 0, 4};
                 users_save.write((char *)temp, 16);
                 users_save.close();
-                std::cout << "User save file generated\nUsage: sudo ./bank <admin account name> <saving frequency in minutes> [daemon flag {default: false}]\n";
+                std::cout << "User save file generated\n";
             }
             else
             {
                 std::cerr << "File cannot be created (may already exist)\n";
+                return -1;
             }
-            return -1;
         }
         if (argc < 3)
         {
@@ -104,7 +104,7 @@ int main(int argc, char **argv)
         }
 
         if (argc == 4 && !strcmp(argv[3], "true")) { app().enableRunAsDaemon(); }
-        else if (argc == 4 && strcmp(argv[3], "false")) 
+        else if (argc == 4 && strcmp(argv[3], "false"))
         { 
             std::cerr << "daemon flag must be \"true\" or \"false\"\n"; 
             return -1;
