@@ -34,7 +34,8 @@ int main(int argc, char **argv)
                 uint8_t temp[16]{16, 0, 0, 0, 4};
                 users_save.write((char *)temp, 16);
                 users_save.close();
-                std::cout << "User save file generated\n";
+                std::cout << "User save file generated\n" << "Usage: sudo ./bank <admin account> <saving frequency in minutes> [daemon flag {default: false}]\n";
+                return 0;
             }
             else
             {
@@ -54,8 +55,8 @@ int main(int argc, char **argv)
         }
         const unsigned long saving_freq = std::stoul(std::string(argv[2]));
         std::cout
-            << "\nAPI             : v2.5.1"
-            << "\n\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
+            << "\nAPI             : v2.6.1\n"
+            << "\nAVX             : " << (__builtin_cpu_supports("avx") ? "enabled" : "disabled")
             << "\nAVX 2           : " << (__builtin_cpu_supports("avx2") ? "enabled" : "disabled")
             << "\nSSE 2           : " << (__builtin_cpu_supports("sse2") ? "enabled" : "disabled")
             << "\nSSE 3           : " << (__builtin_cpu_supports("sse3") ? "enabled" : "disabled")
@@ -92,15 +93,14 @@ int main(int argc, char **argv)
         if (saving_freq) //if saving frequency is 0 then auto saving is turned off
         {
             std::thread([saving_freq]()
-                        {
-                            while (1)
-                            {
-                                std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
-                                std::cout << "Saving " << std::time(0) << "...\n"
-                                          << Bank::Save();
-                            }
-                        })
-                .detach();
+            {
+                while (1)
+                {
+                    std::this_thread::sleep_for(std::chrono::minutes(saving_freq));
+                    std::cout << "Saving " << std::time(0) << "...\n" << Bank::Save();
+                }
+            })
+            .detach();
         }
 
         if (argc == 4 && !strcmp(argv[3], "true")) { app().enableRunAsDaemon(); }
