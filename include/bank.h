@@ -49,13 +49,13 @@ public:
     static BankResponse GetLogs(const std::string &name) noexcept;
 #endif
     static BankResponse GetLogsV2(const std::string &name) noexcept;
+    static BankResponse GetLogsRange(const std::string &name, size_t n, size_t m) noexcept;
 #endif
 
     static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;
     static bool VerifyPassword(const std::string &name, const std::string_view &attempt) noexcept;
-
     static void ChangePassword(const std::string &name, const std::string &new_pass) noexcept;
-    static BankResponse SetBal(const std::string &name, uint32_t amount) noexcept;
+    static BankResponse SetBal(const std::string &name, int64_t amount) noexcept;
     static BankResponse ImpactBal(const std::string &name, int64_t amount) noexcept;
     static bool Contains(const std::string &name) noexcept;
 

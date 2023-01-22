@@ -36,7 +36,7 @@ inline bool ValidUsername(const std::string &name) noexcept
     }
     for (char c : name)
     {
-        if (!((c >= 'a' && c <= 'z') || (c >= '0' && c <= '9') || c == '_'))
+        if (!((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z') || (c >= '0' && c <= '9') || c == '_'))
         {
             return false;
         }
@@ -116,6 +116,28 @@ BankResponse Bank::GetLogsV2(const std::string &name) noexcept
     }
 }
 
+BankResponse Bank::GetLogsRange(const std::string &name, size_t start, size_t length) noexcept
+{
+    BankResponse res;
+    if (start >= MAX_LOG_SIZE)
+    {
+        return {k400BadRequest, "\"Invalid {start} index\""};
+    }
+    if (!length)
+    {
+        return {k400BadRequest, "\"Invalid {length}\""};
+    }
+
+    if (!Bank::users.modify_if(name, [&name, &res, start, length](User &u) { res = {k200OK, u.log.GetLogsRange(start, length)}; }))
+    {
+        return {k404NotFound, "\"User not found\""};
+    }
+    else
+    {
+        return res;
+    }
+}
+
 #endif
 
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept
@@ -179,15 +201,20 @@ bool Bank::VerifyPassword(const std::string &name, const std::string_view &attem
     Bank::users.if_contains(name, [&res, &attempt](const User &u) { res = (u.password == xxHashStringGen{}(attempt)); });
     return res;
 }
-
 void Bank::ChangePassword(const std::string &name, const std::string &new_pass) noexcept
 {
     SET_CHANGES_ON;
     Bank::users.modify_if(name, [&new_pass](User &u) { u.password = xxHashStringGen{}(new_pass); });
 }
-BankResponse Bank::SetBal(const std::string &name, uint32_t amount) noexcept
+BankResponse Bank::SetBal(const std::string &name, int64_t amount) noexcept
 {
-    if (ValidUsername(name) && Bank::users.modify_if(name, [amount](User &u) { u.balance = amount; }))
+    if (ValidUsername(name) && Bank::users.modify_if(name, [&amount](User &u) { 
+        amount -= u.balance;
+        u.balance += amount;
+#if MAX_LOG_SIZE > 0
+        u.log.AddTrans("Ω", (amount > 0), std::abs(amount), time(NULL));
+#endif
+    }))
     {
         SET_CHANGES_ON;
         return {k204NoContent, std::nullopt}; //returns new balance
@@ -204,7 +231,13 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
         return {k400BadRequest, "\"Amount cannot be 0\""};
     }
     uint32_t bal;
-    if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, amount](User &u) { bal = (u.balance < (amount * -1) ? u.balance = 0 : u.balance += amount); }))
+    if (ValidUsername(name) && Bank::users.modify_if(name, [&bal, &amount](User &u) { 
+        if (u.balance < (amount * -1)) { amount = -int64_t(u.balance); };
+        bal = u.balance += amount;
+#if MAX_LOG_SIZE > 0
+        u.log.AddTrans("Ω", (amount > 0), std::abs(amount), time(NULL));
+#endif
+    }))
     {
         SET_CHANGES_ON;
         return {k200OK, std::to_string(bal)}; //may return new balance
