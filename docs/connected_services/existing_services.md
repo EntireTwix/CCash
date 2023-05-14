@@ -25,8 +25,10 @@
 
 
 ## Desired
-|     idea      | description                                                    |
-| :-----------: | :------------------------------------------------------------- |
-|   Gambling    | physical or digital casino.                                    |
-|   Shipping    | the infastructure to quickly send items across long distances. |
-| Mod or Plugin | a server-side mod                                              |
+|      idea      | description                                                                                      |
+| :------------: | :----------------------------------------------------------------------------------------------- |
+|    Gambling    | physical or digital casino.                                                                      |
+|     Market     | a market to buy and sell commodities                                                             |
+| Item Logistics | the infastructure to quickly send items across long distances.                                   |
+| Mod or Plugin  | a server-side mod or plugin that allows you to interface with CCash                              |
+|     Script     | a server-side script that intermitently copies the server save file or makes calls to prune_user |

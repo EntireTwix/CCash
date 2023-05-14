@@ -3,12 +3,13 @@
 
 ## Advice
 as CCash is very lightweight it can run on practically any device but here are some tips:
-* single core machines should toggle `MULTI_THREADED` to `false`
-* if your server is sufficiently active, such that each time save frequency is met, changes having been made is highly likely then `CONSERVATIVE_DISK_SAVE` should be toggled to `false`
-* `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage of the ledger's features at 139 bytes in memory and 43 bytes in disk at default settings on the current version, so 7543 logs per MB of RAM. Setting to 0 will disable logs
-* with no users memory usage is ~8.47 MB
-* saving frequency being set to 0 will disable frequency saving and only save on close
+* single core machines should toggle `MULTI_THREADED` to `false`.
+* if your server is sufficiently active, such that each time save frequency is met, changes having been made is highly likely then `CONSERVATIVE_DISK_SAVE` should be toggled to `false`.
+* `MAX_LOG_SIZE` should be adjusted as it takes up the most memory usage/storage of the ledger's features at 139 bytes in memory and 43 bytes in disk at default settings on the current version, so 7543 logs per MB of RAM. Setting to 0 will disable logs.
+* with no users memory usage is ~8.47 MB.
+* saving frequency being set to 0 will disable frequency saving and only save on close.
 * make backups of your save files!
+* related to log size, one strategy you could employ is setting `ADD_USER_OPEN` to `false` or pruning users often, enabling you to make `MAX_LOG_SIZE` very large.
 
 ## Docker & Ansible
 If you want to use the docker package, deploy information can be found [here](deploy.md)
@@ -66,16 +67,16 @@ cd build
 
 ### CMake Variables
 there are multiple flags responsible configuring CCash:
-| name                     |       default        | description                                                                                                                                             | pros                             | cons                                                     |
-| :----------------------- | :------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------- | -------------------------------------------------------- |
-| USER_SAVE_LOC            |  "config/users.dat"  | where the users are saved                                                                                                                               | `N/A`                            | `N/A`                                                    |
-| DROGON_CONFIG_LOC        | "config/config.json" | where the config is located                                                                                                                             | `N/A`                            | `N/A`                                                    |
-| MAX_LOG_SIZE             |         100          | max number of logs per user, last `n` transactions. If both this and pre log are toggled to 0 logs will not be compiled.                                | large history                    | higher memory usage                                      |
-| CONSERVATIVE_DISK_SAVE   |        `true`        | when `true` only saves when changes are made                                                                                                            | low # of disk operations         | some atomic overhead                                     |
-| MULTI_THREADED           |        `true`        | when `true` the program is compiled to utilize `n` threads which corresponds to how many Cores your CPU has, plus 1 for saving                          | speed                            | memory lock overhead is wasteful on single core machines |
-| RETURN_ON_DEL_NAME       |        `N/A`         | when defined, return on delete will be toggled and any accounts deleted will send their funds to the defined account, this prevent currency destruction | prevents destruction of currency | deleting accounts is made slower                         |
-| ADD_USER_OPEN            |        `true`        | anybody can make a new account, if set to false only admins can add accounts via `AdminAddUser()`                                                       | `N/A`                            | spamming new users                                       |
-| USE_DEPRECATED_ENDPOINTS |        `true`        | some endpoints have newer versions making them obsolete but old programs might still call these endpoints so they are simply marked deprecated.         | supports old programs            | old endpoints can be ineffecient                         |
+| name                     |       default        | description                                                                                                                                             | pros                                    | cons                                                     |
+| :----------------------- | :------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------- |
+| USER_SAVE_LOC            |  "config/users.dat"  | where the users are saved                                                                                                                               | `N/A`                                   | `N/A`                                                    |
+| DROGON_CONFIG_LOC        | "config/config.json" | where the config is located                                                                                                                             | `N/A`                                   | `N/A`                                                    |
+| MAX_LOG_SIZE             |         100          | max number of logs per user, last `n` transactions. If set to 0 logs will not be compiled.                                                              | large history                           | higher memory usage and slower log responses             |
+| CONSERVATIVE_DISK_SAVE   |        `true`        | when `true` only saves when changes are made                                                                                                            | low # of disk operations                | some atomic overhead                                     |
+| MULTI_THREADED           |        `true`        | when `true` the program is compiled to utilize `n` threads which corresponds to how many Cores your CPU has, plus 1 for saving                          | speed                                   | memory lock overhead is wasteful on single core machines |
+| RETURN_ON_DEL_NAME       |        `N/A`         | when defined, return on delete will be toggled and any accounts deleted will send their funds to the defined account, this prevent currency destruction | prevents destruction of currency        | deleting accounts is made slower                         |
+| ADD_USER_OPEN            |        `true`        | anybody can make a new account, if set to false only admins can add accounts via `AdminAddUser()`                                                       | services that rely on creating accounts | people can create too many new users                     |
+| USE_DEPRECATED_ENDPOINTS |        `true`        | some endpoints have newer versions making them obsolete but old programs might still call these endpoints so they are simply marked deprecated.         | supports old services                   | old endpoints can be ineffecient                         |
 
 EXAMPLE:
 ```
