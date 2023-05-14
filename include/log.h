@@ -26,6 +26,5 @@ public:
     std::string GetLogs(const std::string& name) noexcept;
 #endif
     std::string GetLogsV2() noexcept;
-    std::string GetLogsRange(size_t n, size_t m) noexcept;
     void AddTrans(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept;
 };

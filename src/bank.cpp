@@ -116,28 +116,6 @@ BankResponse Bank::GetLogsV2(const std::string &name) noexcept
     }
 }
 
-BankResponse Bank::GetLogsRange(const std::string &name, size_t start, size_t length) noexcept
-{
-    BankResponse res;
-    if (start >= MAX_LOG_SIZE)
-    {
-        return {k400BadRequest, "\"Invalid {start} index\""};
-    }
-    if (!length)
-    {
-        return {k400BadRequest, "\"Invalid {length}\""};
-    }
-
-    if (!Bank::users.modify_if(name, [&name, &res, start, length](User &u) { res = {k200OK, u.log.GetLogsRange(start, length)}; }))
-    {
-        return {k404NotFound, "\"User not found\""};
-    }
-    else
-    {
-        return res;
-    }
-}
-
 #endif
 
 BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept

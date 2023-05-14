@@ -54,18 +54,6 @@ void api::GetLogsV2(req_args)
 #endif
 }
 
-void api::GetLogsRange(req_args, size_t start, size_t length)
-{
-#if MAX_LOG_SIZE > 0
-    RESPONSE_PARSE(Bank::GetLogsRange(NAME_PARAM, start, length));
-#else
-    auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k404NotFound, "\"Logs are Disabled\""});
-    CORS;
-    CACHE_FOREVER;
-    callback(resp);
-#endif
-}
-
 void api::AdminGetLogs(req_args, const std::string& name)
 {
 #if MAX_LOG_SIZE > 0

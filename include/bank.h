@@ -49,7 +49,6 @@ public:
     static BankResponse GetLogs(const std::string &name) noexcept;
 #endif
     static BankResponse GetLogsV2(const std::string &name) noexcept;
-    static BankResponse GetLogsRange(const std::string &name, size_t n, size_t m) noexcept;
 #endif
 
     static BankResponse SendFunds(const std::string &a_name, const std::string &b_name, uint32_t amount) noexcept;

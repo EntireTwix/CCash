@@ -16,7 +16,6 @@ public:
     static void GetLogs(req_args);
 #endif
     static void GetLogsV2(req_args);
-    static void GetLogsRange(req_args, size_t start, size_t length);
     static void SendFunds(req_args);
     static void ChangePassword(req_args);
     static void VerifyPassword(req_args);
@@ -51,7 +50,6 @@ public:
 #endif
 
     METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
-    METHOD_ADD(api::GetLogsRange, "/v1/user/log_range?start={start}&length={length}", Get, Options, "JsonFilter<false>", "UserFilter<true, false>");
     METHOD_ADD(api::AdminGetLogs, "/v1/admin/user/log?name={name}", Get, Options, "JsonFilter<false>", "UserFilter<false, true>");
 #else
 
@@ -60,7 +58,6 @@ public:
 #endif
 
     METHOD_ADD(api::GetLogsV2, "/v2/user/log", Get, Options, "JsonFilter<false>");
-    METHOD_ADD(api::GetLogsRange, "/v1/user/log_range?start={start}&length={length}", Get, Options, "JsonFilter<false>");
     METHOD_ADD(api::AdminGetLogs, "/v1/admin/user/log?name={name}", Get, Options, "JsonFilter<false>");
 #endif
 

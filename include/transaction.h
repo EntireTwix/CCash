@@ -11,5 +11,5 @@ struct Transaction
     time_t time = 0;
 
     Transaction() noexcept;
-    Transaction(const std::string &counterparty_str, bool receiving, uint32_t amount, time_t time) noexcept;
+    Transaction(const std::string &counterparty, bool receiving, uint32_t amount, time_t time) noexcept;
 };
