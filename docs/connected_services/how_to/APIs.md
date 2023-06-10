@@ -7,7 +7,9 @@ CCash is backwards compatible, so even if a language API does not support the ne
 | [Sam](https://github.com/STBoyden)                        |    Rust    | [ccash rs](https://github.com/STBoyden/ccash-rs)                     |            `v2.5.1`            |
 | [Doggo](https://github.com/ArcNyxx)                       |   Python   | [CCashPythonClient](https://github.com/ArcNyxx/ccash_python_client)  |            `v2.5.1`            |
 | [Luke](https://github.com/LukeeeeBennett/ccash-client-js) | TypeScript | [ccash client js](https://github.com/LukeeeeBennett/ccash-client-js) |            `v1.3.0`            |
-    
+
+**Its good to check the versioning docs because while an API implementation might not support the newest version, it could very well be a non-breaking change and so still suitable for use.**
+
 here is a demo program for the lua API by SpaceCat
 
 ```lua
