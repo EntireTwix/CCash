@@ -3,9 +3,11 @@
 // Setting to 0 does not compile logging (useful for if disk/memory is very valuable)
 #define MAX_LOG_SIZE @MAX_LOG_SIZE_VAL@
 
-// Default to minecraft usernames
+// Note: this allows for below 3 character names to be reserved for internal CCash operations
 constexpr unsigned min_name_size = 3;
-constexpr unsigned max_name_size = 16;
+
+// 36 because minecraft UUID is 36 characters
+constexpr unsigned max_name_size = 36;
 
 constexpr const char *users_location = @USER_SAVE@;
 constexpr const char *config_location = @DROGON_CONFIG@;
