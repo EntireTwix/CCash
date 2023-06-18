@@ -4,13 +4,13 @@
 #include <unistd.h>
 #include "bank_api.h"
 
-//sig handling headers
+// sig handling headers
 #include <signal.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <unistd.h>
 
-//threads of cpu
+// threads of cpu
 #include <sys/sysinfo.h>
 
 using namespace drogon;
@@ -70,27 +70,27 @@ int main(int argc, char **argv)
             << "\nMulti threading : disabled";
 #endif
 
-        //Loading users from users.dat
+        // Loading users from users.dat
         Bank::Load();
         size_t num_of_logs = Bank::NumOfLogs();
         size_t num_of_users = Bank::NumOfUsers();
         std::cout << "\n\nLoaded " << num_of_users << " Users ~" << (float)(sizeof(User) * num_of_users) / 1048576 << "MB"
                   << "\nLoaded " << num_of_logs << " Logs ~" << (float)(num_of_logs * (75 + sizeof(Transaction) + max_name_size)) / 1048576 << "MB" //75:cached response per log(heap), sizeof(Transaction), max_name_size:counterparty(heap)
                   << "\nLoaded " << Bank::SumBal() << " C$H"
-                  << std::endl; //flushing before EventLoop
+                  << std::endl; // flushing before EventLoop
 
-        //Sig handling
+        // Sig handling
         struct sigaction sigIntHandler;
         sigIntHandler.sa_handler = SaveSig;
         sigemptyset(&sigIntHandler.sa_mask);
         sigIntHandler.sa_flags = 0;
         sigaction(SIGINT, &sigIntHandler, NULL);
 
-        //Admin account
+        // Admin account
         Bank::admin_account = argv[1];
 
-        //Auto Saving
-        if (saving_freq) //if saving frequency is 0 then auto saving is turned off
+        // Auto Saving
+        if (saving_freq) // if saving frequency is 0 then auto saving is turned off
         {
             std::thread([saving_freq]()
             {
@@ -109,7 +109,7 @@ int main(int argc, char **argv)
             std::cerr << "daemon flag must be \"true\" or \"false\"\n"; 
             return -1;
         }
-    } //destroying setup variables
+    } // destroying setup variables
 
     app()
         .loadConfigFile(config_location)

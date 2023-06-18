@@ -22,12 +22,12 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
                                                         FilterChainCallback &&fccb)
 {
     std::string_view auth_header = req->getHeader("Authorization");
-    if (auth_header.size() > 6 && auth_header.size() <= ((max_name_size + 256) * 4) / 3) //"Basic " + (username + ':' + password) * 4/3
+    if (auth_header.size() > 6 && auth_header.size() <= ((max_name_size + 256) * 4) / 3) // "Basic " + (username + ':' + password) * 4/3
     {
         if (auth_header.substr(0, 6) == "Basic ")
         {
             std::string_view input = auth_header.substr(6);
-            char result_buffer[max_name_size + 256]; //(username + ':' + 255 password)
+            char result_buffer[max_name_size + 256]; // (username + ':' + 255 password)
             size_t new_sz;
             base64_decode(input.data(), input.size(), result_buffer, &new_sz, 0);
 
@@ -36,7 +36,7 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
             if (middle != std::string::npos && ((new_sz - middle) <= 256))
             {
                 StrFromSV_Wrapper username(results_view.substr(0, middle));
-                if (ValidUsername(username.str)) //check if username is a valid attempt to avoid hashing/grabbing shared lock
+                if (ValidUsername(username.str)) // check if username is a valid attempt to avoid hashing/grabbing shared lock
                 {
                     if constexpr (require_admin)
                     {
@@ -70,6 +70,6 @@ void UserFilter<set_body_flag, require_admin>::doFilter(const HttpRequestPtr &re
     fcb(HttpResponse::newCustomHttpResponse(BankResponse{k401Unauthorized, "\"Invalid Credentials\""}));
 }
 
-template class UserFilter<true, false>;  //user default
-template class UserFilter<false, false>; //user sparse
-template class UserFilter<false, true>;  //admin
+template class UserFilter<true, false>;  // user default
+template class UserFilter<false, false>; // user sparse
+template class UserFilter<false, true>;  // admin

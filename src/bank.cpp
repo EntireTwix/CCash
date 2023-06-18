@@ -44,10 +44,10 @@ inline bool ValidUsername(const std::string &name) noexcept
     return true;
 }
 
-//NOT THREAD SAFE
+// NOT THREAD SAFE
 size_t Bank::NumOfUsers() noexcept { return Bank::users.size(); }
 
-//NOT THREAD SAFE
+// NOT THREAD SAFE
 size_t Bank::NumOfLogs() noexcept
 {
 #if MAX_LOG_SIZE > 0
@@ -62,7 +62,7 @@ size_t Bank::NumOfLogs() noexcept
 #endif
 }
 
-//NOT THREAD SAFE
+// NOT THREAD SAFE
 size_t Bank::SumBal() noexcept
 {
     size_t res = 0;
@@ -142,7 +142,7 @@ BankResponse Bank::SendFunds(const std::string &a_name, const std::string &b_nam
     if (!Bank::users.modify_if(a_name, [&a_name, &b_name, &res, amount](User &a)
 #endif
                                {
-                                   //if "A" can afford it
+                                   // if "A" can afford it
                                    if (a.balance < amount)
                                    {
                                        res = {k400BadRequest, "\"Insufficient funds\""};
@@ -195,7 +195,7 @@ BankResponse Bank::SetBal(const std::string &name, int64_t amount) noexcept
     }))
     {
         SET_CHANGES_ON;
-        return {k204NoContent, std::nullopt}; //returns new balance
+        return {k204NoContent, std::nullopt}; // returns new balance
     }
     else
     {
@@ -218,7 +218,7 @@ BankResponse Bank::ImpactBal(const std::string &name, int64_t amount) noexcept
     }))
     {
         SET_CHANGES_ON;
-        return {k200OK, std::to_string(bal)}; //may return new balance
+        return {k200OK, std::to_string(bal)}; // may return new balance
     }
     else
     {
@@ -319,7 +319,7 @@ BankResponse Bank::DelUser(const std::string &name) noexcept
         return {k404NotFound, "\"User not found\""};
     }
 }
-//assumes we know name exists, unlike DelUser
+// assumes we know name exists, unlike DelUser
 void Bank::DelSelf(const std::string &name) noexcept
 {
     std::shared_lock<std::shared_mutex> lock{iter_lock};
@@ -334,7 +334,7 @@ void Bank::DelSelf(const std::string &name) noexcept
     SET_CHANGES_ON;
     Bank::users.erase(name);
 }
-//ONLY EVER BEING CALLED BY SAVE THREAD OR C-INTERUPT
+// ONLY EVER BEING CALLED BY SAVE THREAD OR C-INTERUPT
 const char *Bank::Save()
 {
 #if CONSERVATIVE_DISK_SAVE
@@ -350,7 +350,7 @@ const char *Bank::Save()
         users_copy.users.reserve(Bank::users.size());
         users_copy.keys.reserve(Bank::users.size());
         {
-            std::unique_lock<std::shared_mutex> lock{iter_lock};
+            std::unique_lock<std::shared_mutex> lock{iter_lock}; // we only need the lock long enough to copy the data
             for (const auto &u : users)
             {
                 Bank::users.if_contains(u.first, [&users_copy, &u](const User &u_val) {
@@ -391,11 +391,11 @@ void Bank::Load()
     }
 
     uint32_t buffer_size;
-    users_load.read((char *)&buffer_size, 4);                             //reading first 32 bits for size
-    FBE::bank_dom::GlobalFinalModel reader;                               //declaring model
-    reader.resize(buffer_size);                                           //allocating new memory
-    users_load.read((char *)reader.buffer().data() + 4, buffer_size - 4); //reading rest of file
-    memcpy((char *)reader.buffer().data(), &buffer_size, 4);              //copying first 32 bits back
+    users_load.read((char *)&buffer_size, 4);                             // reading first 32 bits for size
+    FBE::bank_dom::GlobalFinalModel reader;                               // declaring model
+    reader.resize(buffer_size);                                           // allocating new memory
+    users_load.read((char *)reader.buffer().data() + 4, buffer_size - 4); // reading rest of file
+    memcpy((char *)reader.buffer().data(), &buffer_size, 4);              // copying first 32 bits back
 
     if (!reader.verify())
     {

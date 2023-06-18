@@ -96,7 +96,6 @@ int main(int argc, char **argv)
 #endif
     Op(Bank::GetLogsV2("twix"), "get logs init (v2): ", 1);
     Op(Bank::GetLogsV2("twix"), "get logs cached (v2): ", 1000000);
-    Op(Bank::GetLogsRange("twix", 0, 100), "get logs range: ", 1000000);
 #endif
     Op(Bank::PruneUsers(0, 0), "prune users: ", 1);
     Op(Bank::Save(), "saving: ", 1);

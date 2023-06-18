@@ -1,6 +1,6 @@
 #include "str_intrusion.h"
 
-//this function is horribly jank
+// this function is horribly jank
 template <typename Tag>
 struct result
 {
