@@ -61,7 +61,7 @@
 | Close         | `v0.1.0` |  `v2.3.0`   | saves & closes the CCash webserver                                                                                        | `N/A`                                                    | api/v1/admin/shutdown          |   `POST`    |      204       |    `N/A`    |                                                        `N/A`                                                        | :heavy_check_mark: |        :x:         | :heavy_check_mark: |  :x:  |
 | Contains      | `v0.1.0` |  `v2.3.0`   | checks wether a given user `{name}` exists                                                                                | `N/A`                                                    | api/v1/user/exists?name={name} |    `GET`    |      204       |    `N/A`    |                                                        `N/A`                                                        | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
 | PruneUsers    | `v2.3.0` |  `v2.3.0`   | deletes users with most recent transactions older then `"time"` (if logs are enabled) and have less money then `"amount"` | {"time":int64,"amount":uint32} or just {"amount":uint32} | api/v1/admin/prune_users       |   `POST`    |      200       |   uint64    |                                               number of users deleted                                               | :heavy_check_mark: | :heavy_check_mark: | :heavy_check_mark: |  :x:  |
-| ApiProperties | `v2.3.0` |  `v2.5.1`   | properties of the given instance                                                                                          | `N/A`                                                    | api/properties                 |    `GET`    |      200       | json object | {"max_log":uint64, "add_user_open":boolean, "return_on_del":string, "min_name_size":string, "max_name_size":string} | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
+| ApiProperties | `v2.3.0` |  `v2.6.1`   | properties of the given instance                                                                                          | `N/A`                                                    | api/properties                 |    `GET`    |      200       | json object | {"max_log":uint64, "add_user_open":boolean, "return_on_del":string, "min_name_size":string, "max_name_size":string} | :heavy_check_mark: |        :x:         |        :x:         |  :x:  |
 
 ### System Usage endpoin errors
 | name          |        401         |        404         |        406         |
@@ -77,7 +77,7 @@ Valid
 * letters
 * numbers
 * _
-* Length must be atleast 3 and at most 16 characters.
+* Length must be atleast 3 and at most 36 characters.
 
 ### User Management endpoints
 | name         |  added   | last change | purpose                                 | json input                                    | path                       | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |         A          |         U          |
