@@ -6,8 +6,8 @@
 // Note: this allows for below 3 character names to be reserved for internal CCash operations
 constexpr unsigned min_name_size = 3;
 
-// 36 because minecraft UUID is 36 characters
-constexpr unsigned max_name_size = 36;
+// because minecraft trimmed UUID is 32 characters
+constexpr unsigned max_name_size = 32;
 
 constexpr const char *users_location = @USER_SAVE@;
 constexpr const char *config_location = @DROGON_CONFIG@;

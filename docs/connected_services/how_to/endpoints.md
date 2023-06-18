@@ -77,7 +77,7 @@ Valid
 * letters
 * numbers
 * _
-* Length must be atleast 3 and at most 36 characters.
+* Length must be atleast 3 and at most 32 characters.
 
 ### User Management endpoints
 | name         |  added   | last change | purpose                                 | json input                                    | path                       | HTTP Method | correct status | return type | return value |       Jresp        |        Jreq        |         A          |         U          |
