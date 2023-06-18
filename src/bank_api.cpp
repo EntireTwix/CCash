@@ -22,7 +22,7 @@ thread_local ondemand::parser parser;
 
 #define NAME_PARAM req->getParameter("name")
 
-//Usage
+// Usage
 void api::GetBal(req_args, const std::string &name)
 {
     RESPONSE_PARSE(Bank::GetBal(name));
@@ -198,7 +198,7 @@ void api::ImpactBal(req_args)
     RESPONSE_PARSE(std::move(res));
 }
 
-//System Usage
+// System Usage
 void api::Help(req_args)
 {
     auto resp = HttpResponse::newRedirectionResponse("https://github.com/EntireTwix/CCash/blob/main/README.md", k301MovedPermanently);
@@ -230,7 +230,7 @@ void api::AdminVerifyAccount(req_args)
 }
 void api::ApiProperties(req_args)
 {
-    std::string info = "{\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + (ADD_USER_OPEN?"true":"false") + ",\"return_on_del\":" + (RETURN_ON_DEL?'\"' + std::string(return_account) + "\"":"null") + '}';
+    std::string info = "{\"max_log\":" + std::to_string(MAX_LOG_SIZE) + ",\"add_user_open\":" + (ADD_USER_OPEN?"true":"false") + ",\"return_on_del\":" + (RETURN_ON_DEL?'\"' + std::string(return_account) + "\"":"null") + ",\"min_name_size\":" + std::to_string(min_name_size) + ",\"max_name_size\":" + std::to_string(max_name_size) + '}';
     auto resp = HttpResponse::newCustomHttpResponse(BankResponse{k200OK, std::move(info)});
     CORS;
     CACHE_FOREVER;
