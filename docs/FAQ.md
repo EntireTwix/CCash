@@ -8,13 +8,17 @@ Usernames are restricted by minecraft's requirements
 * numbers
 * _
 * length must be atleast 3 and at most 16 characters.
-### Is this crypto like krist?
-CCash isn't a crypto, simply a ledger keeping track of who owns what.
 ### Why isnt this on a database?
 Because this usecase requires none of the features a database would offer. 
 ### People are making too many accounts maliciously to fill up space on my server!
 Consider disabling `ADD_USER_OPEN` in the [build proccess](https://github.com/EntireTwix/CCash/blob/main/docs/building.md).
 ### My instance is taking up too much storage or RAM
 Reduce log size and/or use the prune users endpoint to remove dead accounts.
+
+## Minecraft
+### Are mods required to use this
+No, as this is API based, services can interact with the ledger outside of the game.
+### Is this crypto like krist?
+CCash isn't a crypto, simply a ledger keeping track of who owns what.
 ### Why not use an economy mod
-Speed of operations, CCash being external to MC (and so compatible with any version/configuration), and the API are the main advantages to an economy mod.
+Speed of operations, CCash being external to MC (and so compatible with any version/configuration), and the API are the main advantages over using an economy mod.
