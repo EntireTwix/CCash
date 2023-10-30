@@ -11,67 +11,7 @@ docker run -itp 443:443 -v ccashconfig:/ccash/config -e ADMIN_A=<admin-username>
 ```
 
 ## Ansible
-What is ansible:
-Ansible is a system that will automatically run predefined commands in what is called a playbook, in order to automate difficult or tedious tasks.
-What ansible is good for in this use case is to make sure all dependencies are installed before building the program then building the program. It can also handle updates to the platform, so if you stop the CCash instance then run the deployment command again, it will update everything to the latest version.
-
-
-CCash can be deployed to any infrastructure able to run Rocky/Alma Linux 8/9 x86_64 virtual or not, we will be eventually updating it to allow it to run on other OS's but for now RHEL is what works. 
-
-As CCash is intended to be run as root, the playbook is run also as root. The playbook also builds CCash from the latest github push, so there may be bugs.
-
-In order to use the ansible playbook, clone the playbook to any pc with the ability to access the server through SSH and with Ansible installed if you dont have ansible installed, its easy to install with linux( package name is `ansible-core`) or with windows you can run windows subsystem linux to run ansible too.
-
-Make sure before you start the ansible deployment you edit 2 files:
-`CCash/deployment/inventory`
-and
-`CCash/deployment/vars/default.yml`
-
-The inventory file is for managing where CCash is installed swap the ip address in there for your CCash servers ip address, or leave it as 127.0.0.1 to install on the current machine.
-
-vars/default.yml is where you configure your options
-
-This is for where you want to install ccash we reccommend leaving this default just so you know where it is(your root home directory)
-`BUILD_DIR: "/root"`
-
-This is for defining the admin username of the CCash instance.
-`ADMIN_A: "admin"`
-
-This is how often you want the CCash instance to save in minutes.
-`SAVE_FREQ: "2"`
-
-This is to allow backwards compatibility with deprecated endpoints.
-`USE_DEPRECATED_ENDPOINTS: "true"`
-
-If you want a web interface to CCash then use put true here. It makes things a bit simpler to interact with whilst setting up or for inexperienced Server Admins.
-`WEB_ENABLED: false`
-
-This is for the port the web interface will run on.
-`WEB_PORT: "3000"`
-
-These two are to start services immediately as daemons and to start on reboot of the server.
-`START_SERVICES: true`
-`START_ON_BOOT: true`
-
-Here you can change what branch you wish to pull from should you need an older branch from the github.
-`BRANCH: "main"`
-
-
-
-
-And thats all the configuring you need, next we will install the ansible dependencies by running the following command:
-```ansible-galaxy install -r deployment/requirements.yml```
-
-And the final part of the build process is to run this command and enter the password for the root account on the server you are installing on. It wont show the password as you type it for security reasons, so keep that in mind.
-```ansible-playbook -i deployment/inventory deployment/main.yml -k```
-
-When this is complete the server will have ccash installed to the root user directory.
-
-To start CCash navigate to where you installed CCash, we will use the default in the example command and run the executable:
-```cd /root/CCash && ./build/bank admin 2 true```
-The first argument (admin) is for what the admin accounts username will be this user is able to do more tasks than a standard user.
-The second argument (2) is how often the program will save the information, in minutes.
-The third argument (true) is if you want to start the program in the background we reccommend trying false first to make sure there isnt any issues before using this option
+[Ansible](https://github.com/Expand-sys/DEPLOYCCASH)
 
 ## Build
 Previously this used GitHub Workflows, I(Expand) dont know how to do those but its not that hard to deploy stuff manually. To run the pre configured docker image run the above command and you are off to the races it will deploy a self signed certificate and use that for deployment. As this is not a user facing deployment the certificate is self signed and thus will throw an error on chrome, though this will still work if you ignore it. For production you should deploy with a reverse proxy and a correct certificate for your domain.
