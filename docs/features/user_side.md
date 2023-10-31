@@ -16,7 +16,7 @@ as explained in earlier docs a ecosystem of connected services allows you many w
 #### APIs
 for devs who wanna make more connected services, existing APIs exist in multiple lanaguages enabling faster development/maintenance.
 #### External
-its game indepedent meaning you dont have to be in-game to use it. With support for Docker and Ansible Playbook.
+its game indepedent meaning you dont have to be in-game to use it. With support for Docker.
 ## Security
 #### HTTPS
 OpenSSL is used to secure the HTTP server.
