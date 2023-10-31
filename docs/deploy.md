@@ -10,9 +10,6 @@ It can be run with docker like so:
 docker run -itp 443:443 -v ccashconfig:/ccash/config -e ADMIN_A=<admin-username> -e SAVE_FREQ=<in minutes> ghcr.io/entiretwix/ccash/ccash:latest
 ```
 
-## Ansible
-[Ansible](https://github.com/Expand-sys/DEPLOYCCASH)
-
 ## Build
 Previously this used GitHub Workflows, I(Expand) dont know how to do those but its not that hard to deploy stuff manually. To run the pre configured docker image run the above command and you are off to the races it will deploy a self signed certificate and use that for deployment. As this is not a user facing deployment the certificate is self signed and thus will throw an error on chrome, though this will still work if you ignore it. For production you should deploy with a reverse proxy and a correct certificate for your domain.
 
