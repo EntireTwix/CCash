@@ -26,6 +26,8 @@ Running it local to the game server reduces latency for connected services and C
 
 **DISCLAIMER: ComputerCraft requires you add `127.0.0.1` to its config section `allowed_domains` if you're interacting with CCash locally**   
 
-As CCash is just a means of keeping track of who has what, the economic system you use is entirely up to whomever hosts the instance.
+As CCash is just a means of keeping track of who has what, the economic system you implement is entirely up to whoever hosts the instance.
 
 I suggest an admin should manage the instance to lower incentive to manipulate balances.
+
+Check out the [FAQ](FAQ.md) if you have any questions.
