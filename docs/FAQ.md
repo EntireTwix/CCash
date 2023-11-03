@@ -10,7 +10,7 @@ Usernames are restricted by minecraft's requirements
 * length must be atleast 3 and at most 16 characters.
 ### Why isnt this on a database?
 Because this usecase requires none of the features a database would offer. 
-### People are making too many accounts maliciously to fill up space on my server!
+### People are maliciously making too many accounts!
 Consider disabling `ADD_USER_OPEN` in the [build proccess](https://github.com/EntireTwix/CCash/blob/main/docs/building.md).
 ### My instance is taking up too much storage or RAM
 Reduce log size and/or use the prune users endpoint to remove dead accounts.
