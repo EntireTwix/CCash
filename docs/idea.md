@@ -7,7 +7,7 @@ While CCash can be used for anything that can interact with its API I think mine
 The currency model most Minecraft Servers adopt if any, is resource based, usually diamonds. This model is fraught with issues however:
 
 * The primary issue is minecraft worlds are infinite, leading to hyper inflation as everyone accrues more diamonds.
-* The diminishing marginal value of diamonds makes them a poor store of value, trading for your 110th diamond is meaningless.
+* The diminishing marginal value of diamonds makes them a poor store of value, trading something to in exhcange for your 110th diamond is meaningless.
 * Some resources are passively reapable (e.g iron or gold), making the generation of currency a larger focus than that of creating value.
 * Locality is required for transactions.
 * Theft is possible; ownership is physical possession based.
