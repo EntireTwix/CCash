@@ -1,12 +1,12 @@
 ![image](https://user-images.githubusercontent.com/31377881/139971016-9ca428d1-1a17-4c87-85e3-9b7ead0780f5.png)
 
 
-* [problem/solution](docs/idea.md)
+* [solution](docs/idea.md)
 * connected services
   * how to create
     * [explanation](docs/connected_services/how_to/explanation.md)
-  	* [API implementations](docs/connected_services/how_to/APIs.md)
-  	* [the API](docs/connected_services/how_to/endpoints.md) 
+  	* [API Libraries](docs/connected_services/how_to/APIs.md)
+  	* [endpoints](docs/connected_services/how_to/endpoints.md) 
   * [existing services](docs/connected_services/existing_services.md)
 * features
   * [user side](docs/features/user_side.md)
