@@ -63,7 +63,7 @@ int main(int argc, char **argv)
             << "\nSSE 4.1         : " << (__builtin_cpu_supports("sse4.1") ? "enabled" : "disabled")
             << "\nSSE 4.2         : " << (__builtin_cpu_supports("sse4.2") ? "enabled" : "disabled")
 #if MULTI_THREADED
-            << "\n\nThreads         : " << get_nprocs() + saving_freq
+            << "\n\nThreads         : " << get_nprocs_conf() + saving_freq
             << "\nMulti threading : enabled";
 #else
             << "\n\nThreads         : " << 1 + saving_freq
@@ -114,7 +114,7 @@ int main(int argc, char **argv)
     app()
         .loadConfigFile(config_location)
 #if MULTI_THREADED
-        .setThreadNum(get_nprocs())
+        .setThreadNum(get_nprocs_conf())
 #endif
         .run();
 
